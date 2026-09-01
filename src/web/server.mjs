@@ -140,9 +140,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// One process can host both. On Railway this means a single service, a single
+// health endpoint, and no drift between what the UI shows and what the agent did.
+if (process.env.RUN_DAEMON === "true") {
+  const { startDaemon } = await import("../daemon.mjs");
+  startDaemon({ quiet: false }).catch((err) => console.error("daemon failed to start:", err.message));
+}
+
 server.listen(PORT, () => {
   console.log(`Cascade running  http://localhost:${PORT}`);
   console.log(`  health         http://localhost:${PORT}/healthz`);
   console.log(`  commit         ${COMMIT}`);
   console.log(`  alpaca keys    ${credentials().ok ? "present" : "MISSING — structural gates only"}`);
+  console.log(`  daemon         ${process.env.RUN_DAEMON === "true" ? "running in this process" : "separate (npm run daemon)"}`);
 });

@@ -15,6 +15,7 @@ import { runCascade } from "./engine/cascade.mjs";
 import { sizePositions, execute } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
+import * as telegram from "./notify/telegram.mjs";
 import { exitVerdict } from "./market/residual.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -29,6 +30,8 @@ const MAX_CASCADES_PER_CYCLE = Number(process.env.MAX_CASCADES || 2);
 
 const bootedAt = new Date();
 let cycles = 0;
+let adj = { powered: false, reason: "not started" };
+let triageEngine = "heuristic";
 
 const load = (f, fallback) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return fallback; } };
 const save = (f, v) => fs.writeFileSync(f, JSON.stringify(v, null, 2));
@@ -79,6 +82,8 @@ async function reviewExits(graph) {
       pl: Number(p.unrealized_pl), dryRun: !AUTO_TRADE,
       summary: `${p.symbol} ${verdict.reason} — P/L $${Number(p.unrealized_pl).toFixed(2)}${AUTO_TRADE ? "" : " (dry run)"}`,
     });
+    telegram.positionClosed({ ticker: p.symbol, hub: edge.to, reason: verdict.reason, pl: Number(p.unrealized_pl) }).catch(() => {});
+
     if (AUTO_TRADE) {
       const { closePosition } = await import("./market/alpaca.mjs");
       try { await closePosition(p.symbol); } catch (err) { journal({ kind: "error", summary: `close ${p.symbol} failed: ${err.message}` }); }
@@ -176,6 +181,13 @@ async function cycle() {
     const sized = sizePositions(survivors.map((p) => ({ ...p, direction: c.direction })), Number(acct.equity));
     const orders = await execute(sized, { direction: c.direction, dryRun: !AUTO_TRADE });
 
+    // Fire-and-forget: a notification failure must never affect a trade that
+    // has already happened.
+    telegram.cascadeFired({
+      hub: c.hub, headline: c.headline, direction: c.direction,
+      orders, refusals: r.refusals, timeframe: r.timeframe,
+    }).catch(() => {});
+
     for (const o of orders)
       journal({ kind: "order", ticker: o.ticker, hub: c.hub, side: o.side, notional: o.notional,
         shares: o.shares ?? null, status: o.status, exposure: o.exposure, z: o.z,
@@ -187,16 +199,51 @@ async function cycle() {
 }
 
 // ── boot ─────────────────────────────────────────────────────────────────────
-fs.mkdirSync(DATA, { recursive: true });
-const adj = await adjudicate();
-const triageEngine = adj.powered ? adj.provider : "heuristic";
+let started = false;
 
-console.log(`\nCascade daemon`);
-console.log(`  poll        every ${POLL_MS / 1000}s`);
-console.log(`  trading     ${AUTO_TRADE ? "LIVE (paper account)" : "dry run — set AUTO_TRADE=true to submit"}`);
-console.log(`  triage      ${adj.powered ? adj.triageModel : "heuristic classifier (no XAI_API_KEY)"}`);
-console.log(`  adjudicator ${adj.powered ? adj.adjudicatorModel : "OFF — " + adj.reason}`);
-journal({ kind: "boot", summary: `daemon up · triage=${triageEngine} · autoTrade=${AUTO_TRADE} · poll=${POLL_MS / 1000}s` });
+/**
+ * Start the agent loop. Exported so a single process can serve the web app and
+ * run the daemon together — one Railway service, one health endpoint, nothing
+ * to keep in sync. `npm run daemon` runs it standalone.
+ */
+export async function startDaemon({ quiet = false } = {}) {
+  if (started) return { alreadyRunning: true };
+  started = true;
 
-await cycle().catch((e) => journal({ kind: "error", summary: e.message }));
-setInterval(() => cycle().catch((e) => journal({ kind: "error", summary: e.message })), POLL_MS);
+  fs.mkdirSync(DATA, { recursive: true });
+  const adjudicator = await adjudicate();
+  adj = adjudicator;
+  triageEngine = adjudicator.powered ? adjudicator.provider : "heuristic";
+
+  if (!quiet) {
+    console.log(`\nCascade daemon`);
+    console.log(`  poll        every ${POLL_MS / 1000}s`);
+    console.log(`  trading     ${AUTO_TRADE ? "LIVE (paper account)" : "dry run — set AUTO_TRADE=true to submit"}`);
+    console.log(`  triage      ${adjudicator.powered ? adjudicator.triageModel : "heuristic classifier (no LLM key)"}`);
+    console.log(`  adjudicator ${adjudicator.powered ? adjudicator.adjudicatorModel : "OFF — " + adjudicator.reason}`);
+    console.log(`  telegram    ${telegram.configured() ? "on" : "off (set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)"}`);
+  }
+
+  let edgeCount = 0;
+  try { edgeCount = JSON.parse(fs.readFileSync(path.join(DATA, "graph.json"), "utf8")).edgeCount; } catch {}
+
+  journal({ kind: "boot", summary: `daemon up · triage=${triageEngine} · autoTrade=${AUTO_TRADE} · poll=${POLL_MS / 1000}s · telegram=${telegram.configured() ? "on" : "off"}` });
+  telegram.daemonUp({
+    triageModel: adjudicator.triageModel, adjudicatorModel: adjudicator.adjudicatorModel,
+    edges: edgeCount, autoTrade: AUTO_TRADE,
+  }).catch(() => {});
+
+  const tick = () => cycle().catch((e) => journal({ kind: "error", summary: e.message }));
+  await tick();
+  const timer = setInterval(tick, POLL_MS);
+  timer.unref?.();
+  return { started: true, adjudicator };
+}
+
+// Run standalone when invoked directly (npm run daemon).
+const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+if (invokedDirectly) {
+  await startDaemon();
+  // Keep the process alive; the interval is unref'd so it would otherwise exit.
+  setInterval(() => {}, 1 << 30);
+}

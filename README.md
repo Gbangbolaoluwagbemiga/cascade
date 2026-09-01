@@ -159,6 +159,7 @@ npm run daemon                # the autonomous agent
 | `ALPACA_API_KEY_ID` / `ALPACA_API_SECRET_KEY` | prices, news, execution | [app.alpaca.markets](https://app.alpaca.markets) → select the **Paper** account (top-left) → **API Keys** → Generate |
 | `GROQ_API_KEY` **or** `XAI_API_KEY` | triage + edge adjudication | [console.groq.com](https://console.groq.com) or [x.ai/api](https://x.ai/api) |
 | `SEC_CONTACT` | EDGAR fair-access policy requires a contact address | any email you own |
+| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | optional feed | @BotFather → token; message the bot, then read `chat.id` from `/getUpdates` |
 
 > **Groq and Grok are different companies.** Groq is an inference provider
 > serving open models (Llama, Qwen, gpt-oss) at `api.groq.com`; Grok is xAI's
@@ -196,7 +197,8 @@ retries free-form on failure, and extracts the object from whatever came back.
 
 ```bash
 npm start              # web UI + API            :8787
-npm run daemon         # autonomous agent loop
+npm run start:all      # web UI + daemon in one process (what Railway runs)
+npm run daemon         # autonomous agent loop, standalone
 npm run mcp            # MCP server over stdio
 npm test               # extraction, maths and gate tests
 
@@ -207,6 +209,7 @@ npm run survey         # sector naming-rate survey
 
 npm run cascade -- HD 2026-08-25 down "headline"          # score one event
 npm run trade   -- HD 2026-08-25 down "headline" --live   # and submit orders
+npm run telegram:test                                     # verify the feed
 ```
 
 Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
@@ -250,6 +253,7 @@ Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
 | `src/web/server.mjs` | API + static server, `/healthz` build marker |
 | `src/web/public/index.html` | The UI |
 | `src/mcp/server.mjs` | MCP over stdio — 4 tools |
+| `src/notify/telegram.mjs` | Cascade feed: each firing, with citations and refusals |
 
 ### Scripts
 `build-graph` · `adjudicate-graph` · `hub-mine` · `deep-mine` · `survey` ·
@@ -341,14 +345,45 @@ should hit, and treating a zero as a bug until proven otherwise.
 
 ## Deploy
 
-Railway, one process:
+Railway, **one service** running the web app and the agent together — one health
+endpoint, no drift between what the UI shows and what the agent did.
 
 ```bash
-railway up            # railway.json sets the start command and /healthz check
+railway login
+railway init
+railway up
 ```
 
-`/healthz` carries the commit SHA and uptime, so you can always prove which code
-is live. `Procfile` also declares a `daemon` process for a separate worker.
+`railway.json` sets `RUN_DAEMON=true node src/web/server.mjs` and a `/healthz`
+check. Then set the variables in the Railway dashboard:
+
+```
+ALPACA_API_KEY_ID · ALPACA_API_SECRET_KEY · GROQ_API_KEY · SEC_CONTACT
+AUTO_TRADE=true            # omit to keep the deployed agent in dry run
+TELEGRAM_BOT_TOKEN · TELEGRAM_CHAT_ID   # optional
+```
+
+`/healthz` carries the commit SHA, uptime, edge count, gate config and whether
+Alpaca and the LLM are actually reachable — so you can always prove which code
+is live rather than assuming the deploy landed.
+
+### Telegram
+
+Each cascade as it fires, with the exposure, the residual, the citation, and
+what was refused:
+
+```
+⚡ HD ▼ cascade
+Home Depot sees no sign of housing recovery
+
+5 positions
+SMG    34.0% of revenue via HD · 0.81σ unmoved
+   ↳ cited 0000825542-25-000022
+…
+refused 2
+SWK    priced_in — partially priced at 1.44σ
+UE     priced_in — drifting 1.13σ against the thesis
+```
 
 ---
 
