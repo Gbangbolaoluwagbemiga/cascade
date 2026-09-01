@@ -127,7 +127,7 @@ Types are assigned **once at ingest** by Grok, never re-decided at trade time.
 ```bash
 npm install
 cp .env.example .env          # then fill in the keys below
-npm test                      # 23 checks, no keys needed
+npm test                      # 24 checks, no keys needed
 npm start                     # web UI on http://localhost:8787
 npm run daemon                # the autonomous agent
 ```
