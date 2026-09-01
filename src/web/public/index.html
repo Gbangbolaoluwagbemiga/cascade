@@ -119,6 +119,19 @@ g.node:hover .halo{opacity:.34}
 .news:hover{color:var(--text)}
 .news .meta{font-family:var(--mono);font-size:10px;color:var(--faint);margin-bottom:2px}
 
+/* ── agent log ───────────────────────────────────────── */
+footer{border-top:1px solid var(--border);background:var(--surface);padding:10px 24px 12px;max-height:172px;overflow-y:auto}
+.loghead{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.loghead h2{margin:0}
+.logline{display:flex;gap:10px;align-items:baseline;font-size:11.5px;padding:2.5px 0;
+  animation:slidein .34s var(--ease)}
+@keyframes slidein{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.logline time{font-family:var(--mono);color:var(--faint);font-size:10.5px;min-width:58px}
+.logline .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;
+  min-width:64px;color:var(--faint)}
+.logline .kind.order{color:var(--signal)} .logline .kind.refusal{color:var(--warn)}
+.logline .kind.event{color:var(--hot)} .logline .kind.error{color:var(--hot)}
+.logline .msg{color:var(--muted);overflow-wrap:anywhere}
 @media (max-width:1080px){.grid{grid-template-columns:minmax(0,1fr)}svg{min-height:360px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -180,6 +193,14 @@ g.node:hover .halo{opacity:.34}
   </div>
 </div>
 
+<footer>
+  <div class="loghead">
+    <h2>Agent log — including everything it refused</h2>
+    <span class="tag" id="daemonState" style="color:var(--faint);font-size:10.5px"></span>
+  </div>
+  <div id="log"><p class="empty">daemon not running — <span class="num">npm run daemon</span></p></div>
+</footer>
+
 <script>
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
@@ -206,6 +227,8 @@ async function boot() {
 
   refreshPortfolio(h);
   loadNews();
+  loadJournal();
+  setInterval(loadJournal, 15000);
   if (hubs.length) select(hubs[0].ticker);
   setInterval(() => refreshPortfolio(), 20000);
 }
@@ -245,6 +268,21 @@ async function loadNews() {
     : `<p class="empty">no headlines</p>`;
   document.querySelectorAll(".news").forEach((d) =>
     d.addEventListener("click", () => { if (d.dataset.hub) select(d.dataset.hub); }));
+}
+
+async function loadJournal() {
+  const r = await fetch("/api/journal").then((x) => x.json()).catch(() => null);
+  if (!r) return;
+  $("daemonState").textContent = r.daemon
+    ? `up ${Math.round(r.daemon.uptimeSeconds / 60)}m · ${r.daemon.cycles} cycles · ${r.daemon.autoTrade ? "trading live" : "dry run"}`
+    : "";
+  if (!r.entries?.length) return;
+  $("log").innerHTML = r.entries.slice(0, 40).map((e) => `
+    <div class="logline">
+      <time>${e.at.slice(11, 19)}</time>
+      <span class="kind ${e.kind}">${e.kind}</span>
+      <span class="msg">${(e.summary ?? "").replace(/</g, "&lt;")}</span>
+    </div>`).join("");
 }
 
 $("dirDown").onclick = () => { direction = "down"; syncDir(); if (current) select(current); };

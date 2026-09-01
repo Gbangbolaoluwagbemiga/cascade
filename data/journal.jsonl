@@ -18,3 +18,5 @@
 {"at":"2026-09-01T14:54:58.752Z","kind":"refusal","ticker":"DUOL","hub":"AAPL","gate":"market_data","summary":"DUOL refused [market_data] no bars after the event yet"}
 {"at":"2026-09-01T14:54:58.752Z","kind":"refusal","ticker":"QRVO","hub":"AAPL","gate":"market_data","summary":"QRVO refused [market_data] no bars after the event yet"}
 {"at":"2026-09-01T14:54:58.752Z","kind":"nothing","summary":"AAPL: nothing passed the gates"}
+{"at":"2026-09-01T14:59:11.139Z","kind":"boot","summary":"daemon up · autoTrade=false · poll=300s"}
+{"at":"2026-09-01T14:59:12.443Z","kind":"scan","summary":"12 headlines · 0 new · 0 material · market open"}
