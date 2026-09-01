@@ -4,7 +4,8 @@
 
 **Markets price the obvious in milliseconds. We trade what comes next.**
 
-An autonomous trading agent for the Alpaca AI Trading Agents Hackathon.
+An autonomous trading agent for the **Alpaca AI Trading Agents Hackathon**
+(28 Aug – 4 Sep 2026). One-page write-up: **[SUBMISSION.md](SUBMISSION.md)**.
 
 A fab burns down and that ticker gaps before any human reacts. But the
 *propagation* — who buys those chips, whose guidance is now at risk, which
