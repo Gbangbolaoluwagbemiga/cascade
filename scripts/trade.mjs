@@ -51,7 +51,21 @@ for (const s of sized) {
 
 const orders = await execute(sized, { direction, dryRun: !live });
 console.log(`\n--- ORDERS (${live ? "LIVE — submitted to Alpaca paper" : "dry run"}) ---`);
-for (const o of orders) console.log(`  ${o.side.toUpperCase().padEnd(5)} ${o.ticker.padEnd(6)} ${o.shares ? String(o.shares).padStart(5) + " sh @ $" + o.price.toFixed(2) : "$" + o.notional.toLocaleString()}  ${o.status}${o.error ? " — " + o.error.slice(0, 70) : ""}`);
+for (const o of orders) {
+  if (o.instrument === "option") {
+    console.log(
+      `  OPTION ${o.ticker.padEnd(6)} ${o.contracts}x ${o.contract}  strike ${o.strike} exp ${o.expiry} (${o.daysToExpiry}d)` +
+      `  premium $${o.premium.toFixed(2)}  cost $${o.notional.toLocaleString()}  ${o.status} via ${o.via ?? "rest"}${o.error ? " — " + o.error.slice(0, 60) : ""}`
+    );
+    console.log(`         thesis expects ${(o.expectedMovePct * 100).toFixed(1)}% further move from $${o.spot?.toFixed(2)}`);
+  } else {
+    console.log(
+      `  SHARE  ${o.ticker.padEnd(6)} ${o.side.toUpperCase()} ${o.shares ? String(o.shares) + " sh @ $" + o.price.toFixed(2) : "$" + o.notional.toLocaleString()}` +
+      `  ${o.status} via ${o.via ?? "rest"}${o.error ? " — " + o.error.slice(0, 60) : ""}`
+    );
+    if (o.optionNote) console.log(`         no option: ${o.optionNote.slice(0, 96)}`);
+  }
+}
 
 console.log(`\n--- REFUSED (${result.refusals.length}) ---`);
 for (const r of result.refusals) console.log(`  ${r.ticker.padEnd(6)} [${String(r.gate).padEnd(17)}] ${r.reason}`);

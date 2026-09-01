@@ -154,6 +154,9 @@ export function scoreDependent(edge, { bars, eventAt, direction, timeframe = "1D
     dollarVolume,
     betaMarket: model.betaMarket,
     betaSector: model.betaSector,
+    residualSigma: model.residualSigma,
+    scale: scored.scale,
+    spot: a[a.length - 1].c,
     sectorEtf: etf,
     hasSector: model.hasSector,
   };

@@ -81,7 +81,39 @@ finally arrives. One piece of maths doing two jobs.
 Verified by test: a stock **up 7.5%** where the whole move is a 5% market rally
 scores **z = −0.31 → unpriced**. A flat "moved >6%, too late" rule discards it.
 
-### Five gates, and every refusal is output
+### Options, because the cascade supplies what an option needs
+
+A cascade hands us three things a share position cannot use:
+
+| the cascade gives | the option needs |
+|---|---|
+| direction the thesis predicts | put or call |
+| residual still unclaimed, in σ | the strike |
+| the ripple arrives in days | the expiry |
+
+So the strike is sized from *how much of the move is still unpriced*, the expiry
+from *how long the ripple takes*, and long premium gives an autonomous agent
+something a short share position never does — defined, known-in-advance
+downside. Shares remain the fallback when no contract is tradeable.
+
+Options carry their own liquidity gate, because the equity gate says nothing
+about them: deep out-of-the-money contracts routinely quote with a zero bid. On
+a live Home Depot cascade it took SMG, SWK and FBIN as puts and refused JELD,
+UFPI, GFF and UE — spreads of 88% and 137%, or no bid at all — falling back to
+shares for those.
+
+### Two MCP surfaces, pointing opposite ways
+
+| | |
+|---|---|
+| **Cascade's own MCP server** | exposes the causal engine **outward** — any Claude or Cursor agent can ask what is downstream of an event, with citations |
+| **Alpaca's official MCP server** | is what Cascade calls **inward** to trade — `place_option_order`, `place_stock_order`, account and position tools |
+
+Execution routes through Alpaca's MCP server by default and falls back to REST
+if it cannot start, recording which route each order took. Set
+`EXECUTION_VIA=rest` to bypass it.
+
+### Six gates, and every refusal is output
 
 An agent that only reports what it bought is not legible. Cascade reports what
 it refused and why:
@@ -94,6 +126,7 @@ it refused and why:
 | `liquidity` | median daily volume < $2M | **"unmoved" must not mean "untraded"** |
 | `priced_in` | \|z\| ≥ 1σ | the market already has it |
 | `shock_type` | this shock doesn't travel this edge | a real dependency, wrong channel |
+| `option_liquidity` | no bid, or a spread wider than 35% | an untradeable contract bleeds on entry |
 
 The liquidity gate is the one that matters most. Without it, "materially exposed
 and hasn't moved" systematically selects illiquid names — the fatal demo bug. In
@@ -237,6 +270,8 @@ Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
 | `src/market/alpaca.mjs` | Bars, news, orders, positions; SIP delay clamp |
 | `src/market/residual.mjs` | The priced-in check and the exit trigger |
 | `src/market/sectors.mjs` | SIC → sector ETF for the factor model |
+| `src/market/options.mjs` | Chain, contract selection from the residual, options liquidity gate |
+| `src/market/alpaca-mcp.mjs` | Client for Alpaca's **official** MCP server — the execution path |
 
 ### Engine — decide and act
 | File | Purpose |

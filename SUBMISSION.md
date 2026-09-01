@@ -96,9 +96,30 @@ cascade.
 
 ---
 
+## Options — the cascade's natural expression
+
+A cascade produces three things a share position cannot use, and an option needs
+exactly: a **direction** (the thesis sign), a **magnitude** (how much residual is
+still unclaimed, in σ) and a **horizon** (the ripple arrives in days). So the
+residual gap sizes the strike, the ripple horizon sets the expiry, and long
+premium gives an autonomous agent defined, known-in-advance downside.
+
+Options carry their own liquidity gate, because the equity gate says nothing
+about them — deep OTM contracts routinely quote with a zero bid. On a live Home
+Depot cascade the agent took SMG, SWK and FBIN as puts and refused JELD, UFPI,
+GFF and UE at 88–137% spreads, falling back to shares there.
+
 ## The Alpaca implementation
 
-Alpaca is load-bearing in three places; remove it and the product does not exist.
+Alpaca is load-bearing in four places; remove it and the product does not exist.
+
+**Alpaca's official MCP server is the execution path.** Cascade launches
+`alpaca-mcp-server` over stdio and places every order through its
+`place_option_order` / `place_stock_order` tools, falling back to REST only if
+the server cannot start — and recording which route each order took. There are
+two MCP surfaces here pointing opposite ways: Cascade's own server exposes the
+causal engine *outward* so any agent can query it; Alpaca's server is what
+Cascade calls *inward* to trade.
 
 - **Market data** — daily and hourly bars drive the entire priced-in calculation.
   We use **delayed consolidated SIP deliberately**: the edge horizon is hours, so

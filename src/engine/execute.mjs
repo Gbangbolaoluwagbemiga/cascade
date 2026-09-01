@@ -5,6 +5,9 @@
 // a bigger position than one 9% exposed and half-priced already.
 
 import { submitOrder, positions as openPositions, closePosition, dailyBars, latestPrices } from "../market/alpaca.mjs";
+import { selectContract, contractsFor, submitOptionOrder } from "../market/options.mjs";
+import * as alpacaMcp from "../market/alpaca-mcp.mjs";
+import { PRICED_MIN_Z } from "../market/residual.mjs";
 import { UNPRICED_MAX_Z } from "../market/residual.mjs";
 
 export const SIZING = {
@@ -40,11 +43,59 @@ export function sizePositions(candidates, equity) {
 }
 
 /**
+ * How much further the thesis expects this name to move, as a fraction of
+ * price. It is the residual still unclaimed — the distance from where the
+ * market has taken it to where "already priced" begins — converted back from
+ * sigmas into a move. This is what sizes the option strike.
+ */
+export function expectedMove(candidate) {
+  const aligned = candidate.z * Math.sign(candidate.direction || -1);
+  const gap = Math.max(0.25, PRICED_MIN_Z - aligned);
+  const scale = candidate.scale ?? (candidate.residualSigma ?? 0.02);
+  return Math.max(0.01, Math.min(0.30, gap * scale));
+}
+
+/**
  * Place the orders. `dryRun` is the default: nothing reaches the broker unless
  * the caller explicitly asks, because an accidental live submission is not the
  * kind of mistake you can take back.
+ *
+ * Options are the primary expression — the cascade supplies direction,
+ * magnitude and horizon, which is exactly what an option needs and a share
+ * cannot use — with shares as the fallback when no contract is tradeable.
  */
-export async function execute(sized, { direction = -1, dryRun = true } = {}) {
+/**
+ * Route an order through Alpaca's official MCP server, falling back to the REST
+ * client if it cannot start. Never silently drops the order — the route taken
+ * is recorded on the result.
+ */
+async function route(kind, args, { viaMcp }) {
+  if (viaMcp) {
+    try {
+      const r = kind === "option"
+        ? await alpacaMcp.placeOptionOrder(args)
+        : await alpacaMcp.placeStockOrder(args);
+      return { via: "alpaca-mcp", response: r.text };
+    } catch (err) {
+      // Fall through to REST rather than lose the trade.
+      const fallbackError = err.message.slice(0, 140);
+      if (kind === "option") {
+        const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, clientOrderId: args.clientOrderId });
+        return { via: "rest-fallback", mcpError: fallbackError, id: filled.id, status: filled.status };
+      }
+      const filled = await submitOrder(args.order);
+      return { via: "rest-fallback", mcpError: fallbackError, id: filled.id, status: filled.status };
+    }
+  }
+  if (kind === "option") {
+    const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, clientOrderId: args.clientOrderId });
+    return { via: "rest", id: filled.id, status: filled.status };
+  }
+  const filled = await submitOrder(args.order);
+  return { via: "rest", id: filled.id, status: filled.status };
+}
+
+export async function execute(sized, { direction = -1, dryRun = true, preferOptions = true, viaMcp = process.env.EXECUTION_VIA !== "rest" } = {}) {
   const side = direction < 0 ? "sell" : "buy";
   const results = [];
 
@@ -55,6 +106,47 @@ export async function execute(sized, { direction = -1, dryRun = true } = {}) {
   const prices = side === "sell" ? await latestPrices(sized.map((c) => c.ticker)) : new Map();
 
   for (const c of sized) {
+    // ── options first ────────────────────────────────────────────────────────
+    if (preferOptions) {
+      const spot = c.spot ?? prices.get(c.ticker);
+      const move = expectedMove(c);
+      let pick;
+      try {
+        pick = await selectContract({ underlying: c.ticker, spot, direction, expectedMove: move });
+      } catch (err) {
+        pick = { ok: false, gate: "option_data", reason: err.message.slice(0, 120) };
+      }
+
+      if (pick.ok) {
+        const k = pick.contract;
+        const qty = contractsFor(c.notional, k.mid);
+        if (qty >= 1) {
+          const record = {
+            ...c, instrument: "option", side: "buy",
+            contract: k.symbol, strike: k.strike, expiry: k.expiry, daysToExpiry: k.daysOut,
+            premium: k.mid, contracts: qty, notional: Number((qty * k.mid * 100).toFixed(2)),
+            expectedMovePct: move, spot,
+          };
+          if (dryRun) { results.push({ ...record, status: "dry-run", via: viaMcp ? "alpaca-mcp" : "rest" }); continue; }
+          try {
+            const r = await route("option", {
+              symbol: k.symbol, qty,
+              clientOrderId: `csc-${c.hub}-${c.ticker}-${Date.now()}`.slice(0, 48),
+            }, { viaMcp });
+            results.push({ ...record, status: r.status ?? "submitted", orderId: r.id, via: r.via, mcpError: r.mcpError });
+          } catch (err) {
+            results.push({ ...record, status: "rejected", error: err.message.slice(0, 160) });
+          }
+          continue;
+        }
+        // Budget below one contract: fall through to shares rather than skip.
+        c.optionNote = `$${c.notional} under one contract at $${k.mid.toFixed(2)}`;
+      } else {
+        c.optionNote = `${pick.gate}: ${pick.reason}`;
+      }
+    }
+
+    // ── shares fallback ──────────────────────────────────────────────────────
     const order = {
       symbol: c.ticker,
       side,
@@ -65,9 +157,9 @@ export async function execute(sized, { direction = -1, dryRun = true } = {}) {
 
     if (side === "sell") {
       const price = prices.get(c.ticker);
-      if (!price) { results.push({ ...c, side, status: "skipped", error: "no price to convert notional to whole shares" }); continue; }
+      if (!price) { results.push({ ...c, instrument: "share", side, status: "skipped", error: "no price to convert notional to whole shares" }); continue; }
       const qty = Math.floor(c.notional / price);
-      if (qty < 1) { results.push({ ...c, side, status: "skipped", error: `notional $${c.notional} is under one share at $${price.toFixed(2)}` }); continue; }
+      if (qty < 1) { results.push({ ...c, instrument: "share", side, status: "skipped", error: `notional $${c.notional} is under one share at $${price.toFixed(2)}` }); continue; }
       order.qty = String(qty);
       c.shares = qty;
       c.price = price;
@@ -76,7 +168,7 @@ export async function execute(sized, { direction = -1, dryRun = true } = {}) {
     }
 
     if (dryRun) {
-      results.push({ ...c, side, status: "dry-run", order });
+      results.push({ ...c, instrument: "share", side, status: "dry-run", order });
       continue;
     }
     try {
