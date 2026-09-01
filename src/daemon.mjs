@@ -14,6 +14,7 @@ import { news, account, positions as openPositions, clock } from "./market/alpac
 import { runCascade } from "./engine/cascade.mjs";
 import { sizePositions, execute } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
+import { shockTravels } from "./llm/client.mjs";
 import { exitVerdict } from "./market/residual.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -146,8 +147,33 @@ async function cycle() {
 
     if (!r.positions.length) { journal({ kind: "nothing", summary: `${c.hub}: nothing passed the gates` }); continue; }
 
+    // Final gate, and the one no price check can perform: does THIS shock
+    // travel down THIS kind of edge? An App Store fee change reaches Duolingo;
+    // an iPhone recall does not. Only runs on events that already survived
+    // triage and every cheap gate, so the expensive model stays cheap.
+    let survivors = r.positions;
+    if (adj.powered) {
+      survivors = [];
+      for (const p of r.positions) {
+        try {
+          const t = await shockTravels({
+            headline: c.headline, relationshipType: p.relationshipType,
+            from: p.ticker, to: c.hub,
+          });
+          if (t.travels) { survivors.push(p); continue; }
+          journal({ kind: "refusal", ticker: p.ticker, hub: c.hub, gate: "shock_type",
+            summary: `${p.ticker} refused [shock_type] ${t.reason} (${p.relationshipType} edge)` });
+        } catch (err) {
+          // A model failure must not silently pass a trade through.
+          journal({ kind: "refusal", ticker: p.ticker, hub: c.hub, gate: "shock_type",
+            summary: `${p.ticker} refused [shock_type] adjudication failed: ${err.message.slice(0, 70)}` });
+        }
+      }
+      if (!survivors.length) { journal({ kind: "nothing", summary: `${c.hub}: no edge transmits this kind of shock` }); continue; }
+    }
+
     const acct = await account();
-    const sized = sizePositions(r.positions.map((p) => ({ ...p, direction: c.direction })), Number(acct.equity));
+    const sized = sizePositions(survivors.map((p) => ({ ...p, direction: c.direction })), Number(acct.equity));
     const orders = await execute(sized, { direction: c.direction, dryRun: !AUTO_TRADE });
 
     for (const o of orders)
@@ -163,7 +189,7 @@ async function cycle() {
 // ── boot ─────────────────────────────────────────────────────────────────────
 fs.mkdirSync(DATA, { recursive: true });
 const adj = await adjudicate();
-const triageEngine = adj.powered ? "grok" : "heuristic";
+const triageEngine = adj.powered ? adj.provider : "heuristic";
 
 console.log(`\nCascade daemon`);
 console.log(`  poll        every ${POLL_MS / 1000}s`);

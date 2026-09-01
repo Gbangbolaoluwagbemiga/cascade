@@ -70,11 +70,12 @@ export function triage(headline, { hub, symbols = [] } = {}) {
  * claims and should not be reported as the same thing.
  */
 export async function triageEvent(headline, ctx = {}) {
-  const grok = await import("../llm/grok.mjs");
-  if (grok.credentials().ok) {
+  const llm = await import("../llm/client.mjs");
+  const models = await llm.resolveModels();
+  if (models.ok) {
     try {
-      const r = await grok.triage(headline, ctx);
-      return { ...r, engine: "grok" };
+      const r = await llm.triage(headline, ctx);
+      return { ...r, engine: models.provider };
     } catch (err) {
       // A model failure must not silently become a heuristic verdict.
       const fallback = triage(headline, ctx);
@@ -90,18 +91,18 @@ export async function triageEvent(headline, ctx = {}) {
  * an iPhone recall does not. That judgement needs a model.
  */
 export async function adjudicate() {
-  const grok = await import("../llm/grok.mjs");
-  const cred = grok.credentials();
-  if (!cred.ok) {
-    return { powered: false, provider: "grok", reason: cred.reason +
+  const llm = await import("../llm/client.mjs");
+  const r = await llm.resolveModels();
+  if (!r.ok) {
+    return { powered: false, reason: r.reason +
       " — relationship types stay heuristic hints and shock-compatibility is not checked" };
   }
-  const models = await grok.listModels();
-  if (!models.ok) return { powered: false, provider: "grok", reason: models.reason };
   return {
-    powered: true, provider: "grok",
-    triageModel: grok.TRIAGE_MODEL,
-    adjudicatorModel: grok.ADJUDICATOR_MODEL,
-    available: models.models.length,
+    powered: true,
+    provider: r.provider,
+    triageModel: r.triage.id,
+    adjudicatorModel: r.adjudicator.id,
+    modelSource: { triage: r.triage.source, adjudicator: r.adjudicator.source },
+    available: r.available.length,
   };
 }

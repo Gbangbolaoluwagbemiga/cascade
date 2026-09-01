@@ -11,11 +11,11 @@
 // does. Getting that wrong fires trades on the wrong events.
 
 import fs from "node:fs";
-import { adjudicateEdge, credentials, costEstimate, ADJUDICATOR_MODEL } from "../src/llm/grok.mjs";
+import { adjudicateEdge, resolveModels, stats } from "../src/llm/client.mjs";
 
-const cred = credentials();
-if (!cred.ok) {
-  console.error(`\n  ${cred.reason}\n`);
+const models = await resolveModels();
+if (!models.ok) {
+  console.error(`\n  ${models.reason}\n`);
   console.error("  Edges keep their heuristic type hint until a key is present.");
   console.error("  Nothing is guessed in the meantime — the daemon reports the adjudicator as off.\n");
   process.exit(2);
@@ -23,12 +23,16 @@ if (!cred.ok) {
 
 const graph = JSON.parse(fs.readFileSync("data/graph.json", "utf8"));
 const force = process.argv.includes("--force");
-const todo = graph.edges.filter((e) => force || e.typeSource !== "grok");
+const todo = graph.edges.filter((e) => force || e.typeSource !== "llm");
 
-console.log(`adjudicating ${todo.length} of ${graph.edges.length} edges with ${ADJUDICATOR_MODEL}\n`);
+console.log(`adjudicating ${todo.length} of ${graph.edges.length} edges`);
+console.log(`provider ${models.provider} · model ${models.adjudicator.id} [${models.adjudicator.source}]\n`);
 
 let changed = 0;
+const PACE_MS = Number(process.env.ADJUDICATE_PACE_MS || 1200);
+
 for (const e of todo) {
+  await new Promise((r) => setTimeout(r, PACE_MS));
   try {
     const r = await adjudicateEdge({
       from: e.from, to: e.to, disclosedAs: e.disclosedAs,
@@ -36,7 +40,7 @@ for (const e of todo) {
     });
     const before = e.relationshipType;
     e.relationshipType = r.relationshipType;
-    e.typeSource = "grok";
+    e.typeSource = "llm";
     e.typeModel = r.model;
     e.typeConfidence = r.confidence;
     e.typeReason = r.reason;
@@ -59,4 +63,4 @@ for (const e of graph.edges) byType[e.relationshipType] = (byType[e.relationship
 
 console.log(`\n${changed} reclassified`);
 console.log("edges by type:", byType);
-console.log("spend:", costEstimate());
+console.log("llm usage:", stats());

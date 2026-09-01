@@ -92,6 +92,7 @@ it refused and why:
 | `materiality` | exposure < 5% of revenue | below this it is noise, not a dependency |
 | `liquidity` | median daily volume < $2M | **"unmoved" must not mean "untraded"** |
 | `priced_in` | \|z\| ≥ 1σ | the market already has it |
+| `shock_type` | this shock doesn't travel this edge | a real dependency, wrong channel |
 
 The liquidity gate is the one that matters most. Without it, "materially exposed
 and hasn't moved" systematically selects illiquid names — the fatal demo bug. In
@@ -118,7 +119,26 @@ Apple's App Store.** An iPhone recall is irrelevant to Duolingo. An App Store
 commission change is existential. Same edge, opposite answers — which is exactly
 why the enum exists.
 
-Types are assigned **once at ingest** by Grok, never re-decided at trade time.
+Types are assigned **once at ingest**, never re-decided at trade time. Live, on
+the real graph:
+
+```
+DUOL → AAPL   conduit_distribution   0.95
+              "Apple provides platform, takes commission, not ownership"
+JAKK → TGT    customer               0.99
+              "Target buys inventory, takes ownership"
+```
+
+The ownership test is what separates them: a retailer buying wholesale is a
+customer whose demand *is* your demand; a platform taking a commission is a
+conduit. Then, per event:
+
+```
+blocked   DUOL←AAPL   "Apple recalls iPhone 17 over battery defect"
+TRAVELS   DUOL←AAPL   "Apple cuts App Store commission to 15% under DMA ruling"
+blocked   DUOL←AAPL   "Apple reports record iPhone sales in China"
+TRAVELS   SMG←HD      "Home Depot cuts guidance on weak housing demand"
+```
 
 ---
 
@@ -137,8 +157,13 @@ npm run daemon                # the autonomous agent
 | Variable | Needed for | Where |
 |---|---|---|
 | `ALPACA_API_KEY_ID` / `ALPACA_API_SECRET_KEY` | prices, news, execution | [app.alpaca.markets](https://app.alpaca.markets) → select the **Paper** account (top-left) → **API Keys** → Generate |
-| `XAI_API_KEY` | Grok triage + edge adjudication | [x.ai/api](https://x.ai/api) |
+| `GROQ_API_KEY` **or** `XAI_API_KEY` | triage + edge adjudication | [console.groq.com](https://console.groq.com) or [x.ai/api](https://x.ai/api) |
 | `SEC_CONTACT` | EDGAR fair-access policy requires a contact address | any email you own |
+
+> **Groq and Grok are different companies.** Groq is an inference provider
+> serving open models (Llama, Qwen, gpt-oss) at `api.groq.com`; Grok is xAI's
+> own model at `api.x.ai`. Both are OpenAI-compatible, so Cascade supports
+> either — set whichever key you have and it detects the provider.
 
 Alpaca **paper** accounts need only an email — no brokerage application, no ID.
 MFA must be enabled before the dashboard shows API keys.
@@ -151,12 +176,19 @@ system reports which parts are unpowered rather than implying a judgement.
 Two stages, so cost is bounded by construction — the expensive model only ever
 sees events that survived the cheap one.
 
-| Stage | Default model | Runs on |
+| Stage | Model (Groq) | Runs on |
 |---|---|---|
-| Triage | `grok-4.1-fast` | every headline |
-| Adjudication | `grok-4.6` | each edge, once, at ingest |
+| Triage | `openai/gpt-oss-20b` | every headline |
+| Adjudication | `openai/gpt-oss-120b` | each edge once at ingest; each candidate on a live event |
 
-Override with `GROK_TRIAGE_MODEL` / `GROK_ADJUDICATOR_MODEL`.
+Models are **resolved against the provider's live `/models` list**, not
+hardcoded — IDs get retired, and a stale default fails on the first real call
+rather than at startup. Override with `TRIAGE_MODEL` / `ADJUDICATOR_MODEL`; a
+configured-but-unavailable model is reported, never silently swapped.
+
+Reasoning models sometimes emit their reasoning before the JSON, which Groq's
+strict mode rejects server-side. The client asks for a constrained schema first,
+retries free-form on failure, and extracts the object from whatever came back.
 
 ---
 
@@ -208,7 +240,8 @@ Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
 | `src/engine/cascade.mjs` | Propagation, the five gates, the refusal log |
 | `src/engine/execute.mjs` | Sizing by exposure × confidence; whole-share shorts |
 | `src/engine/triage.mjs` | Stage-one routing: Grok, or the deterministic classifier |
-| `src/llm/grok.mjs` | xAI client, both stages, with spend tracking |
+| `src/llm/client.mjs` | Provider-agnostic LLM (Groq or xAI), both stages, usage tracking |
+| `src/env.mjs` | Shared `.env` loader used by every entry point |
 
 ### Surfaces
 | File | Purpose |

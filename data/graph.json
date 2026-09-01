@@ -10,7 +10,7 @@
       "magnitudeOf": "CRUS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Apple Inc",
       "fiscalPeriodEnd": "2026-03-28",
       "accession": "0000772406-26-000018",
@@ -18,7 +18,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3674"
+      "fromSic": "3674",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Apple purchases CRUS products, taking ownership."
     },
     {
       "from": "DUOL",
@@ -26,8 +29,8 @@
       "magnitude": 0.616,
       "magnitudeOf": "DUOL",
       "reverseMagnitude": null,
-      "relationshipType": "customer",
-      "typeSource": "hint",
+      "relationshipType": "conduit_distribution",
+      "typeSource": "llm",
       "disclosedAs": "Apple",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001628280-26-012494",
@@ -35,7 +38,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "7372"
+      "fromSic": "7372",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Apple provides platform, takes commission, not ownership"
     },
     {
       "from": "QRVO",
@@ -44,7 +50,7 @@
       "magnitudeOf": "QRVO",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Apple",
       "fiscalPeriodEnd": "2026-03-28",
       "accession": "0001628280-26-032873",
@@ -52,7 +58,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3674"
+      "fromSic": "3674",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Apple purchases Qorvo chips, generating demand"
     },
     {
       "from": "DCH",
@@ -61,7 +70,7 @@
       "magnitudeOf": "DCH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "General Motors",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001062231-26-000020",
@@ -69,7 +78,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "GM purchases goods, taking ownership."
     },
     {
       "from": "MSN",
@@ -78,7 +90,7 @@
       "magnitudeOf": "MSN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2026-03-31",
       "accession": "0001437749-26-021828",
@@ -86,7 +98,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3651"
+      "fromSic": "3651",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.7,
+      "typeReason": "Amazon receives goods/services, not just a platform fee"
     },
     {
       "from": "SMG",
@@ -95,7 +110,7 @@
       "magnitudeOf": "SMG",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Home Depot",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0000825542-25-000022",
@@ -103,7 +118,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2870"
+      "fromSic": "2870",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Home Depot purchases SMG products for resale"
     },
     {
       "from": "NXPL",
@@ -112,7 +130,7 @@
       "magnitudeOf": "NXPL",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001437749-26-010668",
@@ -120,7 +138,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "4813"
+      "fromSic": "4813",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "Amazon purchases NXPL goods, generating demand"
     },
     {
       "from": "MSN",
@@ -129,7 +150,7 @@
       "magnitudeOf": "MSN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2025-03-31",
       "accession": "0001437749-26-021828",
@@ -137,7 +158,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3651"
+      "fromSic": "3651",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.97,
+      "typeReason": "Walmart purchases MSN services, indicating demand relationship"
     },
     {
       "from": "BGS",
@@ -146,7 +170,7 @@
       "magnitudeOf": "BGS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Wal Mart",
       "fiscalPeriodEnd": "2026-01-03",
       "accession": "0001104659-26-022961",
@@ -154,7 +178,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2000"
+      "fromSic": "2000",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart buys inventory wholesale as a retailer"
     },
     {
       "from": "CALM",
@@ -163,7 +190,7 @@
       "magnitudeOf": "CALM",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2026-05-12",
       "accession": "0001562762-26-000080",
@@ -171,7 +198,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "0200"
+      "fromSic": "0200",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases CALM's goods for resale"
     },
     {
       "from": "HBB",
@@ -180,7 +210,7 @@
       "magnitudeOf": "HBB",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Wal Mart",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001709164-26-000037",
@@ -188,7 +218,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3634"
+      "fromSic": "3634",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases HBB's goods, indicating demand relationship"
     },
     {
       "from": "STRT",
@@ -197,7 +230,7 @@
       "magnitudeOf": "STRT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "General Motors Company",
       "fiscalPeriodEnd": "2025-06-29",
       "accession": "0000950170-25-111218",
@@ -205,7 +238,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "GM purchases goods/services, generating demand for STRT"
     },
     {
       "from": "JAKK",
@@ -214,7 +250,7 @@
       "magnitudeOf": "JAKK",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Target",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001185185-26-000723",
@@ -222,7 +258,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3944"
+      "fromSic": "3944",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Target purchases JAKK's goods, representing demand"
     },
     {
       "from": "JAKK",
@@ -231,7 +270,7 @@
       "magnitudeOf": "JAKK",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Wal Mart",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001185185-26-000723",
@@ -239,7 +278,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3944"
+      "fromSic": "3944",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Walmart purchases goods for resale"
     },
     {
       "from": "STRT",
@@ -248,7 +290,7 @@
       "magnitudeOf": "STRT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Ford Motor Company",
       "fiscalPeriodEnd": "2025-06-29",
       "accession": "0000950170-25-111218",
@@ -256,7 +298,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Ford purchases STRT goods, generating demand"
     },
     {
       "from": "GIS",
@@ -265,7 +310,7 @@
       "magnitudeOf": "GIS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2026-05-31",
       "accession": "0001628280-26-046466",
@@ -273,7 +318,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2040"
+      "fromSic": "2040",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Walmart purchases GIS products for resale"
     },
     {
       "from": "LEA",
@@ -282,7 +330,7 @@
       "magnitudeOf": "LEA",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "General Motors",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000842162-26-000011",
@@ -290,7 +338,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.97,
+      "typeReason": "GM purchases products from LEA, representing significant revenue share"
     },
     {
       "from": "KHC",
@@ -299,7 +350,7 @@
       "magnitudeOf": "KHC",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart Inc",
       "fiscalPeriodEnd": "2024-12-28",
       "accession": "0001637459-26-000009",
@@ -307,7 +358,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2030"
+      "fromSic": "2030",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Walmart purchases Kraft Heinz goods for resale"
     },
     {
       "from": "PBH",
@@ -316,7 +370,7 @@
       "magnitudeOf": "PBH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2026-03-31",
       "accession": "0001295947-26-000016",
@@ -324,7 +378,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2834"
+      "fromSic": "2834",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Walmart buys inventory to resell"
     },
     {
       "from": "MRTN",
@@ -333,7 +390,7 @@
       "magnitudeOf": "MRTN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001437749-26-005971",
@@ -341,7 +398,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "4213"
+      "fromSic": "4213",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart buys inventory wholesale"
     },
     {
       "from": "KOSS",
@@ -350,7 +410,7 @@
       "magnitudeOf": "KOSS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2025-06-30",
       "accession": "0000056701-25-000044",
@@ -358,7 +418,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3651"
+      "fromSic": "3651",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases KOSS products for resale"
     },
     {
       "from": "HBB",
@@ -367,7 +430,7 @@
       "magnitudeOf": "HBB",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001709164-26-000037",
@@ -375,7 +438,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3634"
+      "fromSic": "3634",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases HBB goods, generating demand"
     },
     {
       "from": "ATMU",
@@ -384,7 +450,7 @@
       "magnitudeOf": "ATMU",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Cummins",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001921963-26-000015",
@@ -392,7 +458,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.7,
+      "typeReason": "Cummins likely purchases goods/services from ATMU"
     },
     {
       "from": "ALSN",
@@ -401,7 +470,7 @@
       "magnitudeOf": "ALSN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Daimler Ag",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001193125-26-065627",
@@ -409,7 +478,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": false,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Daimler purchases ALSN products, representing significant revenue share"
     },
     {
       "from": "GNTX",
@@ -418,7 +490,7 @@
       "magnitudeOf": "GNTX",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Toyota Motor Company",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000355811-26-000010",
@@ -426,7 +498,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Toyota purchases Gentex products"
     },
     {
       "from": "LCII",
@@ -435,7 +510,7 @@
       "magnitudeOf": "LCII",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Berkshire Hathaway Inc",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000763744-26-000011",
@@ -443,7 +518,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "Berkshire receives goods/services, generating revenue"
     },
     {
       "from": "PHIN",
@@ -452,7 +530,7 @@
       "magnitudeOf": "PHIN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "General Motors",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001968915-26-000023",
@@ -460,7 +538,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.97,
+      "typeReason": "PHIN derives revenue by selling goods to GM, a buyer."
     },
     {
       "from": "EPC",
@@ -469,7 +550,7 @@
       "magnitudeOf": "EPC",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Wal Mart",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0001628280-25-052765",
@@ -477,7 +558,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2844"
+      "fromSic": "2844",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases EPC goods for resale"
     },
     {
       "from": "LCUT",
@@ -486,7 +570,7 @@
       "magnitudeOf": "LCUT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart Inc.",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000874396-26-000008",
@@ -494,7 +578,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3420"
+      "fromSic": "3420",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases goods for resale, indicating demand transmission"
     },
     {
       "from": "NWL",
@@ -503,7 +590,7 @@
       "magnitudeOf": "NWL",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000814453-26-000008",
@@ -511,7 +598,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3089"
+      "fromSic": "3089",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases NWL goods, takes ownership"
     },
     {
       "from": "CRWS",
@@ -520,7 +610,7 @@
       "magnitudeOf": "CRWS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazoncom Inc",
       "fiscalPeriodEnd": "2026-03-29",
       "accession": "0001437749-26-021496",
@@ -528,7 +618,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2211"
+      "fromSic": "2211",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "Amazon purchases CRWS goods, generating demand"
     },
     {
       "from": "JELD",
@@ -537,7 +630,7 @@
       "magnitudeOf": "JELD",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "The Home Depot",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001674335-26-000043",
@@ -545,7 +638,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2430"
+      "fromSic": "2430",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases JELD products for resale"
     },
     {
       "from": "UFPI",
@@ -554,7 +650,7 @@
       "magnitudeOf": "UFPI",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Home Depot",
       "fiscalPeriodEnd": "2025-12-27",
       "accession": "0001104659-26-019567",
@@ -562,7 +658,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2421"
+      "fromSic": "2421",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases inventory for resale"
     },
     {
       "from": "ATMU",
@@ -571,7 +670,7 @@
       "magnitudeOf": "ATMU",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "PACCAR",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001921963-26-000015",
@@ -579,7 +678,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.8,
+      "typeReason": "PACCAR purchases goods, representing significant revenue share"
     },
     {
       "from": "THRM",
@@ -588,7 +690,7 @@
       "magnitudeOf": "THRM",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Lear Corporation",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001193125-26-059602",
@@ -596,7 +698,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.97,
+      "typeReason": "Lear purchases goods from THRM, indicating demand relationship"
     },
     {
       "from": "HRL",
@@ -605,7 +710,7 @@
       "magnitudeOf": "HRL",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart Inc",
       "fiscalPeriodEnd": "2025-10-26",
       "accession": "0000048465-25-000059",
@@ -613,7 +718,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2011"
+      "fromSic": "2011",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases HRL's goods for resale"
     },
     {
       "from": "SFD",
@@ -622,7 +730,7 @@
       "magnitudeOf": "SFD",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2025-12-28",
       "accession": "0000091388-26-000014",
@@ -630,7 +738,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2011"
+      "fromSic": "2011",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases SFD's goods for resale"
     },
     {
       "from": "PBH",
@@ -639,7 +750,7 @@
       "magnitudeOf": "PBH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2026-03-31",
       "accession": "0001295947-26-000016",
@@ -647,7 +758,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2834"
+      "fromSic": "2834",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases PBH goods, representing demand"
     },
     {
       "from": "SWK",
@@ -656,7 +770,7 @@
       "magnitudeOf": "SWK",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Home Depot",
       "fiscalPeriodEnd": "2026-01-03",
       "accession": "0000093556-26-000009",
@@ -664,7 +778,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3420"
+      "fromSic": "3420",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases SWK products for resale"
     },
     {
       "from": "DCH",
@@ -673,7 +790,7 @@
       "magnitudeOf": "DCH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Ford",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001062231-26-000020",
@@ -681,7 +798,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Ford purchases goods, taking ownership, generating demand"
     },
     {
       "from": "LCII",
@@ -690,7 +810,7 @@
       "magnitudeOf": "LCII",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Thor Industries Inc",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000763744-26-000011",
@@ -698,7 +818,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Thor Industries purchases LCII products, indicating demand relationship"
     },
     {
       "from": "SRI",
@@ -707,7 +830,7 @@
       "magnitudeOf": "SRI",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "PACCAR",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001043337-26-000023",
@@ -715,7 +838,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "SRI sells goods/services; PACCAR is buyer"
     },
     {
       "from": "DCH",
@@ -724,7 +850,7 @@
       "magnitudeOf": "DCH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Stellantis",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001062231-26-000020",
@@ -732,7 +858,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "Stellantis purchases goods/services, accounting for 13% revenue"
     },
     {
       "from": "PRGO",
@@ -741,7 +870,7 @@
       "magnitudeOf": "PRGO",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001585364-26-000009",
@@ -749,7 +878,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2834"
+      "fromSic": "2834",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases PRGO products for resale"
     },
     {
       "from": "LCUT",
@@ -758,7 +890,7 @@
       "magnitudeOf": "LCUT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazoncom Inc",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000874396-26-000008",
@@ -766,7 +898,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3420"
+      "fromSic": "3420",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases LCUT goods, generating revenue"
     },
     {
       "from": "BWA",
@@ -775,7 +910,7 @@
       "magnitudeOf": "BWA",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Ford",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000908255-26-000011",
@@ -783,7 +918,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.97,
+      "typeReason": "Ford purchases BWA goods, representing demand"
     },
     {
       "from": "LEA",
@@ -792,7 +930,7 @@
       "magnitudeOf": "LEA",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Ford Motor Company",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000842162-26-000011",
@@ -800,7 +938,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Ford purchases LEA's automotive products, generating demand"
     },
     {
       "from": "CL",
@@ -809,7 +950,7 @@
       "magnitudeOf": "CL",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart Inc",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000021665-26-000006",
@@ -817,7 +958,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2844"
+      "fromSic": "2844",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Walmart purchases CL products for resale"
     },
     {
       "from": "HAS",
@@ -826,7 +970,7 @@
       "magnitudeOf": "HAS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon.com Inc.",
       "fiscalPeriodEnd": "2025-12-28",
       "accession": "0000046080-26-000011",
@@ -834,7 +978,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3944"
+      "fromSic": "3944",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases goods/services, generating demand for HAS"
     },
     {
       "from": "FBIN",
@@ -843,7 +990,7 @@
       "magnitudeOf": "FBIN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Home Depot",
       "fiscalPeriodEnd": "2025-12-27",
       "accession": "0001193125-26-063960",
@@ -851,7 +998,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2430"
+      "fromSic": "2430",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases inventory for resale"
     },
     {
       "from": "LCUT",
@@ -860,7 +1010,7 @@
       "magnitudeOf": "LCUT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Costco Wholesale Corporation",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000874396-26-000008",
@@ -868,7 +1018,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3420"
+      "fromSic": "3420",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Costco purchases goods, generating demand for LCUT"
     },
     {
       "from": "ADNT",
@@ -877,7 +1030,7 @@
       "magnitudeOf": "ADNT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Ford Motor Company",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0001670541-25-000152",
@@ -885,7 +1038,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Ford purchases ADNT products, generating revenue"
     },
     {
       "from": "ALSN",
@@ -894,7 +1050,7 @@
       "magnitudeOf": "ALSN",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "PACCAR Inc",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001193125-26-065627",
@@ -902,7 +1058,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "PACCAR buys ALSN's goods"
     },
     {
       "from": "THRM",
@@ -911,7 +1070,7 @@
       "magnitudeOf": "THRM",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Adient",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001193125-26-059602",
@@ -919,7 +1078,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.9,
+      "typeReason": "Adient purchases goods/services from THRM"
     },
     {
       "from": "CELH",
@@ -928,7 +1090,7 @@
       "magnitudeOf": "CELH",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Costco",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001341766-26-000024",
@@ -936,7 +1098,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2086"
+      "fromSic": "2086",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Costco purchases goods for resale, taking ownership"
     },
     {
       "from": "UPS",
@@ -945,7 +1110,7 @@
       "magnitudeOf": "UPS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon.com Inc.",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001628280-26-008432",
@@ -953,7 +1118,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "4210"
+      "fromSic": "4210",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "UPS provides logistics services; Amazon pays for shipping"
     },
     {
       "from": "JAKK",
@@ -962,7 +1130,7 @@
       "magnitudeOf": "JAKK",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Amazon",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001185185-26-000723",
@@ -970,7 +1138,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3944"
+      "fromSic": "3944",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Amazon purchases JAKK's goods, 10% revenue share"
     },
     {
       "from": "ADNT",
@@ -979,7 +1150,7 @@
       "magnitudeOf": "ADNT",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Stellantis N.V.",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0001670541-25-000152",
@@ -987,7 +1158,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Stellantis purchases ADNT's seating products"
     },
     {
       "from": "ALV",
@@ -996,7 +1170,7 @@
       "magnitudeOf": "ALV",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Stellantis",
       "fiscalPeriodEnd": "2023-12-31",
       "accession": "0001193125-26-058162",
@@ -1004,7 +1178,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Stellantis purchases goods/services, indicating demand relationship"
     },
     {
       "from": "GNTX",
@@ -1013,7 +1190,7 @@
       "magnitudeOf": "GNTX",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "General Motors Company",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000355811-26-000010",
@@ -1021,7 +1198,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "GM purchases Gentex products as a supplier"
     },
     {
       "from": "EPC",
@@ -1030,7 +1210,7 @@
       "magnitudeOf": "EPC",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Target",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0001628280-25-052765",
@@ -1038,7 +1218,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "2844"
+      "fromSic": "2844",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Target purchases EPC goods for resale"
     },
     {
       "from": "HAS",
@@ -1047,7 +1230,7 @@
       "magnitudeOf": "HAS",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Walmart Inc.",
       "fiscalPeriodEnd": "2025-12-28",
       "accession": "0000046080-26-000011",
@@ -1055,7 +1238,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3944"
+      "fromSic": "3944",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.95,
+      "typeReason": "Walmart purchases goods, indicating demand transmission"
     },
     {
       "from": "GFF",
@@ -1064,7 +1250,7 @@
       "magnitudeOf": "GFF",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Home Depot",
       "fiscalPeriodEnd": "2025-09-30",
       "accession": "0001628280-25-053242",
@@ -1072,7 +1258,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3442"
+      "fromSic": "3442",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases goods for resale, indicating demand relationship"
     },
     {
       "from": "LEA",
@@ -1081,7 +1270,7 @@
       "magnitudeOf": "LEA",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "Stellantis",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0000842162-26-000011",
@@ -1089,7 +1278,10 @@
       "origin": "sector-mine",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "3714"
+      "fromSic": "3714",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Lear sells seats to Stellantis as buyer"
     },
     {
       "from": "UE",
@@ -1098,7 +1290,7 @@
       "magnitudeOf": "UE",
       "reverseMagnitude": null,
       "relationshipType": "customer",
-      "typeSource": "hint",
+      "typeSource": "llm",
       "disclosedAs": "The Home Depot",
       "fiscalPeriodEnd": "2025-12-31",
       "accession": "0001611547-26-000022",
@@ -1106,7 +1298,10 @@
       "origin": "hub-first",
       "fromPositionable": true,
       "toPositionable": true,
-      "fromSic": "6500"
+      "fromSic": "6500",
+      "typeModel": "openai/gpt-oss-120b",
+      "typeConfidence": 0.99,
+      "typeReason": "Home Depot purchases goods for resale, taking ownership."
     }
   ],
   "nodes": [
@@ -1650,5 +1845,6 @@
       "inDegree": 0,
       "outDegree": 2
     }
-  ]
+  ],
+  "adjudicatedAt": "2026-09-01T15:31:06.422Z"
 }

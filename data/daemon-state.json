@@ -1,12 +1,23 @@
 {
-  "bootedAt": "2026-09-01T14:59:11.137Z",
-  "uptimeSeconds": 1208,
-  "cycles": 5,
+  "bootedAt": "2026-09-01T15:31:56.364Z",
+  "uptimeSeconds": 58,
+  "cycles": 1,
   "pollMs": 300000,
   "autoTrade": false,
-  "lastCycleAt": "2026-09-01T15:19:19.517Z",
+  "llm": {
+    "powered": true,
+    "provider": "groq",
+    "triageModel": "openai/gpt-oss-20b",
+    "adjudicatorModel": "openai/gpt-oss-120b",
+    "modelSource": {
+      "triage": "default",
+      "adjudicator": "default"
+    },
+    "available": 14
+  },
+  "lastCycleAt": "2026-09-01T15:32:54.689Z",
   "lastScan": {
-    "headlines": 12,
-    "material": 0
+    "headlines": 13,
+    "material": 2
   }
 }

@@ -4,23 +4,7 @@
 // series are three different problems with three different fixes, and a stack
 // trace tells you none of them.
 
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const ROOT = fileURLToPath(new URL("../../", import.meta.url));
-
-/** Minimal .env reader — no dependency, and it must not clobber real env vars. */
-export function loadEnv() {
-  const file = path.join(ROOT, ".env");
-  if (!fs.existsSync(file)) return;
-  for (const line of fs.readFileSync(file, "utf8").split("\n")) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (!m) continue;
-    const [, k, v] = m;
-    if (!process.env[k] && v !== "") process.env[k] = v.replace(/^["']|["']$/g, "");
-  }
-}
+import { loadEnv } from "../env.mjs";
 loadEnv();
 
 export const DATA_URL = process.env.ALPACA_DATA_URL || "https://data.alpaca.markets";

@@ -395,7 +395,7 @@ function detail(c, hub) {
         of revenue from ${hub}${c.z != null ? `, and has moved <b>${c.z.toFixed(2)}σ</b> beyond what the market and sector explain` : ""}.
         ${c.reason ? `<br><span style="color:var(--faint)">${c.reason}</span>` : ""}</div>
       <div class="kv"><span>exposure</span><span>${pct(c.exposure)} of ${c.ticker} revenue</span></div>
-      <div class="kv"><span>relationship</span><span>${c.relationshipType ?? "—"}${c.typeSource === "grok" ? "" : " (hint)"}</span></div>
+      <div class="kv"><span>relationship</span><span>${c.relationshipType ?? "—"}${c.typeSource === "llm" ? "" : " (hint)"}</span></div>
       ${c.z != null ? `<div class="kv"><span>residual</span><span>${c.z.toFixed(2)}σ over ${c.periods ?? "?"}d</span></div>` : ""}
       ${c.betaMarket != null ? `<div class="kv"><span>β market / sector</span><span>${c.betaMarket.toFixed(2)} / ${(c.betaSector ?? 0).toFixed(2)}</span></div>` : ""}
       ${c.dollarVolume != null ? `<div class="kv"><span>median volume</span><span>$${(c.dollarVolume / 1e6).toFixed(1)}M</span></div>` : ""}
