@@ -167,7 +167,7 @@ export function scoreDependent(edge, { bars, eventAt, direction, timeframe = "1D
  * `direction` is the sign the thesis predicts for dependents: -1 for bad news
  * at the hub, +1 for good.
  */
-export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "sip", headline = null, timeframe = null }) {
+export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "sip", headline = null, timeframe = null, withOptions = false }) {
   const edges = graph.edges.filter((e) => e.to === hub);
   if (!edges.length) {
     return { hub, eventAt, headline, error: `no edges into ${hub} in the graph`, considered: [], positions: [], refusals: [] };
@@ -190,6 +190,26 @@ export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "
   const considered = edges
     .map((e) => scoreDependent(e, { bars, eventAt, direction, timeframe: tf }))
     .sort((a, b) => (b.exposure ?? 0) - (a.exposure ?? 0));
+
+  // Attach the contract the agent would actually buy, so the UI shows the real
+  // instrument rather than implying a share trade.
+  if (withOptions) {
+    const { selectContract } = await import("../market/options.mjs");
+    const { expectedMove } = await import("./execute.mjs");
+    for (const c of considered.filter((x) => x.tradeable)) {
+      try {
+        const pick = await selectContract({
+          underlying: c.ticker, spot: c.spot, direction,
+          expectedMove: expectedMove({ ...c, direction }),
+        });
+        c.option = pick.ok
+          ? { ...pick.contract, expectedMovePct: expectedMove({ ...c, direction }) }
+          : { unavailable: true, gate: pick.gate, reason: pick.reason };
+      } catch (err) {
+        c.option = { unavailable: true, gate: "option_data", reason: err.message.slice(0, 120) };
+      }
+    }
+  }
 
   return {
     hub,

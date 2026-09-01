@@ -180,11 +180,16 @@ TRAVELS   SMG←HD      "Home Depot cuts guidance on weak housing demand"
 
 ```bash
 npm install
-cp .env.example .env          # then fill in the keys below
-npm test                      # 24 checks, no keys needed
-npm start                     # web UI on http://localhost:8787
-npm run daemon                # the autonomous agent
+curl -LsSf https://astral.sh/uv/install.sh | sh   # uvx, for Alpaca's MCP server
+cp .env.example .env                              # then fill in the keys below
+npm test                                          # 24 checks, no keys needed
+npm start                                         # web UI on http://localhost:8787
+AUTO_TRADE=true RUN_DAEMON=true npm start         # UI + agent, trading live
 ```
+
+`uv` is needed because execution routes through **Alpaca's official MCP server**,
+which runs via `uvx alpaca-mcp-server`. Without it the agent falls back to the
+REST client and records that it did — it never silently drops an order.
 
 ### Keys
 
@@ -247,7 +252,9 @@ npm run telegram:test                                     # verify the feed
 ```
 
 Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
-`POLL_MS` for cadence, `MAX_CASCADES` per cycle.
+`RUN_DAEMON=true` to host the agent inside the web process, `POLL_MS` for
+cadence, `MAX_CASCADES` per cycle, `EXECUTION_VIA=rest` to bypass Alpaca's MCP
+server.
 
 ---
 

@@ -72,3 +72,11 @@
 {"at":"2026-09-01T21:36:18.183Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-01T21:41:18.421Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-01T21:46:18.392Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T21:48:28.230Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
+{"at":"2026-09-01T21:48:30.054Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T21:53:35.315Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T21:58:35.986Z","kind":"scan","summary":"7 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T22:03:35.228Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T22:08:34.992Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T22:10:21.204Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
+{"at":"2026-09-01T22:10:22.532Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}

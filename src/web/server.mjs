@@ -91,7 +91,7 @@ const server = http.createServer(async (req, res) => {
         cash: Number(a.cash),
         marketOpen: k.is_open,
         positions: p.map((x) => ({
-          symbol: x.symbol, qty: Number(x.qty), side: x.side,
+          symbol: x.symbol, qty: Number(x.qty), side: x.side, assetClass: x.asset_class,
           entry: Number(x.avg_entry_price), value: Number(x.market_value),
           pl: Number(x.unrealized_pl), plpc: Number(x.unrealized_plpc),
         })),
@@ -124,7 +124,7 @@ const server = http.createServer(async (req, res) => {
           considered: structuralScreen(graph, hub),
         });
       }
-      const result = await runCascade({ graph, hub, eventAt, direction });
+      const result = await runCascade({ graph, hub, eventAt, direction, withOptions: true });
       return send(res, 200, { ...result, live: true });
     }
 

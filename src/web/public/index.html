@@ -249,13 +249,22 @@ async function refreshPortfolio(health) {
     <span class="stat">build<b>${h.commit}</b></span>
     <span class="stat">reasoning<b class="${h.llm?.powered ? "" : "warnv"}">${h.llm?.powered ? h.llm.adjudicatorModel : "heuristic"}</b></span>`;
 
+  // OCC symbols are 15+ characters; show the underlying plus the contract shape.
+  const label = (x) => {
+    if (x.assetClass !== "us_option") return { tk: x.symbol, sub: "" };
+    const m = x.symbol.match(/^([A-Z]+)(\d{6})([CP])(\d{8})$/);
+    if (!m) return { tk: x.symbol.slice(0, 6), sub: "option" };
+    return { tk: m[1], sub: `${m[3] === "P" ? "put" : "call"} ${Number(m[4]) / 1000} ${m[2].slice(2, 4)}/${m[2].slice(4)}` };
+  };
   $("positions").innerHTML = p.positions?.length
-    ? p.positions.map((x) => `
-        <div class="pos-row">
-          <span class="tk">${x.symbol}</span>
-          <span class="q">${x.qty}</span>
+    ? p.positions.map((x) => {
+        const l = label(x);
+        return `<div class="pos-row">
+          <span class="tk">${l.tk}</span>
+          <span class="q">${l.sub || x.qty}</span>
           <span class="pl ${x.pl >= 0 ? "pos" : "neg"}">${x.pl >= 0 ? "+" : ""}${x.pl.toFixed(2)}</span>
-        </div>`).join("")
+        </div>`;
+      }).join("")
     : `<p class="empty">none</p>`;
 }
 
@@ -399,6 +408,7 @@ function detail(c, hub) {
       ${c.z != null ? `<div class="kv"><span>residual</span><span>${c.z.toFixed(2)}σ over ${c.periods ?? "?"}d</span></div>` : ""}
       ${c.betaMarket != null ? `<div class="kv"><span>β market / sector</span><span>${c.betaMarket.toFixed(2)} / ${(c.betaSector ?? 0).toFixed(2)}</span></div>` : ""}
       ${c.dollarVolume != null ? `<div class="kv"><span>median volume</span><span>$${(c.dollarVolume / 1e6).toFixed(1)}M</span></div>` : ""}
+      ${optionRow(c)}
       <div class="kv"><span>fiscal period</span><span>${c.fiscalPeriodEnd ?? "—"}</span></div>
       <div class="cite">Filer's own words: “${c.disclosedAs ?? "—"}”
         <a href="${c.sourceUrl ?? "#"}" target="_blank" rel="noopener">${c.accession ?? "no citation"}</a></div>

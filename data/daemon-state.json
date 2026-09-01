@@ -1,9 +1,9 @@
 {
-  "bootedAt": "2026-09-01T20:10:42.245Z",
-  "uptimeSeconds": 5739,
-  "cycles": 14,
+  "bootedAt": "2026-09-01T22:10:20.459Z",
+  "uptimeSeconds": 5,
+  "cycles": 1,
   "pollMs": 300000,
-  "autoTrade": false,
+  "autoTrade": true,
   "llm": {
     "powered": true,
     "provider": "groq",
@@ -15,7 +15,7 @@
     },
     "available": 14
   },
-  "lastCycleAt": "2026-09-01T21:46:21.039Z",
+  "lastCycleAt": "2026-09-01T22:10:25.229Z",
   "lastScan": {
     "headlines": 6,
     "material": 0
