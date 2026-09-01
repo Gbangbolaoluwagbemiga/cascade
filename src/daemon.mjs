@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 import { news, account, positions as openPositions, clock } from "./market/alpaca.mjs";
 import { runCascade } from "./engine/cascade.mjs";
 import { sizePositions, execute } from "./engine/execute.mjs";
-import { triage, adjudicate } from "./engine/triage.mjs";
+import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { exitVerdict } from "./market/residual.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -47,6 +47,7 @@ function writeState(extra = {}) {
     cycles,
     pollMs: POLL_MS,
     autoTrade: AUTO_TRADE,
+    llm: adj,
     lastCycleAt: new Date().toISOString(),
     ...extra,
   });
@@ -107,15 +108,16 @@ async function cycle() {
     seen.add(n.id);
     const hub = (n.symbols || []).find((s) => hubs.includes(s));
     if (!hub) continue;
-    const t = triage(n.headline, { hub, symbols: n.symbols });
+    const t = await triageEvent(n.headline, { hub, symbols: n.symbols, summary: n.summary });
     if (!t.material) continue;
-    candidates.push({ ...n, hub, direction: t.direction, triage: t });
+    candidates.push({ ...n, hub, direction: t.direction ?? -1, triage: t });
   }
   save(SEEN, [...seen].slice(-4000));
 
+  const engine = candidates[0]?.triage?.engine ?? triageEngine;
   journal({
     kind: "scan",
-    summary: `${items.length} headlines · ${fresh.length} new · ${candidates.length} material · market ${k.is_open ? "open" : "closed"}`,
+    summary: `${items.length} headlines · ${fresh.length} new · ${candidates.length} material (${engine}) · market ${k.is_open ? "open" : "closed"}`,
   });
 
   await reviewExits(graph);
@@ -129,7 +131,8 @@ async function cycle() {
 
   for (const c of candidates.slice(0, MAX_CASCADES_PER_CYCLE)) {
     journal({ kind: "event", hub: c.hub, headline: c.headline, direction: c.direction, url: c.url,
-      summary: `${c.hub} ${c.direction < 0 ? "▼" : "▲"} ${c.headline.slice(0, 78)}` });
+      triage: c.triage,
+      summary: `${c.hub} ${c.direction < 0 ? "▼" : "▲"} ${c.headline.slice(0, 72)} — ${c.triage.engine}: ${c.triage.reason}` });
 
     let r;
     try {
@@ -160,12 +163,14 @@ async function cycle() {
 // ── boot ─────────────────────────────────────────────────────────────────────
 fs.mkdirSync(DATA, { recursive: true });
 const adj = await adjudicate();
+const triageEngine = adj.powered ? "grok" : "heuristic";
 
 console.log(`\nCascade daemon`);
 console.log(`  poll        every ${POLL_MS / 1000}s`);
 console.log(`  trading     ${AUTO_TRADE ? "LIVE (paper account)" : "dry run — set AUTO_TRADE=true to submit"}`);
-console.log(`  adjudicator ${adj.powered ? "on" : "OFF — " + adj.reason}`);
-journal({ kind: "boot", summary: `daemon up · autoTrade=${AUTO_TRADE} · poll=${POLL_MS / 1000}s` });
+console.log(`  triage      ${adj.powered ? adj.triageModel : "heuristic classifier (no XAI_API_KEY)"}`);
+console.log(`  adjudicator ${adj.powered ? adj.adjudicatorModel : "OFF — " + adj.reason}`);
+journal({ kind: "boot", summary: `daemon up · triage=${triageEngine} · autoTrade=${AUTO_TRADE} · poll=${POLL_MS / 1000}s` });
 
 await cycle().catch((e) => journal({ kind: "error", summary: e.message }));
 setInterval(() => cycle().catch((e) => journal({ kind: "error", summary: e.message })), POLL_MS);

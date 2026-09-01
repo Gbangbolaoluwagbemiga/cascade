@@ -7,6 +7,7 @@ import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { structuralScreen, runCascade, GATES } from "../engine/cascade.mjs";
 import { credentials, account, positions, news, clock } from "../market/alpaca.mjs";
+import { adjudicate } from "../engine/triage.mjs";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const PUBLIC = fileURLToPath(new URL("./public/", import.meta.url));
@@ -22,7 +23,7 @@ try {
 
 const loadGraph = () => JSON.parse(fs.readFileSync(path.join(ROOT, "data/graph.json"), "utf8"));
 
-const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".json": "application/json", ".svg": "image/svg+xml" };
+const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon" };
 
 const send = (res, code, body, type = "application/json") => {
   res.writeHead(code, { "Content-Type": type, "Cache-Control": "no-store" });
@@ -40,9 +41,12 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === "/healthz") {
       let graph = null;
       try { const g = loadGraph(); graph = { edges: g.edgeCount, nodes: g.nodeCount, builtAt: g.builtAt }; } catch { /* absent */ }
+      let llm = { powered: false, reason: "not checked" };
+      try { llm = await adjudicate(); } catch (err) { llm = { powered: false, reason: err.message }; }
       return send(res, 200, {
         status: "ok",
         commit: COMMIT,
+        llm,
         bootedAt: BOOTED_AT.toISOString(),
         uptimeSeconds: Math.round((Date.now() - BOOTED_AT) / 1000),
         graph,

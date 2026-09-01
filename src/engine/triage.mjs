@@ -64,17 +64,44 @@ export function triage(headline, { hub, symbols = [] } = {}) {
 }
 
 /**
- * Stage two seam: assign relationship_type and judge whether this specific
- * shock travels down this specific edge. An App Store fee change reaches
- * Duolingo; an iPhone recall does not. That judgement needs a model.
+ * Stage one, routed. Grok when a key is present, the deterministic classifier
+ * otherwise — and the caller is always told which one answered, because
+ * "material" from a keyword match and "material" from a model are different
+ * claims and should not be reported as the same thing.
+ */
+export async function triageEvent(headline, ctx = {}) {
+  const grok = await import("../llm/grok.mjs");
+  if (grok.credentials().ok) {
+    try {
+      const r = await grok.triage(headline, ctx);
+      return { ...r, engine: "grok" };
+    } catch (err) {
+      // A model failure must not silently become a heuristic verdict.
+      const fallback = triage(headline, ctx);
+      return { ...fallback, engine: "heuristic-fallback", engineError: err.message };
+    }
+  }
+  return { ...triage(headline, ctx), engine: "heuristic" };
+}
+
+/**
+ * Stage two: assign relationship_type and judge whether this specific shock
+ * travels down this specific edge. An App Store fee change reaches Duolingo;
+ * an iPhone recall does not. That judgement needs a model.
  */
 export async function adjudicate() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return {
-      powered: false,
-      reason: "no ANTHROPIC_API_KEY — edge-type adjudication unavailable; " +
-        "relationship types remain heuristic hints and shock-compatibility is not checked",
-    };
+  const grok = await import("../llm/grok.mjs");
+  const cred = grok.credentials();
+  if (!cred.ok) {
+    return { powered: false, provider: "grok", reason: cred.reason +
+      " — relationship types stay heuristic hints and shock-compatibility is not checked" };
   }
-  return { powered: false, reason: "adjudication client not yet implemented" };
+  const models = await grok.listModels();
+  if (!models.ok) return { powered: false, provider: "grok", reason: models.reason };
+  return {
+    powered: true, provider: "grok",
+    triageModel: grok.TRIAGE_MODEL,
+    adjudicatorModel: grok.ADJUDICATOR_MODEL,
+    available: models.models.length,
+  };
 }

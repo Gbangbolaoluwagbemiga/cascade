@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="13" fill="#06080B"/>
+  <!-- rings: the cascade propagating outward -->
+  <circle cx="32" cy="32" r="12" fill="none" stroke="#1B2530" stroke-width="1.4"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#1B2530" stroke-width="1.4"/>
+  <!-- epicentre: already priced -->
+  <circle cx="32" cy="32" r="7" fill="#F26B52" opacity=".22"/>
+  <circle cx="32" cy="32" r="4" fill="#F26B52"/>
+  <!-- unpriced nodes, three hops out -->
+  <circle cx="32" cy="11" r="3.4" fill="#7FE3A8"/>
+  <circle cx="50" cy="42" r="3.4" fill="#7FE3A8"/>
+  <circle cx="14" cy="42" r="3.4" fill="#7FE3A8"/>
+  <!-- intermediate hops, dimmed -->
+  <circle cx="44" cy="21" r="2.1" fill="#5B7288"/>
+  <circle cx="20" cy="21" r="2.1" fill="#5B7288"/>
+  <circle cx="32" cy="53" r="2.1" fill="#5B7288"/>
+  <g stroke="#5B7288" stroke-width="1.1" opacity=".55">
+    <line x1="32" y1="32" x2="32" y2="11"/>
+    <line x1="32" y1="32" x2="50" y2="42"/>
+    <line x1="32" y1="32" x2="14" y2="42"/>
+  </g>
+</svg>

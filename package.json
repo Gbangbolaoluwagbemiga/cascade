@@ -17,6 +17,9 @@
     "build:graph": "node scripts/build-graph.mjs",
     "test": "node scripts/test-guards.mjs && node scripts/test-residual.mjs && node scripts/test-cascade.mjs",
     "cascade": "node scripts/cascade.mjs",
-    "trade": "node scripts/trade.mjs"
+    "trade": "node scripts/trade.mjs",
+    "adjudicate": "node scripts/adjudicate-graph.mjs",
+    "mine:hub": "node scripts/hub-mine.mjs",
+    "survey": "node scripts/survey.mjs"
   }
 }
