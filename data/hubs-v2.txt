@@ -1,0 +1,65 @@
+
+=== HUB-FIRST RESULTS ===
+
+Hub                 ticker    mentions  checked  in-degree
+Walmart             WMT            204      192         16
+Target              TGT            965      892          2
+Apple               AAPL           265      245          3
+Amazon              AMZN           495      462         11
+Home Depot          HD              68       62          7
+Costco              COST            58       56          2
+
+--- Walmart (WMT) — 16 named dependents ---
+  MSN     31.0% of revenue   FY 2025-03-31   as "Walmart"
+  BGS     31.0% of revenue   FY 2026-01-03   as "Wal Mart"
+  CALM    30.0% of revenue   FY 2026-05-12   as "Walmart"
+  HBB     29.0% of revenue   FY 2025-12-31   as "Wal Mart"
+  JAKK    26.1% of revenue   FY 2025-12-31   as "Wal Mart"
+  GIS     22.0% of revenue   FY 2026-05-31   as "Walmart"
+  KHC     21.0% of revenue   FY 2024-12-28   as "Walmart Inc"
+  PBH     20.0% of revenue   FY 2026-03-31   as "Walmart"
+  MRTN    20.0% of revenue   FY 2025-12-31   as "Walmart"
+  EPC     17.4% of revenue   FY 2025-09-30   as "Wal Mart"
+  LCUT    17.0% of revenue   FY 2025-12-31   as "Walmart Inc."
+  HRL     15.6% of revenue   FY 2025-10-26   as "Walmart Inc"
+  SFD     15.0% of revenue   FY 2025-12-28   as "Walmart"
+  PRGO    12.9% of revenue   FY 2025-12-31   as "Walmart"
+  CL      11.0% of revenue   FY 2025-12-31   as "Walmart Inc"
+  HAS      9.0% of revenue   FY 2025-12-28   as "Walmart Inc."
+
+--- Target (TGT) — 2 named dependents ---
+  JAKK    26.6% of revenue   FY 2025-12-31   as "Target"
+  EPC      9.2% of revenue   FY 2025-09-30   as "Target"
+
+--- Apple (AAPL) — 3 named dependents ---
+  CRUS    91.0% of revenue   FY 2026-03-28   as "Apple Inc"
+  DUOL    61.6% of revenue   FY 2025-12-31   as "Apple"
+  QRVO    50.0% of revenue   FY 2026-03-28   as "Apple"
+
+--- Amazon (AMZN) — 11 named dependents ---
+  MSN     42.0% of revenue   FY 2026-03-31   as "Amazon"
+  NXPL    31.1% of revenue   FY 2025-12-31   as "Amazon"
+  KOSS    19.0% of revenue   FY 2025-06-30   as "Amazon"
+  HBB     19.0% of revenue   FY 2025-12-31   as "Amazon"
+  NWL     17.0% of revenue   FY 2025-12-31   as "Amazon"
+  CRWS    17.0% of revenue   FY 2026-03-29   as "Amazoncom Inc"
+  PBH     15.0% of revenue   FY 2026-03-31   as "Amazon"
+  LCUT    12.0% of revenue   FY 2025-12-31   as "Amazoncom Inc"
+  HAS     11.0% of revenue   FY 2025-12-28   as "Amazon.com Inc."
+  UPS     10.6% of revenue   FY 2025-12-31   as "Amazon.com Inc."
+  JAKK    10.0% of revenue   FY 2025-12-31   as "Amazon"
+
+--- Home Depot (HD) — 7 named dependents ---
+  SMG     34.0% of revenue   FY 2025-09-30   as "Home Depot"
+  JELD    17.0% of revenue   FY 2025-12-31   as "The Home Depot"
+  UFPI    17.0% of revenue   FY 2025-12-27   as "Home Depot"
+  SWK     15.0% of revenue   FY 2026-01-03   as "Home Depot"
+  FBIN    11.0% of revenue   FY 2025-12-27   as "Home Depot"
+  GFF      9.0% of revenue   FY 2025-09-30   as "Home Depot"
+  UE       5.6% of revenue   FY 2025-12-31   as "The Home Depot"
+
+--- Costco (COST) — 2 named dependents ---
+  LCUT    11.0% of revenue   FY 2025-12-31   as "Costco Wholesale Corporation"
+  CELH    10.8% of revenue   FY 2025-12-31   as "Costco"
+
+written -> data/hubs.json

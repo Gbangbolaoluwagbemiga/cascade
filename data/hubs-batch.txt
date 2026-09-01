@@ -1,0 +1,38 @@
+
+=== HUB-FIRST RESULTS ===
+
+Hub                 ticker    mentions  checked  in-degree
+Amazon              AMZN           123       39          3
+Costco              COST            91       83          2
+Target              TGT            168      143          0
+Home Depot          HD             115       92          7
+Apple               AAPL           112       78          1
+Boeing              BA             120      101          3
+
+--- Amazon (AMZN) — 3 named dependents ---
+  MSN     42.0% of revenue   FY 2026-03-31   as "Amazon"
+  NXPL    31.1% of revenue   FY 2025-12-31   as "Amazon"
+  KOSS    19.0% of revenue   FY 2025-06-30   as "Amazon"
+
+--- Costco (COST) — 2 named dependents ---
+  LCUT    11.0% of revenue   FY 2025-12-31   as "Costco Wholesale Corporation"
+  CELH    10.8% of revenue   FY 2025-12-31   as "Costco"
+
+--- Home Depot (HD) — 7 named dependents ---
+  SMG     34.0% of revenue   FY 2025-09-30   as "Home Depot"
+  JELD    17.0% of revenue   FY 2025-12-31   as "The Home Depot"
+  UFPI    17.0% of revenue   FY 2025-12-27   as "Home Depot"
+  SWK     15.0% of revenue   FY 2026-01-03   as "Home Depot"
+  FBIN    11.0% of revenue   FY 2025-12-27   as "Home Depot"
+  GFF      9.0% of revenue   FY 2025-09-30   as "Home Depot"
+  UE       5.6% of revenue   FY 2025-12-31   as "The Home Depot"
+
+--- Apple (AAPL) — 1 named dependents ---
+  DUOL    61.6% of revenue   FY 2025-12-31   as "Apple"
+
+--- Boeing (BA) — 3 named dependents ---
+  DCO     13.3% of revenue   FY 2025-12-31   as "Boeing"
+  ATRO    10.4% of revenue   FY 2025-12-31   as "Boeing"
+  MOG-A   10.0% of revenue   FY 2025-09-27   as "Boeing"
+
+written -> data/hubs.json

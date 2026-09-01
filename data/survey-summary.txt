@@ -1,0 +1,39 @@
+
+
+=== SURVEY RESULTS ===
+
+Sector                                   n XBRL tagged  XBRL named   anon only    HTML n+q   med edges      med FY
+Semiconductors                          25         80%         20%         60%         24%           3        2025
+Semicap / industry machinery            15        100%         20%         80%         13%           1        2025
+Auto parts                              24         83%         63%         21%         42%           2        2025
+Aerospace parts                         12         75%         42%         33%         50%           2        2025
+Pharma preparations                     24         33%          8%         21%         21%           6        2025
+Lab / analytical instruments            24         58%         21%         33%          4%           1        2025
+EMS / printed circuit boards            12         92%         50%         42%          8%           2        2025
+Household & personal products           22         45%         18%         23%         14%           1        2025
+Food products                           25         52%         20%         32%         24%           1        2026
+CONTROL: state banks                    23         13%          0%          0%          4%           0           —
+CONTROL: electric utilities             20          0%          0%          0%         10%           0           —
+
+--- named-edge rate by filer category ---
+  Large accelerated filer      n= 96  35%
+  Non-accelerated filer<br>Smaller reporting company n= 48  21%
+  Accelerated filer            n= 26  15%
+  Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company n= 18  0%
+  Non-accelerated filer<br>Emerging growth company n= 11  0%
+  <br>Emerging growth company  n= 10  0%
+  Accelerated filer<br>Smaller reporting company n=  6  17%
+  Non-accelerated filer        n=  6  17%
+  unknown                      n=  5  0%
+
+--- named-edge rate by filing agent (accession prefix), n>=8 ---
+  0001193125                   n= 42  26%
+  0001104659                   n= 19  21%
+  0001213900                   n= 16  6%
+  0001628280                   n= 15  27%
+  0001437749                   n= 14  43%
+  0001493152                   n= 12  8%
+
+scale-suspect facts rejected on 0 filers: none
+
+rows written: 237 -> data/survey.jsonl

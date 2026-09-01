@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cascade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F6F8FA; --surface:#FFFFFF; --raise:#FFFFFF; --border:#E1E7ED; --text:#0A1015;
+  --muted:#4A5C6D; --faint:#7B8EA1; --signal:#0F7F4C; --hot:#C33E26; --warn:#8A6410;
+  --shadow:0 1px 2px rgba(10,16,21,.05);
+  --ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#06080B; --surface:#0D1218; --raise:#111821; --border:#1B2530; --text:#F2F5F8;
+  --muted:#93A6B8; --faint:#5B7288; --signal:#7FE3A8; --hot:#F26B52; --warn:#F5C451;
+  --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --ground:#06080B; --surface:#0D1218; --raise:#111821; --border:#1B2530; --text:#F2F5F8;
+  --muted:#93A6B8; --faint:#5B7288; --signal:#7FE3A8; --hot:#F26B52; --warn:#F5C451; --shadow:none;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ground);color:var(--text);font-family:var(--ui);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;display:flex;flex-direction:column}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pos{color:var(--signal)} .neg{color:var(--hot)}
+
+/* ── top bar ─────────────────────────────────────────── */
+header{display:flex;align-items:center;gap:20px;padding:0 24px;height:58px;
+  border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.035em}
+.brand .tag{color:var(--faint);font-size:11.5px;letter-spacing:.01em}
+.stats{margin-left:auto;display:flex;gap:22px;align-items:center;font-size:11.5px;color:var(--faint)}
+.stat b{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-size:13px;font-weight:500;color:var(--text);letter-spacing:-.01em}
+.pill{display:inline-flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--signal);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--signal) 18%,transparent)}
+.dot.off{background:var(--faint);box-shadow:none}
+.dot.live{animation:pulse 2.6s var(--ease) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── layout ──────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:264px minmax(0,1fr) 328px;gap:1px;background:var(--border);flex:1;min-height:0}
+.col{background:var(--ground);overflow-y:auto;min-width:0}
+.col > .sec{padding:18px 20px;border-bottom:1px solid var(--border)}
+.col > .sec:last-child{border-bottom:none}
+h2{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);font-weight:600;margin-bottom:12px}
+
+/* ── hub list ────────────────────────────────────────── */
+.hub{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;margin-bottom:2px;
+  border:1px solid transparent;border-radius:7px;background:none;color:var(--text);
+  font-family:var(--ui);font-size:13px;cursor:pointer;transition:background .18s var(--ease),border-color .18s var(--ease)}
+.hub:hover{background:var(--surface)}
+.hub[aria-selected="true"]{background:var(--raise);border-color:var(--border)}
+.hub .tk{font-family:var(--mono);font-weight:500;min-width:50px;letter-spacing:-.02em}
+.hub .co{color:var(--faint);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.hub .deg{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px}
+
+/* ── positions ───────────────────────────────────────── */
+.pos-row{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:12px}
+.pos-row:first-of-type{border-top:none}
+.pos-row .tk{font-family:var(--mono);min-width:48px;font-size:12px}
+.pos-row .q{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--faint);font-size:11px;min-width:44px}
+.pos-row .pl{margin-left:auto;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px}
+
+/* ── stage ───────────────────────────────────────────── */
+.stage{display:flex;flex-direction:column;padding:16px 20px 10px;min-height:0}
+.stagehead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.stagehead .title{font-size:15px;font-weight:600;letter-spacing:-.02em}
+.stagehead .sub{color:var(--faint);font-size:11.5px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-left:auto}
+.seg button{background:var(--surface);color:var(--muted);border:none;padding:5px 11px;
+  font-family:var(--ui);font-size:11.5px;cursor:pointer;transition:background .18s var(--ease),color .18s var(--ease)}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--ground)}
+svg{width:100%;flex:1;min-height:430px;display:block}
+.legend{display:flex;gap:18px;font-size:10.5px;color:var(--faint);padding-top:8px;flex-wrap:wrap}
+.legend i{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+
+/* ── graph elements ──────────────────────────────────── */
+.ring{fill:none;stroke:var(--border);stroke-dasharray:2 6;opacity:.5}
+.edge{fill:none;stroke-linecap:round}
+.nlabel{font-family:var(--mono);font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.nshare{font-family:var(--mono);font-size:9.5px;fill:var(--faint);font-variant-numeric:tabular-nums}
+.hublabel{font-family:var(--mono);font-size:12.5px;fill:var(--text);font-weight:500}
+.hubsub{font-family:var(--ui);font-size:10px;fill:var(--faint)}
+g.node{cursor:pointer}
+g.node .halo{transition:opacity .25s var(--ease)}
+g.node:hover .halo{opacity:.34}
+
+/* ── detail ──────────────────────────────────────────── */
+.card{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:15px;box-shadow:var(--shadow)}
+.card .tk{font-family:var(--mono);font-size:16px;font-weight:500;letter-spacing:-.02em}
+.chain{font-size:12px;color:var(--muted);margin:8px 0 12px;line-height:1.6}
+.chain b{color:var(--text);font-weight:500}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-top:1px solid var(--border);font-size:12px}
+.kv span:first-child{color:var(--faint)}
+.kv span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+.cite{margin-top:11px;padding:9px 11px;border-left:2px solid var(--border);font-size:11.5px;color:var(--muted)}
+.cite a{color:var(--faint);font-size:10.5px;overflow-wrap:anywhere;display:block;margin-top:3px}
+.refusal{border-top:1px solid var(--border);padding:8px 0;font-size:12px}
+.refusal:first-child{border-top:none}
+.refusal .top{display:flex;gap:8px;align-items:baseline}
+.refusal .tk{font-family:var(--mono);min-width:48px}
+.refusal .gate{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--warn)}
+.refusal .why{color:var(--faint);font-size:11px;margin-top:2px}
+.empty{color:var(--faint);font-size:12px;padding:8px 0}
+.news{font-size:11.5px;padding:7px 0;border-top:1px solid var(--border);cursor:pointer;color:var(--muted);
+  transition:color .18s var(--ease)}
+.news:first-of-type{border-top:none}
+.news:hover{color:var(--text)}
+.news .meta{font-family:var(--mono);font-size:10px;color:var(--faint);margin-bottom:2px}
+
+@media (max-width:1080px){.grid{grid-template-columns:minmax(0,1fr)}svg{min-height:360px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Cascade</h1>
+    <span class="tag">trades the ripple, not the splash</span>
+  </div>
+  <div class="stats" id="stats"><span class="pill"><i class="dot off"></i>connecting</span></div>
+</header>
+
+<div class="grid">
+  <div class="col">
+    <div class="sec">
+      <h2>Hubs · named dependents</h2>
+      <div id="hubs"></div>
+    </div>
+    <div class="sec">
+      <h2>Open positions</h2>
+      <div id="positions"><p class="empty">none</p></div>
+    </div>
+  </div>
+
+  <div class="col stage">
+    <div class="stagehead">
+      <div>
+        <div class="title" id="stageTitle">—</div>
+        <div class="sub" id="stageSub"></div>
+      </div>
+      <div class="seg" role="group" aria-label="direction">
+        <button id="dirDown" aria-pressed="true">▼ bad news</button>
+        <button id="dirUp" aria-pressed="false">▲ good news</button>
+      </div>
+    </div>
+    <svg id="graph" viewBox="0 0 880 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="cascade graph"></svg>
+    <div class="legend">
+      <span><i style="background:var(--hot)"></i>epicentre — already priced</span>
+      <span><i style="background:var(--signal)"></i>exposed &amp; unpriced — we trade this</span>
+      <span><i style="background:var(--warn)"></i>partially priced</span>
+      <span><i style="background:var(--faint)"></i>refused by a gate</span>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="sec">
+      <h2>Reasoning</h2>
+      <div id="detail"><p class="empty">Select a node.</p></div>
+    </div>
+    <div class="sec">
+      <h2>Refused — and why</h2>
+      <div id="refusals"></div>
+    </div>
+    <div class="sec">
+      <h2>Events on hubs</h2>
+      <div id="news"><p class="empty">loading…</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a = {}) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const pct = (x) => (x * 100).toFixed(1) + "%";
+const money = (x) => (x < 0 ? "-" : "") + "$" + Math.abs(x).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+let HUBS = [], current = null, direction = "down", lastResult = null;
+
+async function boot() {
+  const [h, hubs] = await Promise.all([
+    fetch("/healthz").then((r) => r.json()),
+    fetch("/api/hubs").then((r) => r.json()),
+  ]);
+  HUBS = hubs;
+
+  $("hubs").innerHTML = hubs.map((n) => `
+    <button class="hub" data-t="${n.ticker}" aria-selected="false">
+      <span class="tk">${n.ticker}</span>
+      <span class="co">${n.company ?? ""}</span>
+      <span class="deg">${n.inDegree}</span>
+    </button>`).join("");
+  document.querySelectorAll(".hub").forEach((b) => b.addEventListener("click", () => select(b.dataset.t)));
+
+  refreshPortfolio(h);
+  loadNews();
+  if (hubs.length) select(hubs[0].ticker);
+  setInterval(() => refreshPortfolio(), 20000);
+}
+
+async function refreshPortfolio(health) {
+  const h = health ?? await fetch("/healthz").then((r) => r.json());
+  const p = await fetch("/api/portfolio").then((r) => r.json());
+
+  const pl = p.positions?.reduce((a, x) => a + x.pl, 0) ?? 0;
+  $("stats").innerHTML = `
+    <span class="stat">equity<b>${p.connected ? money(p.equity) : "—"}</b></span>
+    <span class="stat">open P/L<b class="${pl >= 0 ? "pos" : "neg"}">${p.connected ? money(pl) : "—"}</b></span>
+    <span class="stat">positions<b>${p.positions?.length ?? 0}</b></span>
+    <span class="stat">edges<b>${h.graph?.edges ?? 0}</b></span>
+    <span class="pill"><i class="dot ${p.connected ? "live" : "off"}"></i>${p.connected ? (p.marketOpen ? "market open" : "market closed") : "no keys"}</span>
+    <span class="stat">build<b>${h.commit}</b></span>`;
+
+  $("positions").innerHTML = p.positions?.length
+    ? p.positions.map((x) => `
+        <div class="pos-row">
+          <span class="tk">${x.symbol}</span>
+          <span class="q">${x.qty}</span>
+          <span class="pl ${x.pl >= 0 ? "pos" : "neg"}">${x.pl >= 0 ? "+" : ""}${x.pl.toFixed(2)}</span>
+        </div>`).join("")
+    : `<p class="empty">none</p>`;
+}
+
+async function loadNews() {
+  const r = await fetch("/api/news").then((r) => r.json());
+  $("news").innerHTML = r.news?.length
+    ? r.news.slice(0, 12).map((n) => {
+        const hub = (n.symbols || []).find((s) => HUBS.some((h) => h.ticker === s));
+        return `<div class="news" data-hub="${hub ?? ""}">
+          <div class="meta">${n.at.slice(0, 10)} · ${(n.symbols || []).slice(0, 3).join(" ")}</div>
+          ${n.headline}</div>`;
+      }).join("")
+    : `<p class="empty">no headlines</p>`;
+  document.querySelectorAll(".news").forEach((d) =>
+    d.addEventListener("click", () => { if (d.dataset.hub) select(d.dataset.hub); }));
+}
+
+$("dirDown").onclick = () => { direction = "down"; syncDir(); if (current) select(current); };
+$("dirUp").onclick = () => { direction = "up"; syncDir(); if (current) select(current); };
+function syncDir() {
+  $("dirDown").setAttribute("aria-pressed", direction === "down");
+  $("dirUp").setAttribute("aria-pressed", direction === "up");
+}
+
+async function select(ticker) {
+  current = ticker;
+  document.querySelectorAll(".hub").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.t === ticker)));
+  const hub = HUBS.find((h) => h.ticker === ticker);
+
+  $("stageTitle").textContent = `${ticker} ${direction === "down" ? "▼" : "▲"}`;
+  $("stageSub").textContent = "propagating…";
+
+  const r = await fetch(`/api/cascade?hub=${ticker}&direction=${direction}`).then((x) => x.json());
+  lastResult = r;
+  const live = r.live;
+  const tradeable = r.considered.filter((c) => c.tradeable).length;
+
+  $("stageTitle").textContent = `${ticker} ${direction === "down" ? "▼" : "▲"}  ${hub?.company ?? ""}`;
+  $("stageSub").textContent = live
+    ? `${r.considered.length} exposed · ${tradeable} unpriced · ${r.considered.length - tradeable} refused`
+    : r.reason;
+
+  draw(ticker, r.considered);
+  const refused = r.considered.filter((c) => c.tradeable === false || c.state === "refused");
+  $("refusals").innerHTML = refused.length
+    ? refused.map((c) => `<div class="refusal">
+        <div class="top"><span class="tk">${c.ticker}</span><span class="gate">${c.gate ?? "—"}</span></div>
+        <div class="why">${c.reason}</div></div>`).join("")
+    : `<p class="empty">nothing refused</p>`;
+
+  const best = r.considered.find((c) => c.tradeable) ?? r.considered[0];
+  if (best) detail(best, ticker);
+}
+
+function colour(c) {
+  if (c.state === "refused" || (c.tradeable === false && c.gate !== "priced_in")) return "var(--faint)";
+  if (c.state === "unpriced") return "var(--signal)";
+  if (c.state === "priced" || c.state === "contradicted") return "var(--hot)";
+  if (c.state === "partial") return "var(--warn)";
+  return "var(--muted)";
+}
+// Closer to the centre means more exposed.
+const radiusFor = (e) => 262 - (Math.min(.45, Math.max(.02, e)) / .45) * 148;
+
+function draw(hub, nodes) {
+  const svg = $("graph"), W = 880, H = 600, cx = W / 2, cy = H / 2;
+  svg.innerHTML = "";
+  [0.10, 0.22, 0.36].forEach((b) => svg.appendChild(el("circle", { cx, cy, r: radiusFor(b), class: "ring" })));
+
+  const n = nodes.length || 1;
+  const perRing = Math.max(1, Math.ceil(n / 3));
+
+  nodes.forEach((c, i) => {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const r = radiusFor(c.exposure);
+    const x = cx + Math.cos(angle) * r, y = cy + Math.sin(angle) * r;
+    const col = colour(c);
+    const ring = Math.floor(i / perRing);
+    const delay = ring * 190 + (i % perRing) * 34;   // outward, hop by hop
+
+    // Edge draws itself outward rather than fading in — calmer, and it reads
+    // as propagation instead of a slideshow.
+    const len = Math.hypot(x - cx, y - cy);
+    const edge = el("line", { x1: cx, y1: cy, x2: x, y2: y, class: "edge",
+      stroke: col, "stroke-width": Math.max(.9, c.exposure * 7),
+      opacity: c.state === "refused" ? .22 : .5,
+      "stroke-dasharray": len, "stroke-dashoffset": len });
+    edge.style.transition = `stroke-dashoffset .62s var(--ease) ${delay}ms`;
+    svg.appendChild(edge);
+    requestAnimationFrame(() => { edge.style.strokeDashoffset = 0; });
+
+    const g = el("g", { class: "node", opacity: 0 });
+    g.style.transition = `opacity .5s var(--ease) ${delay + 260}ms`;
+    g.appendChild(el("circle", { class: "halo", cx: x, cy: y, r: 12, fill: col, opacity: c.tradeable ? .2 : .1 }));
+    g.appendChild(el("circle", { cx: x, cy: y, r: c.tradeable ? 5.4 : 4.2, fill: col }));
+    const lab = el("text", { x, y: y - 19, class: "nlabel", "text-anchor": "middle" }); lab.textContent = c.ticker;
+    const sh = el("text", { x, y: y + 25, class: "nshare", "text-anchor": "middle" });
+    sh.textContent = c.z != null ? `${pct(c.exposure)} · ${c.z >= 0 ? "+" : ""}${c.z.toFixed(2)}σ` : pct(c.exposure);
+    g.append(lab, sh);
+    g.addEventListener("click", () => detail(c, hub));
+    svg.appendChild(g);
+    requestAnimationFrame(() => { g.style.opacity = 1; });
+  });
+
+  const core = el("g", { opacity: 0 });
+  core.style.transition = "opacity .45s var(--ease)";
+  core.appendChild(el("circle", { cx, cy, r: 24, fill: "var(--hot)", opacity: .12 }));
+  core.appendChild(el("circle", { cx, cy, r: 8, fill: "var(--hot)" }));
+  const hl = el("text", { x: cx, y: cy + 42, class: "hublabel", "text-anchor": "middle" }); hl.textContent = hub;
+  const hs = el("text", { x: cx, y: cy + 57, class: "hubsub", "text-anchor": "middle" }); hs.textContent = "epicentre";
+  core.append(hl, hs);
+  svg.appendChild(core);
+  requestAnimationFrame(() => { core.style.opacity = 1; });
+}
+
+function detail(c, hub) {
+  const arrow = direction === "down" ? "▼" : "▲";
+  $("detail").innerHTML = `
+    <div class="card">
+      <div class="tk">${c.ticker}</div>
+      <div class="chain"><b>${hub}</b> ${arrow} → <b>${c.ticker}</b> derives <b>${pct(c.exposure)}</b>
+        of revenue from ${hub}${c.z != null ? `, and has moved <b>${c.z.toFixed(2)}σ</b> beyond what the market and sector explain` : ""}.
+        ${c.reason ? `<br><span style="color:var(--faint)">${c.reason}</span>` : ""}</div>
+      <div class="kv"><span>exposure</span><span>${pct(c.exposure)} of ${c.ticker} revenue</span></div>
+      <div class="kv"><span>relationship</span><span>${c.relationshipType ?? "—"}</span></div>
+      ${c.z != null ? `<div class="kv"><span>residual</span><span>${c.z.toFixed(2)}σ over ${c.periods ?? "?"}d</span></div>` : ""}
+      ${c.betaMarket != null ? `<div class="kv"><span>β market / sector</span><span>${c.betaMarket.toFixed(2)} / ${(c.betaSector ?? 0).toFixed(2)}</span></div>` : ""}
+      ${c.dollarVolume != null ? `<div class="kv"><span>median volume</span><span>$${(c.dollarVolume / 1e6).toFixed(1)}M</span></div>` : ""}
+      <div class="kv"><span>fiscal period</span><span>${c.fiscalPeriodEnd ?? "—"}</span></div>
+      <div class="cite">Filer's own words: “${c.disclosedAs ?? "—"}”
+        <a href="${c.sourceUrl ?? "#"}" target="_blank" rel="noopener">${c.accession ?? "no citation"}</a></div>
+    </div>`;
+}
+
+boot().catch((e) => { $("stats").innerHTML = `<span class="pill"><i class="dot off"></i>${e.message}</span>`; });
+</script>
+</body>
+</html>

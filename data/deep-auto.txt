@@ -1,0 +1,30 @@
+
+=== Auto & EV supply chain — FULL UNIVERSE ===
+filers mined: 85   naming at least one counterparty: 23 (27%)
+named edges: 48   distinct counterparties: 37   set-edges: 0
+fragility nodes (tagged but unnamed): 28
+
+top-10 mean in-degree: 2.1
+singletons: 29 of 37
+
+--- hubs by inbound named dependents ---
+   3  Ford Motor Company           ADNT:11% LEA:12% STRT:23%
+   3  Stellantis                   ALV:10% DCH:13% LEA:9%
+   3  General Motors               DCH:44% LEA:22% PHIN:18%
+   2  Volkswagen Group             ADNT:10% GNTX:11%
+   2  PACCAR                       ATMU:16% SRI:15%
+   2  Volkswagen                   BWA:13% LEA:10%
+   2  Ford                         BWA:12% DCH:15%
+   2  General Motors Company       GNTX:10% STRT:29%
+   1  Geely Group                  LOT:96%
+   1  US Government                OSK:92%
+   1  Chase Bank                   RIVN:36%
+   1  Two Entities                 WKHS:68%
+   1  Stellantis N.V.              ADNT:10%
+   1  Daimler Ag                   ALSN:18%
+   1  PACCAR Inc                   ALSN:11%
+   1  Traton Se                    ALSN:10%
+   1  Global OEM                   APTV:10%
+   1  Cummins                      ATMU:19%
+
+written -> data/graph-auto.json

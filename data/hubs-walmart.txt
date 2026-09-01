@@ -1,0 +1,21 @@
+
+=== HUB-FIRST RESULTS ===
+
+Hub                 ticker    mentions  checked  in-degree
+Walmart             WMT             63       59         12
+
+--- Walmart (WMT) — 12 named dependents ---
+  MSN     31.0% of revenue   FY 2025-03-31   as "Walmart"
+  BGS     31.0% of revenue   FY 2026-01-03   as "Wal Mart"
+  CALM    30.0% of revenue   FY 2026-05-12   as "Walmart"
+  HBB     29.0% of revenue   FY 2025-12-31   as "Wal Mart"
+  JAKK    26.1% of revenue   FY 2025-12-31   as "Wal Mart"
+  GIS     22.0% of revenue   FY 2026-05-31   as "Walmart"
+  PBH     20.0% of revenue   FY 2026-03-31   as "Walmart"
+  EPC     17.4% of revenue   FY 2025-09-30   as "Wal Mart"
+  LCUT    17.0% of revenue   FY 2025-12-31   as "Walmart Inc."
+  HRL     15.6% of revenue   FY 2025-10-26   as "Walmart Inc"
+  SFD     15.0% of revenue   FY 2025-12-28   as "Walmart"
+  GDOT    10.0% of revenue   FY 2024-12-31   as "Walmart"
+
+written -> data/hubs.json

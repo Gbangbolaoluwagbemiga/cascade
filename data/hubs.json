@@ -1,0 +1,384 @@
+[
+  {
+    "hub": "Walmart",
+    "ticker": "WMT",
+    "positionable": true,
+    "mentions": 204,
+    "checked": 192,
+    "dependents": [
+      {
+        "from": "MSN",
+        "share": 0.31,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2025-03-31",
+        "accession": "0001437749-26-021828",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/32621/000143774926021828/msn20260331_10k.htm"
+      },
+      {
+        "from": "BGS",
+        "share": 0.31,
+        "asNamed": "Wal Mart",
+        "fiscalPeriodEnd": "2026-01-03",
+        "accession": "0001104659-26-022961",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1278027/000110465926022961/bgs-20260103x10k.htm"
+      },
+      {
+        "from": "CALM",
+        "share": 0.3,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2026-05-12",
+        "accession": "0001562762-26-000080",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/16160/000156276226000080/calm2026053010K.htm"
+      },
+      {
+        "from": "HBB",
+        "share": 0.29,
+        "asNamed": "Wal Mart",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001709164-26-000037",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1709164/000170916426000037/hbb-20251231.htm"
+      },
+      {
+        "from": "JAKK",
+        "share": 0.261,
+        "asNamed": "Wal Mart",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001185185-26-000723",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1009829/000118518526000723/jakk10k123125.htm"
+      },
+      {
+        "from": "GIS",
+        "share": 0.22,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2026-05-31",
+        "accession": "0001628280-26-046466",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/40704/000162828026046466/gis-20260531.htm"
+      },
+      {
+        "from": "KHC",
+        "share": 0.21,
+        "asNamed": "Walmart Inc",
+        "fiscalPeriodEnd": "2024-12-28",
+        "accession": "0001637459-26-000009",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1637459/000163745926000009/khc-20251227.htm"
+      },
+      {
+        "from": "PBH",
+        "share": 0.2,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2026-03-31",
+        "accession": "0001295947-26-000016",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1295947/000129594726000016/pbh-20260331.htm"
+      },
+      {
+        "from": "MRTN",
+        "share": 0.2,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001437749-26-005971",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/799167/000143774926005971/mrtn20251231_10k.htm"
+      },
+      {
+        "from": "EPC",
+        "share": 0.174,
+        "asNamed": "Wal Mart",
+        "fiscalPeriodEnd": "2025-09-30",
+        "accession": "0001628280-25-052765",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1096752/000162828025052765/epc-20250930.htm"
+      },
+      {
+        "from": "LCUT",
+        "share": 0.17,
+        "asNamed": "Walmart Inc.",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000874396-26-000008",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/874396/000087439626000008/lcut-20251231.htm"
+      },
+      {
+        "from": "HRL",
+        "share": 0.156,
+        "asNamed": "Walmart Inc",
+        "fiscalPeriodEnd": "2025-10-26",
+        "accession": "0000048465-25-000059",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/48465/000004846525000059/hrl-20251026.htm"
+      },
+      {
+        "from": "SFD",
+        "share": 0.15,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2025-12-28",
+        "accession": "0000091388-26-000014",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/91388/000009138826000014/smf-20251228.htm"
+      },
+      {
+        "from": "PRGO",
+        "share": 0.129,
+        "asNamed": "Walmart",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001585364-26-000009",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1585364/000158536426000009/prgo-20251231.htm"
+      },
+      {
+        "from": "CL",
+        "share": 0.11,
+        "asNamed": "Walmart Inc",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000021665-26-000006",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/21665/000002166526000006/cl-20251231.htm"
+      },
+      {
+        "from": "HAS",
+        "share": 0.09,
+        "asNamed": "Walmart Inc.",
+        "fiscalPeriodEnd": "2025-12-28",
+        "accession": "0000046080-26-000011",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/46080/000004608026000011/has-20251228.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Target",
+    "ticker": "TGT",
+    "positionable": true,
+    "mentions": 965,
+    "checked": 892,
+    "dependents": [
+      {
+        "from": "JAKK",
+        "share": 0.266,
+        "asNamed": "Target",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001185185-26-000723",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1009829/000118518526000723/jakk10k123125.htm"
+      },
+      {
+        "from": "EPC",
+        "share": 0.092,
+        "asNamed": "Target",
+        "fiscalPeriodEnd": "2025-09-30",
+        "accession": "0001628280-25-052765",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1096752/000162828025052765/epc-20250930.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Apple",
+    "ticker": "AAPL",
+    "positionable": true,
+    "mentions": 265,
+    "checked": 245,
+    "dependents": [
+      {
+        "from": "CRUS",
+        "share": 0.91,
+        "asNamed": "Apple Inc",
+        "fiscalPeriodEnd": "2026-03-28",
+        "accession": "0000772406-26-000018",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/772406/000077240626000018/crus-20260328.htm"
+      },
+      {
+        "from": "DUOL",
+        "share": 0.616,
+        "asNamed": "Apple",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001628280-26-012494",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012494/duol-20251231.htm"
+      },
+      {
+        "from": "QRVO",
+        "share": 0.5,
+        "asNamed": "Apple",
+        "fiscalPeriodEnd": "2026-03-28",
+        "accession": "0001628280-26-032873",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1604778/000162828026032873/rfmd-20260328.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Amazon",
+    "ticker": "AMZN",
+    "positionable": true,
+    "mentions": 495,
+    "checked": 462,
+    "dependents": [
+      {
+        "from": "MSN",
+        "share": 0.42,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2026-03-31",
+        "accession": "0001437749-26-021828",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/32621/000143774926021828/msn20260331_10k.htm"
+      },
+      {
+        "from": "NXPL",
+        "share": 0.311,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001437749-26-010668",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1058307/000143774926010668/nxpl20251231_10k.htm"
+      },
+      {
+        "from": "KOSS",
+        "share": 0.19,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2025-06-30",
+        "accession": "0000056701-25-000044",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/56701/000005670125000044/koss-20250630x10k.htm"
+      },
+      {
+        "from": "HBB",
+        "share": 0.19,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001709164-26-000037",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1709164/000170916426000037/hbb-20251231.htm"
+      },
+      {
+        "from": "NWL",
+        "share": 0.17,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000814453-26-000008",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/814453/000081445326000008/nwl-20251231.htm"
+      },
+      {
+        "from": "CRWS",
+        "share": 0.17,
+        "asNamed": "Amazoncom Inc",
+        "fiscalPeriodEnd": "2026-03-29",
+        "accession": "0001437749-26-021496",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/25895/000143774926021496/crws20260329_10k.htm"
+      },
+      {
+        "from": "PBH",
+        "share": 0.15,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2026-03-31",
+        "accession": "0001295947-26-000016",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1295947/000129594726000016/pbh-20260331.htm"
+      },
+      {
+        "from": "LCUT",
+        "share": 0.12,
+        "asNamed": "Amazoncom Inc",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000874396-26-000008",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/874396/000087439626000008/lcut-20251231.htm"
+      },
+      {
+        "from": "HAS",
+        "share": 0.11,
+        "asNamed": "Amazon.com Inc.",
+        "fiscalPeriodEnd": "2025-12-28",
+        "accession": "0000046080-26-000011",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/46080/000004608026000011/has-20251228.htm"
+      },
+      {
+        "from": "UPS",
+        "share": 0.106,
+        "asNamed": "Amazon.com Inc.",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001628280-26-008432",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1090727/000162828026008432/ups-20251231.htm"
+      },
+      {
+        "from": "JAKK",
+        "share": 0.1,
+        "asNamed": "Amazon",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001185185-26-000723",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1009829/000118518526000723/jakk10k123125.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Home Depot",
+    "ticker": "HD",
+    "positionable": true,
+    "mentions": 68,
+    "checked": 62,
+    "dependents": [
+      {
+        "from": "SMG",
+        "share": 0.34,
+        "asNamed": "Home Depot",
+        "fiscalPeriodEnd": "2025-09-30",
+        "accession": "0000825542-25-000022",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/825542/000082554225000022/smg-20250930.htm"
+      },
+      {
+        "from": "JELD",
+        "share": 0.17,
+        "asNamed": "The Home Depot",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001674335-26-000043",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1674335/000167433526000043/jeld-20251231.htm"
+      },
+      {
+        "from": "UFPI",
+        "share": 0.17,
+        "asNamed": "Home Depot",
+        "fiscalPeriodEnd": "2025-12-27",
+        "accession": "0001104659-26-019567",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/912767/000110465926019567/ufpi-20251227x10k.htm"
+      },
+      {
+        "from": "SWK",
+        "share": 0.15,
+        "asNamed": "Home Depot",
+        "fiscalPeriodEnd": "2026-01-03",
+        "accession": "0000093556-26-000009",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/93556/000009355626000009/swk-20260103.htm"
+      },
+      {
+        "from": "FBIN",
+        "share": 0.11,
+        "asNamed": "Home Depot",
+        "fiscalPeriodEnd": "2025-12-27",
+        "accession": "0001193125-26-063960",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1519751/000119312526063960/fbin-20251227.htm"
+      },
+      {
+        "from": "GFF",
+        "share": 0.09,
+        "asNamed": "Home Depot",
+        "fiscalPeriodEnd": "2025-09-30",
+        "accession": "0001628280-25-053242",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/50725/000162828025053242/gff-20250930.htm"
+      },
+      {
+        "from": "UE",
+        "share": 0.055999999999999994,
+        "asNamed": "The Home Depot",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001611547-26-000022",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1611547/000161154726000022/ue-20251231.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Costco",
+    "ticker": "COST",
+    "positionable": true,
+    "mentions": 58,
+    "checked": 56,
+    "dependents": [
+      {
+        "from": "LCUT",
+        "share": 0.11,
+        "asNamed": "Costco Wholesale Corporation",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000874396-26-000008",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/874396/000087439626000008/lcut-20251231.htm"
+      },
+      {
+        "from": "CELH",
+        "share": 0.10800000000000001,
+        "asNamed": "Costco",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001341766-26-000024",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1341766/000134176626000024/celh-20251231.htm"
+      }
+    ]
+  }
+]
