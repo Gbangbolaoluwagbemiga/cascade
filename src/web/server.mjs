@@ -53,6 +53,18 @@ const server = http.createServer(async (req, res) => {
 
     if (url.pathname === "/api/graph") return send(res, 200, loadGraph());
 
+    // What the daemon has actually done — including everything it refused.
+    if (url.pathname === "/api/journal") {
+      const file = path.join(ROOT, "data/journal.jsonl");
+      if (!fs.existsSync(file)) return send(res, 200, { entries: [], daemon: null });
+      const entries = fs.readFileSync(file, "utf8").split("\n").filter(Boolean)
+        .map((l) => { try { return JSON.parse(l); } catch { return null; } })
+        .filter(Boolean).slice(-120).reverse();
+      let daemon = null;
+      try { daemon = JSON.parse(fs.readFileSync(path.join(ROOT, "data/daemon-state.json"), "utf8")); } catch {}
+      return send(res, 200, { entries, daemon });
+    }
+
     if (url.pathname === "/api/hubs") {
       const g = loadGraph();
       const hubs = g.nodes

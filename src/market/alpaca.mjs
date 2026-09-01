@@ -90,7 +90,7 @@ export function clampEndForFeed(end, feed) {
   return new Date(Math.min(asked, latest)).toISOString();
 }
 
-export async function dailyBars(symbols, { start, end, feed = "sip", limit = 10000 } = {}) {
+export async function dailyBars(symbols, { start, end, feed = "sip", limit = 10000, timeframe = "1Day" } = {}) {
   const out = new Map();
   let pageToken = null;
   end = clampEndForFeed(end, feed);
@@ -99,7 +99,7 @@ export async function dailyBars(symbols, { start, end, feed = "sip", limit = 100
     const page = await call(DATA_URL, "/v2/stocks/bars", {
       query: {
         symbols: symbols.join(","),
-        timeframe: "1Day",
+        timeframe,
         start,
         end,
         feed,

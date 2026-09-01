@@ -3,11 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "Autonomous trading agent — trades the ripple, not the splash.",
+  "description": "Autonomous trading agent \u2014 trades the ripple, not the splash.",
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
     "cheerio": "^1.2.0"
+  },
+  "scripts": {
+    "start": "node src/web/server.mjs",
+    "daemon": "node src/daemon.mjs",
+    "mcp": "node src/mcp/server.mjs",
+    "build:graph": "node scripts/build-graph.mjs",
+    "test": "node scripts/test-guards.mjs && node scripts/test-residual.mjs && node scripts/test-cascade.mjs",
+    "cascade": "node scripts/cascade.mjs",
+    "trade": "node scripts/trade.mjs"
   }
 }

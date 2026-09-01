@@ -1,0 +1,20 @@
+{"at":"2026-09-01T14:54:53.419Z","kind":"boot","summary":"daemon up · autoTrade=false · poll=999.999s"}
+{"at":"2026-09-01T14:54:54.979Z","kind":"scan","summary":"12 headlines · 12 new · 4 material · market open"}
+{"at":"2026-09-01T14:54:57.878Z","kind":"event","hub":"AMZN","headline":"Amazon's $20 Billion FTC Fight Is Really a Test Case for AI Pricing","direction":-1,"url":"https://www.benzinga.com/trading-ideas/long-ideas/26/09/61546688/amazon-ai-antitrust-fight","summary":"AMZN ▼ Amazon's $20 Billion FTC Fight Is Really a Test Case for AI Pricing"}
+{"at":"2026-09-01T14:54:58.285Z","kind":"refusal","ticker":"MSN","hub":"AMZN","gate":"liquidity","summary":"MSN refused [liquidity] median daily volume $0.01M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.285Z","kind":"refusal","ticker":"NXPL","hub":"AMZN","gate":"liquidity","summary":"NXPL refused [liquidity] median daily volume $0.20M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"KOSS","hub":"AMZN","gate":"liquidity","summary":"KOSS refused [liquidity] median daily volume $0.06M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"HBB","hub":"AMZN","gate":"liquidity","summary":"HBB refused [liquidity] median daily volume $1.99M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"NWL","hub":"AMZN","gate":"market_data","summary":"NWL refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"CRWS","hub":"AMZN","gate":"liquidity","summary":"CRWS refused [liquidity] median daily volume $0.24M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"PBH","hub":"AMZN","gate":"market_data","summary":"PBH refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"LCUT","hub":"AMZN","gate":"liquidity","summary":"LCUT refused [liquidity] median daily volume $1.57M is under the $2M floor"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"HAS","hub":"AMZN","gate":"market_data","summary":"HAS refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"UPS","hub":"AMZN","gate":"market_data","summary":"UPS refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"refusal","ticker":"JAKK","hub":"AMZN","gate":"market_data","summary":"JAKK refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"nothing","summary":"AMZN: nothing passed the gates"}
+{"at":"2026-09-01T14:54:58.286Z","kind":"event","hub":"AAPL","headline":"Apple's Android Tailwind Meets a Huawei Headwind in China","direction":-1,"url":"https://www.benzinga.com/markets/tech/26/09/61544675/apple-huawei-share-gains","summary":"AAPL ▼ Apple's Android Tailwind Meets a Huawei Headwind in China"}
+{"at":"2026-09-01T14:54:58.752Z","kind":"refusal","ticker":"CRUS","hub":"AAPL","gate":"market_data","summary":"CRUS refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.752Z","kind":"refusal","ticker":"DUOL","hub":"AAPL","gate":"market_data","summary":"DUOL refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.752Z","kind":"refusal","ticker":"QRVO","hub":"AAPL","gate":"market_data","summary":"QRVO refused [market_data] no bars after the event yet"}
+{"at":"2026-09-01T14:54:58.752Z","kind":"nothing","summary":"AAPL: nothing passed the gates"}

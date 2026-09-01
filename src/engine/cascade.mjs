@@ -23,9 +23,9 @@ const median = (xs) => {
 };
 
 /** Bars for every symbol a cascade needs, in one request. */
-export async function loadMarketData(symbols, { start, end, feed = "sip" } = {}) {
+export async function loadMarketData(symbols, { start, end, feed = "sip", timeframe = "1Day" } = {}) {
   const unique = [...new Set(symbols)].filter(Boolean);
-  const bars = await dailyBars(unique, { start, end, feed });
+  const bars = await dailyBars(unique, { start, end, feed, timeframe });
   const missing = unique.filter((s) => !(bars.get(s)?.length > 0));
   return { bars, missing };
 }
@@ -43,7 +43,7 @@ function splitAt(bars, eventAt) {
  * Order matters: the cheap structural gates run before market data is touched,
  * so a refusal explains the first reason it failed rather than the last.
  */
-export function scoreDependent(edge, { bars, eventAt, direction }) {
+export function scoreDependent(edge, { bars, eventAt, direction, timeframe = "1Day" }) {
   const base = {
     ticker: edge.from,
     hub: edge.to,
@@ -75,7 +75,11 @@ export function scoreDependent(edge, { bars, eventAt, direction }) {
   const assetBars = bars.get(edge.from);
   if (!assetBars?.length) return refuse("market_data", `no bars returned for ${edge.from}`);
 
-  const dollarVolume = median(assetBars.slice(-30).map((b) => b.c * b.v));
+  // Dollar volume must be a daily figure regardless of bar size, or an hourly
+  // series would make every name look 7x less liquid than it is.
+  const perBar = median(assetBars.slice(-30).map((b) => b.c * b.v));
+  const barsPerDay = timeframe === "1Day" ? 1 : timeframe === "1Hour" ? 7 : 1;
+  const dollarVolume = perBar * barsPerDay;
   if (!(dollarVolume >= GATES.dollarVolumeFloor))
     return refuse(
       "liquidity",
@@ -88,20 +92,31 @@ export function scoreDependent(edge, { bars, eventAt, direction }) {
   const { etf } = sectorEtf(edge.fromSic);
   const sectorBars = etf ? bars.get(etf) : null;
 
-  // Align on shared dates so a halted or newly listed name cannot silently
-  // shift one series against another.
-  const dates = assetBars.map((b) => b.t).filter((t) => marketBars.some((m) => m.t === t));
-  const pick = (series) => dates.map((d) => series.find((b) => b.t === d)).filter(Boolean);
-  const a = pick(assetBars);
-  const m = pick(marketBars);
-  const s = sectorBars ? pick(sectorBars) : null;
-  if (a.length !== m.length || (s && s.length !== a.length))
-    return refuse("market_data", "series could not be aligned on common dates");
+  // Align on timestamps present in EVERY series, so a halted name or a sector
+  // ETF with a missing bar cannot shift one series against another. Indexing by
+  // Map rather than scanning keeps this linear — with hourly bars the quadratic
+  // version was both slow and, when the sector series had a gap, silently
+  // produced mismatched lengths and refused the name outright.
+  const index = (series) => new Map(series.map((b) => [b.t, b]));
+  const mIdx = index(marketBars);
+  const sIdx = sectorBars ? index(sectorBars) : null;
+
+  const a = [], m = [], s = sIdx ? [] : null;
+  for (const bar of assetBars) {
+    const mb = mIdx.get(bar.t);
+    if (!mb) continue;
+    const sb = sIdx ? sIdx.get(bar.t) : null;
+    if (sIdx && !sb) continue;
+    a.push(bar); m.push(mb); if (sIdx) s.push(sb);
+  }
+  if (a.length < GATES.minEstimationBars + 1)
+    return refuse("market_data", `only ${a.length} bars align across asset, market and sector`);
 
   const cut = splitAt(a, eventAt);
   if (cut < GATES.minEstimationBars)
     return refuse("market_data", `only ${cut} bars before the event, need ${GATES.minEstimationBars}`);
-  if (cut >= a.length) return refuse("market_data", "no bars after the event yet");
+  if (cut >= a.length)
+    return refuse("market_data", `no ${timeframe === "1Day" ? "daily" : "intraday"} bars after the event yet`);
 
   const estStart = Math.max(0, cut - GATES.estimationBars);
   const model = fitFactorModel({
@@ -148,7 +163,7 @@ export function scoreDependent(edge, { bars, eventAt, direction }) {
  * `direction` is the sign the thesis predicts for dependents: -1 for bad news
  * at the hub, +1 for good.
  */
-export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "sip", headline = null }) {
+export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "sip", headline = null, timeframe = null }) {
   const edges = graph.edges.filter((e) => e.to === hub);
   if (!edges.length) {
     return { hub, eventAt, headline, error: `no edges into ${hub} in the graph`, considered: [], positions: [], refusals: [] };
@@ -157,12 +172,19 @@ export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "
   const sectorEtfs = edges.map((e) => sectorEtf(e.fromSic).etf).filter(Boolean);
   const symbols = [...edges.map((e) => e.from), hub, MARKET_PROXY, ...sectorEtfs];
 
-  const start = new Date(new Date(eventAt).getTime() - 400 * 24 * 3600 * 1000).toISOString();
+  // A same-day event has no daily bar after it, so a daily model can never see
+  // it — and our edge horizon is hours. Recent events are scored on hourly
+  // bars; older ones stay daily, where the estimation window is longer.
+  const ageDays = (Date.now() - new Date(eventAt).getTime()) / 864e5;
+  const tf = timeframe ?? (ageDays <= 3 ? "1Hour" : "1Day");
+  const lookbackDays = tf === "1Hour" ? 90 : 400;
+
+  const start = new Date(new Date(eventAt).getTime() - lookbackDays * 24 * 3600 * 1000).toISOString();
   const end = new Date().toISOString();
-  const { bars, missing } = await loadMarketData(symbols, { start, end, feed });
+  const { bars, missing } = await loadMarketData(symbols, { start, end, feed, timeframe: tf });
 
   const considered = edges
-    .map((e) => scoreDependent(e, { bars, eventAt, direction }))
+    .map((e) => scoreDependent(e, { bars, eventAt, direction, timeframe: tf }))
     .sort((a, b) => (b.exposure ?? 0) - (a.exposure ?? 0));
 
   return {
@@ -171,6 +193,7 @@ export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "
     headline,
     direction,
     feed,
+    timeframe: tf,
     missingData: missing,
     considered,
     positions: considered.filter((c) => c.tradeable),
