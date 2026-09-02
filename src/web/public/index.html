@@ -272,14 +272,10 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
 
 <footer>
   <div class="loghead">
-    <div class="seg" role="group" aria-label="footer view">
-      <button id="tabLog" aria-pressed="true">Agent log — including everything it refused</button>
-      <button id="tabTrades" aria-pressed="false">Trade history</button>
-    </div>
+    <h2>Agent log — including everything it refused</h2>
     <span class="tag" id="daemonState" style="color:var(--faint);font-size:10.5px"></span>
   </div>
   <div id="log"><p class="empty">daemon not running — <span class="num">npm run daemon</span></p></div>
-  <div id="trades" hidden></div>
 </footer>
 
 <script>
@@ -462,36 +458,6 @@ $("closeAll").onclick = async () => {
   setTimeout(() => { btn.textContent = "Close all positions"; }, 4000);
 };
 
-let footerTab = "log";
-$("tabLog").onclick = () => setFooter("log");
-$("tabTrades").onclick = () => setFooter("trades");
-function setFooter(which) {
-  footerTab = which;
-  $("tabLog").setAttribute("aria-pressed", String(which === "log"));
-  $("tabTrades").setAttribute("aria-pressed", String(which === "trades"));
-  $("log").hidden = which !== "log";
-  $("trades").hidden = which !== "trades";
-  if (which === "trades") loadTrades();
-}
-
-async function loadTrades() {
-  const r = await fetch("/api/orders").then((x) => x.json()).catch(() => null);
-  if (!r?.orders?.length) { $("trades").innerHTML = `<p class="empty">no orders yet</p>`; return; }
-  // OCC symbols are long; show the underlying and the contract shape.
-  const label = (o) => {
-    const m = o.symbol.match(/^([A-Z]+)(\d{6})([CP])(\d{8})$/);
-    return m ? `${m[1]} ${m[3] === "P" ? "put" : "call"} ${Number(m[4]) / 1000} ${m[2].slice(2, 4)}/${m[2].slice(4)}` : o.symbol;
-  };
-  $("trades").innerHTML = r.orders.map((o) => `
-    <div class="trade">
-      <time>${o.submittedAt.slice(5, 16).replace("T", " ")}</time>
-      <span class="tk">${label(o)}</span>
-      <span class="side ${o.side}">${o.side}</span>
-      <span class="fill">${o.filledQty || o.qty}${o.filledPrice ? ` @ $${o.filledPrice.toFixed(2)}` : o.limitPrice ? ` lmt $${o.limitPrice.toFixed(2)}` : ""}</span>
-      <span class="st">${o.status}</span>
-    </div>`).join("");
-}
-
 async function loadJournal() {
   const r = await fetch("/api/journal").then((x) => x.json()).catch(() => null);
   if (!r) return;
@@ -532,7 +498,7 @@ $("fire").onclick = async () => {
         <h3 style="color:var(--warn)">no orders</h3>
         <div style="color:var(--muted);font-size:12px">${r.note ?? "nothing passed the gates"}</div></div>`;
     } else {
-      $("detail").innerHTML = `<div class="orders"><h3>${r.orders.length} order${r.orders.length > 1 ? "s" : ""} submitted</h3>` +
+      $("detail").innerHTML = `<div class="orders"><h3>${r.orders.length} order${r.orders.length > 1 ? "s" : ""} submitted — see Portfolio for the book</h3>` +
         r.orders.map((o) => `<div class="row">
           <span class="tk">${o.ticker}</span>
           <span>${o.instrument === "option" ? `${o.contracts}× ${o.contract}` : `${o.shares ?? ""} sh`}</span>
@@ -543,7 +509,6 @@ $("fire").onclick = async () => {
     // be read, so a trade appeared to do nothing.
     refreshPortfolio();
     loadJournal();
-    setFooter("trades");
   } catch (err) {
     $("detail").innerHTML = `<p class="empty">${err.message}</p>`;
   }
