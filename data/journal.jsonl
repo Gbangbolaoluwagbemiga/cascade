@@ -80,3 +80,22 @@
 {"at":"2026-09-01T22:08:34.992Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-01T22:10:21.204Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
 {"at":"2026-09-01T22:10:22.532Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T22:15:26.182Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-01T23:54:09.588Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T00:13:23.541Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T01:19:54.105Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T02:10:32.521Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T02:20:55.251Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T03:21:58.100Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T03:39:03.551Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T04:22:58.870Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T04:39:09.267Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T05:40:01.336Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T06:25:03.343Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T06:40:31.359Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T08:01:28.790Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T08:18:11.939Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T09:02:01.118Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T09:19:58.787Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T09:44:29.578Z","kind":"scan","summary":"7 headlines · 7 new · 1 material (groq) · market closed"}
+{"at":"2026-09-02T09:44:33.007Z","kind":"hold","summary":"1 material events but market closed — will act at open"}
