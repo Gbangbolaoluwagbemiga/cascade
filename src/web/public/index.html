@@ -267,10 +267,14 @@ async function refreshPortfolio(health) {
   const h = health ?? await fetch("/healthz").then((r) => r.json());
   const p = await fetch("/api/portfolio").then((r) => r.json());
 
-  const pl = p.positions?.reduce((a, x) => a + x.pl, 0) ?? 0;
+  // Realised and unrealised are different facts — show both, or a large closed
+  // loss hides behind a small open one.
   $("stats").innerHTML = `
     <span class="stat">equity<b>${p.connected ? money(p.equity) : "—"}</b></span>
-    <span class="stat">open P/L<b class="${pl >= 0 ? "pos" : "neg"}">${p.connected ? money(pl) : "—"}</b></span>
+    <span class="stat">total P/L<b class="${(p.totalPl ?? 0) >= 0 ? "pos" : "neg"}">${p.connected ? money(p.totalPl) : "—"}</b></span>
+    <span class="stat">realised<b class="${(p.realised ?? 0) >= 0 ? "pos" : "neg"}">${p.connected ? money(p.realised) : "—"}</b></span>
+    <span class="stat">open<b class="${(p.unrealised ?? 0) >= 0 ? "pos" : "neg"}">${p.connected ? money(p.unrealised) : "—"}</b></span>
+    <span class="stat">deployed<b>${p.connected ? money(p.deployed) + " · " + (p.deployedPct * 100).toFixed(0) + "%" : "—"}</b></span>
     <span class="stat">positions<b>${p.positions?.length ?? 0}</b></span>
     <span class="stat">edges<b>${h.graph?.edges ?? 0}</b></span>
     <span class="pill"><i class="dot ${p.connected ? "live" : "off"}"></i>${p.connected ? (p.marketOpen ? "market open" : "market closed") : "no keys"}</span>

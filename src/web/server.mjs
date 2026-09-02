@@ -85,11 +85,22 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === "/api/portfolio") {
       if (!credentials().ok) return send(res, 200, { connected: false, positions: [] });
       const [a, p, k] = await Promise.all([account(), positions(), clock()]);
+      // Realised and unrealised are different facts. Showing only the open P/L
+      // hid a $4,480 realised loss behind a -$90 headline.
+      const START_EQUITY = Number(process.env.START_EQUITY || 100000);
+      const unrealised = p.reduce((sum, x) => sum + Number(x.unrealized_pl), 0);
+      const deployed = p.reduce((sum, x) => sum + Math.abs(Number(x.market_value)), 0);
       return send(res, 200, {
         connected: true,
         accountNumber: a.account_number,
         equity: Number(a.equity),
         cash: Number(a.cash),
+        startEquity: START_EQUITY,
+        unrealised,
+        realised: Number(a.equity) - START_EQUITY - unrealised,
+        totalPl: Number(a.equity) - START_EQUITY,
+        deployed,
+        deployedPct: deployed / Number(a.equity),
         marketOpen: k.is_open,
         positions: p.map((x) => ({
           symbol: x.symbol, qty: Number(x.qty), side: x.side, assetClass: x.asset_class,
