@@ -83,51 +83,6 @@
     "headline": "Ford Reports August U.S. Sales Of 170,681 Vehicles, Down 10.3%",
     "openedAt": "2026-09-02T16:26:28Z"
   },
-  "CALM260918P00080000": {
-    "symbol": "CALM260918P00080000",
-    "underlying": "CALM",
-    "instrument": "option",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.3,
-    "entryZ": 0.9732221841017503,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0001562762-26-000080",
-    "strike": 80,
-    "expiry": "2026-09-18",
-    "openedAt": "2026-09-02T19:43:15.456Z"
-  },
-  "GIS260918P00040000": {
-    "symbol": "GIS260918P00040000",
-    "underlying": "GIS",
-    "instrument": "option",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.22,
-    "entryZ": -0.7374393804092355,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0001628280-26-046466",
-    "strike": 40,
-    "expiry": "2026-09-18",
-    "openedAt": "2026-09-02T19:43:16.556Z"
-  },
-  "KHC260918P00026000": {
-    "symbol": "KHC260918P00026000",
-    "underlying": "KHC",
-    "instrument": "option",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.21,
-    "entryZ": 0.5903671133911323,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0001637459-26-000009",
-    "strike": 26,
-    "expiry": "2026-09-18",
-    "openedAt": "2026-09-02T19:43:17.231Z"
-  },
   "PBH": {
     "symbol": "PBH",
     "underlying": "PBH",
@@ -158,21 +113,6 @@
     "expiry": null,
     "openedAt": "2026-09-02T19:43:18.642Z"
   },
-  "HRL260918P00021500": {
-    "symbol": "HRL260918P00021500",
-    "underlying": "HRL",
-    "instrument": "option",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.156,
-    "entryZ": -0.17011440270247996,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0000048465-25-000059",
-    "strike": 21.5,
-    "expiry": "2026-09-18",
-    "openedAt": "2026-09-02T19:43:19.375Z"
-  },
   "PRGO": {
     "symbol": "PRGO",
     "underlying": "PRGO",
@@ -187,20 +127,5 @@
     "strike": null,
     "expiry": null,
     "openedAt": "2026-09-02T19:43:20.039Z"
-  },
-  "CL260918P00090000": {
-    "symbol": "CL260918P00090000",
-    "underlying": "CL",
-    "instrument": "option",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.11,
-    "entryZ": 0.16102329907097854,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0000021665-26-000006",
-    "strike": 90,
-    "expiry": "2026-09-18",
-    "openedAt": "2026-09-02T19:43:20.729Z"
   }
 }

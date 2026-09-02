@@ -256,6 +256,7 @@ npm run trade   -- HD 2026-08-25 down "headline" --live   # and submit orders
 npm run telegram:test                                     # verify the feed
 npm run flatten                                           # dry run: what would close
 npm run flatten -- --live                                 # close everything now
+npm run flatten -- --options --live                       # close only the option book
 ```
 
 Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),

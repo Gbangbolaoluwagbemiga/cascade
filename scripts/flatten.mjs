@@ -7,7 +7,10 @@ import { positions, closePosition, account } from "../src/market/alpaca.mjs";
 import * as ledger from "../src/engine/ledger.mjs";
 
 const live = process.argv.includes("--live");
-const held = await positions();
+const optionsOnly = process.argv.includes("--options");
+const all = await positions();
+const held = optionsOnly ? all.filter((p) => p.asset_class === "us_option") : all;
+if (optionsOnly) console.log(`options only — ${held.length} of ${all.length} positions\n`);
 const a = await account();
 
 if (!held.length) { console.log("no open positions"); process.exit(0); }
