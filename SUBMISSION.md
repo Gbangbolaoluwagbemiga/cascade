@@ -79,8 +79,10 @@ bought is not legible:
 | `positionable` | not on a tradeable exchange | avoids orders the broker rejects |
 | `materiality` | exposure < 5% of revenue | below this it's noise |
 | `liquidity` | median daily volume < $2M | **"unmoved" must not mean "untraded"** |
+| `option_liquidity` | spread > 12%, bid < $0.40, OI < 100 | crossing a wide option book is an instant loss |
 | `priced_in` | \|z\| ≥ 1σ | the market already has it |
 | `shock_type` | this shock doesn't travel this edge | real dependency, wrong channel |
+| `portfolio_cap` | book already at 60% of equity | cascades sized separately stack into one-way risk |
 
 The liquidity gate is the one that matters most: without it, "exposed and
 unmoved" systematically selects illiquid names — the fatal failure mode. On a
@@ -91,8 +93,10 @@ talks don't affect customer demand"* — three auto suppliers we'd otherwise hav
 shorted on a story that doesn't touch them.
 
 Position sizing is exposure × confidence, where confidence decays as the residual
-approaches the priced-in threshold, capped at 5% of equity per name and 25% per
-cascade.
+approaches the priced-in threshold. Three ceilings: 5% of equity per name, 25%
+per cascade, and 60% across the whole book. The third exists because the first
+two never saw each other — four cascades sized independently stacked to 47% of
+equity, sixteen positions all short, all moving together.
 
 ---
 
@@ -138,6 +142,11 @@ Cascade calls *inward* to trade.
 - **Execution** — paper orders, sized and submitted, with short sales converted to
   whole shares (Alpaca rejects fractional quantities on a short).
 
+The agent is reachable four ways — autonomously, from the web UI, from Telegram
+(13 commands) and from the CLI — and **none of them can place an arbitrary
+order**. Every route runs the full cascade with every gate. A human chooses when
+to look; the gates choose what to buy.
+
 Architecture: a **Node daemon** that runs continuously — close the laptop and it
 keeps working — serving a web UI, a JSON API and an **MCP server** in one
 process. The MCP server exposes the causal engine over stdio so any Claude or
@@ -150,10 +159,38 @@ provable, not assumed.
 
 ---
 
+## The loop closing, and what it cost to learn
+
+On 2 September the agent ran unattended and did this:
+
+```
+16:26  EVENT   F ▼ "Ford Reports August U.S. Sales Down 10.3%"
+16:26  REFUSAL DCH, BWA, LEA, ADNT — all drifting against the thesis
+16:26  ORDER   sell STRT — 23% of revenue from Ford, -0.06σ, unmoved
+21:19  EXIT    PRGO thesis arrived at 2.85σ — closed +$29.96
+```
+
+A real event, four refusals with reasons, one position taken, and later a
+different position closed by itself because the residual it was waiting for
+showed up. Nobody touched any of it.
+
+**It also cost $4,461 to learn something the design had not accounted for.** An
+early run bought options with spreads up to 35% using market orders. Crossing a
+wide option book is an immediate loss, not a theoretical one: a contract bought
+at $0.20 was worth $0.10 the moment it filled. Half the premium, before the
+market moved. The gate had been written for *selecting* contracts and never
+asked what *crossing* them costs. Now: spread ≤ 12%, bid ≥ $0.40, open interest
+≥ 100, and limit orders at the mid rather than market. Not filling is a fine
+outcome.
+
+That is the honest shape of the run: the mechanism works, and one configuration
+error dominates the P&L.
+
 ## What we don't claim
 
-Seven days of paper trading cannot establish edge, and any equity curve from that
+Two days of paper trading cannot establish edge, and any equity curve from that
 window is noise. **We prove the mechanism, not the P&L.** What the run
 demonstrates is that a graph built entirely from filers' own structured
-disclosures fires correctly on real events, refuses for reasons it can state, and
-takes positions that each explain themselves in one line with a citation.
+disclosures fires correctly on real events, refuses for reasons it can state,
+takes positions that each explain themselves in one line with a citation, and
+closes them when the thesis is spent.

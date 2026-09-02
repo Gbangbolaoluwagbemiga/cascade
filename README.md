@@ -362,7 +362,8 @@ number at a time you choose.
 ### Scripts
 `build-graph` · `adjudicate-graph` · `hub-mine` · `deep-mine` · `survey` ·
 `analyse-hubs` · `cascade` · `trade` · `validate-extractor` ·
-`test-guards` · `test-residual` · `test-cascade` · `test-ui` · `build-ambiguous-keys`
+`test-guards` · `test-residual` · `test-cascade` · `test-ui` · `telegram-test` ·
+`build-ambiguous-keys`
 
 ---
 

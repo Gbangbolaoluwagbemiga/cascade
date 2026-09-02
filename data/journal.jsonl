@@ -217,3 +217,16 @@
 {"at":"2026-09-02T21:41:02.410Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T21:45:41.097Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
 {"at":"2026-09-02T21:45:53.446Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:51:57.528Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:54:53.043Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:58:04.613Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:01:07.859Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:07:05.012Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T22:10:56.266Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T22:11:05.304Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:11:17.275Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:11:39.809Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:12:52.887Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:15:53.274Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:16:11.926Z","kind":"exit","ticker":"KHC","underlying":"KHC","hub":"WMT","z":2.071606133580558,"pl":-1.38,"instrument":"share","inferred":true,"dryRun":false,"summary":"KHC thesis broken, -2.07σ against — P/L $-1.38 (thesis inferred)"}
+{"at":"2026-09-02T22:16:12.146Z","kind":"error","summary":"close KHC failed: Alpaca 403 on /v2/positions/KHC: insufficient qty available for order (requested: 138, available: 0)"}
