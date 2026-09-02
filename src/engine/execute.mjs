@@ -106,6 +106,21 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
   const side = direction < 0 ? "sell" : "buy";
   const results = [];
 
+  // Never stack onto a name already held. Two cascades touching the same
+  // dependent, or a re-run of the same event, would otherwise multiply the
+  // position past its own size cap without any gate noticing.
+  let alreadyHeld = new Set();
+  if (!dryRun) {
+    try {
+      const held = await openPositions();
+      for (const p of held) {
+        alreadyHeld.add(p.symbol);
+        const underlying = p.symbol.match(/^([A-Z]+)\d{6}[CP]\d{8}$/)?.[1];
+        if (underlying) alreadyHeld.add(underlying);
+      }
+    } catch { /* if positions cannot be read, fall through rather than block */ }
+  }
+
   // Alpaca rejects fractional quantities on a short sale, and a notional order
   // implies a fraction. Shorts therefore have to be expressed in whole shares,
   // which needs a price — so sizing in dollars is converted here rather than
@@ -113,6 +128,12 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
   const prices = side === "sell" ? await latestPrices(sized.map((c) => c.ticker)) : new Map();
 
   for (const c of sized) {
+    if (alreadyHeld.has(c.ticker)) {
+      results.push({ ...c, instrument: "skipped", status: "skipped",
+        error: `already holding ${c.ticker} — not stacking` });
+      continue;
+    }
+
     // ── options first ────────────────────────────────────────────────────────
     if (preferOptions) {
       const spot = c.spot ?? prices.get(c.ticker);
