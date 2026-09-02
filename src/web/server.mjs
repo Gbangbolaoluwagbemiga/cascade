@@ -6,6 +6,7 @@ import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { structuralScreen, runCascade, GATES } from "../engine/cascade.mjs";
+import { sizePositions, execute } from "../engine/execute.mjs";
 import { credentials, account, positions, news, clock } from "../market/alpaca.mjs";
 import { adjudicate } from "../engine/triage.mjs";
 
@@ -126,6 +127,47 @@ const server = http.createServer(async (req, res) => {
       }
       const result = await runCascade({ graph, hub, eventAt, direction, withOptions: true });
       return send(res, 200, { ...result, live: true });
+    }
+
+    // Run a cascade for real. The gates still decide what is bought — this only
+    // chooses WHEN to look, exactly like the Telegram /trade command. There is
+    // deliberately no endpoint that places an arbitrary order.
+    if (url.pathname === "/api/trade" && req.method === "POST") {
+      const cred = credentials();
+      if (!cred.ok) return send(res, 400, { error: cred.reason });
+
+      const hub = url.searchParams.get("hub");
+      const direction = url.searchParams.get("direction") === "up" ? 1 : -1;
+      if (!hub) return send(res, 400, { error: "hub required" });
+
+      const graph = loadGraph();
+      if (!graph.edges.some((e) => e.to === hub)) return send(res, 400, { error: `${hub} is not a hub in the graph` });
+
+      const eventAt = url.searchParams.get("at")
+        || new Date(Date.now() - 6 * 3600 * 1000).toISOString();
+
+      const result = await runCascade({ graph, hub, eventAt, direction, feed: "sip" });
+      if (result.error) return send(res, 400, { error: result.error });
+
+      if (!result.positions.length) {
+        return send(res, 200, { hub, direction, orders: [], refusals: result.refusals,
+          note: "nothing passed the gates" });
+      }
+
+      const a = await account();
+      const sized = sizePositions(result.positions.map((p) => ({ ...p, direction })), Number(a.equity));
+      const orders = await execute(sized, { direction, dryRun: false });
+
+      return send(res, 200, {
+        hub, direction, equity: Number(a.equity),
+        orders: orders.map((o) => ({
+          ticker: o.ticker, instrument: o.instrument, status: o.status, via: o.via,
+          contract: o.contract ?? null, contracts: o.contracts ?? null,
+          shares: o.shares ?? null, notional: o.notional, exposure: o.exposure, z: o.z,
+          error: o.error ?? null,
+        })),
+        refusals: result.refusals,
+      });
     }
 
     // static

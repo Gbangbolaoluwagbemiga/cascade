@@ -260,6 +260,19 @@ cadence, `MAX_CASCADES` per cycle, `EXECUTION_VIA=rest` to bypass Alpaca's MCP
 server, and `FLATTEN_AT=<ISO time>` to close the whole book at a wall-clock
 deadline.
 
+### Trading by hand
+
+Three surfaces, all the same discipline: a human chooses **when to look**, never
+**what to buy**. There is deliberately no endpoint, command or button that places
+an arbitrary order.
+
+| surface | |
+|---|---|
+| autonomous | the daemon, on its own event feed |
+| web UI | **Run this cascade** — two clicks, arm then confirm |
+| Telegram | `/trade HD` |
+| CLI | `npm run trade -- HD 2026-09-02 down "headline" --live` |
+
 ### Exits
 
 A position closes when the residual it was opened on finally arrives (±2σ) — the
@@ -363,6 +376,7 @@ rather than inventing a plausible supply chain.
 | `GET /api/portfolio` | equity, open positions, P/L |
 | `GET /api/news` | Benzinga headlines on graph hubs |
 | `GET /api/journal` | what the daemon did, refusals included |
+| `POST /api/trade?hub=HD` | run a cascade for real — the gates still decide what is bought |
 
 ---
 

@@ -83,6 +83,19 @@ h2{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fain
 .seg button{background:var(--surface);color:var(--muted);border:none;padding:5px 11px;
   font-family:var(--ui);font-size:11.5px;cursor:pointer;transition:background .18s var(--ease),color .18s var(--ease)}
 .seg button[aria-pressed="true"]{background:var(--text);color:var(--ground)}
+.fire{border:1px solid var(--border);background:var(--surface);color:var(--muted);
+  border-radius:6px;padding:5px 13px;font-family:var(--ui);font-size:11.5px;cursor:pointer;
+  transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease)}
+.fire:hover{color:var(--text);border-color:var(--muted)}
+.fire[data-armed="true"]{background:var(--hot);border-color:var(--hot);color:#fff}
+.fire:disabled{opacity:.5;cursor:default}
+.orders{border:1px solid var(--signal);border-radius:10px;background:var(--surface);
+  padding:13px;margin-bottom:12px}
+.orders h3{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--signal);
+  font-weight:600;margin-bottom:9px}
+.orders .row{display:flex;gap:8px;align-items:baseline;font-size:12px;padding:3px 0}
+.orders .row .tk{font-family:var(--mono);min-width:52px}
+.orders .row .meta{color:var(--faint);font-size:11px;margin-left:auto;font-family:var(--mono)}
 svg{width:100%;flex:1;min-height:430px;display:block}
 .legend{display:flex;gap:18px;font-size:10.5px;color:var(--faint);padding-top:8px;flex-wrap:wrap}
 .legend i{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
@@ -171,6 +184,7 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
         <button id="dirDown" aria-pressed="true">▼ bad news</button>
         <button id="dirUp" aria-pressed="false">▲ good news</button>
       </div>
+      <button id="fire" class="fire">Run this cascade</button>
     </div>
     <svg id="graph" viewBox="0 0 880 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="cascade graph"></svg>
     <div class="legend">
@@ -298,6 +312,48 @@ async function loadJournal() {
       <span class="msg">${(e.summary ?? "").replace(/</g, "&lt;")}</span>
     </div>`).join("");
 }
+
+let armed = false;
+$("fire").onclick = async () => {
+  if (!current) return;
+  const btn = $("fire");
+  // Two steps on purpose: one stray click must not open a book of positions.
+  if (!armed) {
+    armed = true;
+    btn.dataset.armed = "true";
+    btn.textContent = `Confirm — trade ${current} for real`;
+    setTimeout(() => { if (armed) { armed = false; btn.dataset.armed = "false"; btn.textContent = "Run this cascade"; } }, 6000);
+    return;
+  }
+  armed = false;
+  btn.dataset.armed = "false";
+  btn.disabled = true;
+  btn.textContent = "running…";
+
+  try {
+    const r = await fetch(`/api/trade?hub=${current}&direction=${direction}`, { method: "POST" }).then((x) => x.json());
+    if (r.error) { $("detail").innerHTML = `<p class="empty">${r.error}</p>`; }
+    else if (!r.orders.length) {
+      $("detail").innerHTML = `<div class="orders" style="border-color:var(--warn)">
+        <h3 style="color:var(--warn)">no orders</h3>
+        <div style="color:var(--muted);font-size:12px">${r.note ?? "nothing passed the gates"}</div></div>`;
+    } else {
+      $("detail").innerHTML = `<div class="orders"><h3>${r.orders.length} order${r.orders.length > 1 ? "s" : ""} submitted</h3>` +
+        r.orders.map((o) => `<div class="row">
+          <span class="tk">${o.ticker}</span>
+          <span>${o.instrument === "option" ? `${o.contracts}× ${o.contract}` : `${o.shares ?? ""} sh`}</span>
+          <span class="meta">${pct(o.exposure)} · ${o.z?.toFixed(2)}σ · ${o.status}${o.via ? " · " + o.via : ""}</span>
+        </div>`).join("") + `</div>`;
+    }
+    refreshPortfolio();
+    loadJournal();
+    select(current);
+  } catch (err) {
+    $("detail").innerHTML = `<p class="empty">${err.message}</p>`;
+  }
+  btn.disabled = false;
+  btn.textContent = "Run this cascade";
+};
 
 $("dirDown").onclick = () => { direction = "down"; syncDir(); if (current) select(current); };
 $("dirUp").onclick = () => { direction = "up"; syncDir(); if (current) select(current); };
