@@ -208,3 +208,10 @@
 {"at":"2026-09-02T21:20:16.005Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T21:21:28.315Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
 {"at":"2026-09-02T21:21:41.515Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:27:49.789Z","kind":"scan","summary":"14 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:30:49.810Z","kind":"scan","summary":"14 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:33:49.654Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:36:49.231Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:39:49.950Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:40:50.184Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
+{"at":"2026-09-02T21:41:02.410Z","kind":"scan","summary":"13 headlines · 0 new · 0 material (groq) · market closed"}

@@ -24,6 +24,8 @@ export const COMMANDS = [
   { command: "refusals", description: "what the agent refused to trade, and why" },
   { command: "run", description: "/run HD — score a cascade now, no orders" },
   { command: "trade", description: "/trade HD — run it for real; every gate still applies" },
+  { command: "close", description: "/close SMG — close one position" },
+  { command: "closeall", description: "close every open position" },
   { command: "pause", description: "stop opening new positions" },
   { command: "resume", description: "start opening positions again" },
   { command: "help", description: "list commands" },
@@ -191,6 +193,23 @@ export function startCommandLoop(ctx, { intervalMs = 3000 } = {}) {
           else if (cmd === "refusals") reply = refusalsCmd(ctx);
           else if (cmd === "run") reply = await runCmd(ctx, arg, { live: false });
           else if (cmd === "trade") reply = await runCmd(ctx, arg, { live: true });
+          else if (cmd === "close" || cmd === "closeall") {
+            const { positions, closePosition } = await import("../market/alpaca.mjs");
+            const led = await import("../engine/ledger.mjs");
+            const held = await positions();
+            const target = cmd === "closeall"
+              ? held
+              : held.filter((p) => p.symbol === String(arg || "").toUpperCase());
+            if (!target.length) { reply = cmd === "closeall" ? "_no open positions_" : `not holding ${esc(String(arg || "").toUpperCase())}`; }
+            else {
+              const done = [];
+              for (const p of target) {
+                try { await closePosition(p.symbol); led.forget(p.symbol); done.push(`${p.symbol} ${(Number(p.unrealized_pl) >= 0 ? "+" : "")}${Number(p.unrealized_pl).toFixed(2)}`); }
+                catch (e) { done.push(`${p.symbol} failed`); }
+              }
+              reply = [`*closed ${done.length}*`, ``, ...done.map((d) => `\`${esc(d)}\``)].join("\n");
+            }
+          }
           else if (cmd === "pause") { ctx.setPaused(true); reply = "⏸ paused — no new positions"; }
           else if (cmd === "resume") { ctx.setPaused(false); reply = "▶️ resumed"; }
           else continue;

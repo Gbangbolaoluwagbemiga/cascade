@@ -290,9 +290,13 @@ an arbitrary order.
 | surface | |
 |---|---|
 | autonomous | the daemon, on its own event feed |
-| web UI | **Run this cascade** — two clicks, arm then confirm |
-| Telegram | `/trade HD` |
-| CLI | `npm run trade -- HD 2026-09-02 down "headline" --live` |
+| web UI | **Run this cascade** to open · **Close** per row or **Close all** on the Portfolio page |
+| Telegram | `/trade HD` · `/close SMG` · `/closeall` |
+| CLI | `npm run trade -- HD 2026-09-02 down "headline" --live` · `npm run flatten -- --live` |
+
+Every destructive action is two clicks — arm, then confirm, disarming itself
+after a few seconds. Opening was reachable from the UI while closing was not;
+an agent you can start but cannot stop is not a product.
 
 ### Exits
 
@@ -413,6 +417,8 @@ a \$90 headline.
 | `GET /api/orders` | order history — everything sent to the broker, filled or not |
 | `GET /api/blotter` | round-trip accounting: closed trades with realised P/L, open positions with their thesis |
 | `POST /api/trade?hub=HD` | run a cascade for real — the gates still decide what is bought |
+| `POST /api/close?symbol=SMG` | close one position |
+| `POST /api/close?scope=all` | close the whole book |
 
 ---
 
@@ -499,6 +505,8 @@ to look*, never *what to buy*.
 | `/refusals` | what the agent refused, and why |
 | `/run HD` | score a cascade now, no orders |
 | `/trade HD` | run it for real — every gate still applies |
+| `/close SMG` | close one position |
+| `/closeall` | close the whole book |
 | `/pause` `/resume` | stop and start opening positions |
 
 Each cascade as it fires, with the exposure, the residual, the citation, and

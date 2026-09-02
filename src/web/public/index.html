@@ -253,11 +253,14 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
 <div class="page" id="portfolio" hidden>
   <div class="tiles" id="ptiles"></div>
 
-  <div class="sechead"><h2>Open positions</h2><span class="n" id="openN"></span></div>
+  <div class="sechead">
+    <h2>Open positions</h2><span class="n" id="openN"></span>
+    <button id="closeAll" class="fire" style="margin-left:auto">Close all positions</button>
+  </div>
   <table id="openTable"><thead><tr>
     <th>Position</th><th>Side</th><th class="r">Qty</th><th class="r">Entry</th>
     <th class="r">Now</th><th class="r">Value</th><th class="r">P/L</th>
-    <th>Thesis</th><th>Cited</th>
+    <th>Thesis</th><th>Cited</th><th></th>
   </tr></thead><tbody></tbody></table>
 
   <div class="sechead"><h2>Closed trades</h2><span class="n" id="closedN"></span></div>
@@ -405,7 +408,25 @@ async function loadPortfolio() {
     <td class="mono r ${o.pl >= 0 ? "pos" : "neg"}">${signed(o.pl)}</td>
     <td>${o.hub ? `via <b>${o.hub}</b>${o.exposure ? ` · ${(o.exposure * 100).toFixed(0)}% of revenue` : ""}` : "—"}</td>
     <td class="cited">${o.accession ?? "—"}</td>
-  </tr>`).join("") || `<tr><td colspan="9" class="empty">none</td></tr>`;
+    <td class="r"><button class="fire close-one" data-sym="${o.symbol}">Close</button></td>
+  </tr>`).join("") || `<tr><td colspan="10" class="empty">none</td></tr>`;
+
+  // Each close is two clicks, like firing a cascade.
+  document.querySelectorAll(".close-one").forEach((btn) => {
+    btn.onclick = async () => {
+      if (btn.dataset.armed !== "true") {
+        btn.dataset.armed = "true";
+        btn.textContent = "Confirm";
+        setTimeout(() => { if (btn.dataset.armed === "true") { btn.dataset.armed = "false"; btn.textContent = "Close"; } }, 5000);
+        return;
+      }
+      btn.disabled = true; btn.textContent = "closing…";
+      const r = await fetch(`/api/close?symbol=${btn.dataset.sym}`, { method: "POST" }).then((x) => x.json());
+      btn.textContent = r.error ? "failed" : "closed";
+      await loadPortfolio();
+      refreshPortfolio();
+    };
+  });
 
   $("closedN").textContent = `${b.closed.length}`;
   $("closedTable").querySelector("tbody").innerHTML = b.closed.map((c) => `<tr>
@@ -419,6 +440,27 @@ async function loadPortfolio() {
     <td class="cited">${c.closedAt.slice(5, 16).replace("T", " ")}</td>
   </tr>`).join("") || `<tr><td colspan="8" class="empty">nothing closed yet</td></tr>`;
 }
+
+let closeAllArmed = false;
+$("closeAll").onclick = async () => {
+  const btn = $("closeAll");
+  if (!closeAllArmed) {
+    closeAllArmed = true;
+    btn.dataset.armed = "true";
+    btn.textContent = "Confirm — close everything";
+    setTimeout(() => { if (closeAllArmed) { closeAllArmed = false; btn.dataset.armed = "false"; btn.textContent = "Close all positions"; } }, 6000);
+    return;
+  }
+  closeAllArmed = false;
+  btn.dataset.armed = "false";
+  btn.disabled = true; btn.textContent = "closing…";
+  const r = await fetch("/api/close?scope=all", { method: "POST" }).then((x) => x.json());
+  btn.disabled = false;
+  btn.textContent = `closed ${r.closed?.length ?? 0}`;
+  await loadPortfolio();
+  refreshPortfolio();
+  setTimeout(() => { btn.textContent = "Close all positions"; }, 4000);
+};
 
 let footerTab = "log";
 $("tabLog").onclick = () => setFooter("log");

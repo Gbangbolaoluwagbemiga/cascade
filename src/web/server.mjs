@@ -172,6 +172,38 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { ...result, live: true });
     }
 
+    // Close one position, or the whole book. Opening was reachable from the UI
+    // and closing was not — an agent you can start but not stop is not a
+    // product.
+    if (url.pathname === "/api/close" && req.method === "POST") {
+      const cred = credentials();
+      if (!cred.ok) return send(res, 400, { error: cred.reason });
+
+      const symbol = url.searchParams.get("symbol");
+      const scope = url.searchParams.get("scope"); // "all" | "options"
+      const { closePosition } = await import("../market/alpaca.mjs");
+      const ledger = await import("../engine/ledger.mjs");
+
+      if (symbol) {
+        try {
+          await closePosition(symbol);
+          ledger.forget(symbol);
+          return send(res, 200, { closed: [symbol] });
+        } catch (err) {
+          return send(res, 400, { error: err.message.slice(0, 200) });
+        }
+      }
+
+      const held = await positions();
+      const target = scope === "options" ? held.filter((p) => p.asset_class === "us_option") : held;
+      const closed = [], failed = [];
+      for (const p of target) {
+        try { await closePosition(p.symbol); ledger.forget(p.symbol); closed.push(p.symbol); }
+        catch (err) { failed.push({ symbol: p.symbol, error: err.message.slice(0, 120) }); }
+      }
+      return send(res, 200, { closed, failed });
+    }
+
     // Run a cascade for real. The gates still decide what is bought — this only
     // chooses WHEN to look, exactly like the Telegram /trade command. There is
     // deliberately no endpoint that places an arbitrary order.
