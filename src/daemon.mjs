@@ -16,6 +16,7 @@ import { sizePositions, execute, OPTION_EXITS } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
 import * as telegram from "./notify/telegram.mjs";
+import { startCommandLoop } from "./notify/commands.mjs";
 import { exitVerdict } from "./market/residual.mjs";
 import * as ledger from "./engine/ledger.mjs";
 import { watch as watch8K } from "./events/edgar8k.mjs";
@@ -34,6 +35,7 @@ const MAX_CASCADES_PER_CYCLE = Number(process.env.MAX_CASCADES || 2);
 const bootedAt = new Date();
 let cycles = 0;
 let adj = { powered: false, reason: "not started" };
+let paused = false;
 let triageEngine = "heuristic";
 
 const load = (f, fallback) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return fallback; } };
@@ -235,6 +237,12 @@ async function cycle() {
     return;
   }
 
+  if (paused) {
+    journal({ kind: "hold", summary: `paused — ${candidates.length} material event${candidates.length > 1 ? "s" : ""} not acted on` });
+    writeState({ paused: true, pending: candidates.length });
+    return;
+  }
+
   for (const c of candidates.slice(0, MAX_CASCADES_PER_CYCLE)) {
     journal({ kind: "event", hub: c.hub, headline: c.headline, direction: c.direction, url: c.url,
       triage: c.triage,
@@ -332,6 +340,27 @@ export async function startDaemon({ quiet = false } = {}) {
     triageModel: adjudicator.triageModel, adjudicatorModel: adjudicator.adjudicatorModel,
     edges: edgeCount, autoTrade: AUTO_TRADE,
   }).catch(() => {});
+
+  // Telegram command surface. Read-only plus pause/resume and /trade, which
+  // runs the real cascade with every gate applied — a human chooses when to
+  // look, never what to buy.
+  if (telegram.configured()) {
+    const started = startCommandLoop({
+      graph: load(path.join(DATA, "graph.json"), { edges: [], nodes: [], edgeCount: 0, nodeCount: 0 }),
+      llm: adjudicator,
+      autoTrade: AUTO_TRADE,
+      paused: () => paused,
+      setPaused: (v) => { paused = v; journal({ kind: "control", summary: v ? "paused via telegram" : "resumed via telegram" }); },
+      journal: () => {
+        try {
+          return fs.readFileSync(JOURNAL, "utf8").split("\n").filter(Boolean)
+            .map((l) => { try { return JSON.parse(l); } catch { return null; } })
+            .filter(Boolean).reverse();
+        } catch { return []; }
+      },
+    });
+    if (!quiet) console.log(`  commands    ${started ? "listening" : "off"}`);
+  }
 
   const tick = () => cycle().catch((e) => journal({ kind: "error", summary: e.message }));
   await tick();

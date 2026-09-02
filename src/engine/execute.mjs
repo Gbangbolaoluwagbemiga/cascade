@@ -198,16 +198,29 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
     }
 
     if (dryRun) {
-      results.push({ ...c, instrument: "share", side, status: "dry-run", order });
+      results.push({ ...c, instrument: "share", side, status: "dry-run", order, via: viaMcp ? "alpaca-mcp" : "rest" });
       continue;
     }
     try {
-      const filled = await submitOrder(order);
-      results.push({ ...c, side, status: filled.status, orderId: filled.id, submittedAt: filled.submitted_at });
+      const r = await route("share", {
+        order,
+        symbol: order.symbol,
+        side: order.side,
+        qty: order.qty ? Number(order.qty) : undefined,
+        notional: order.notional,
+      }, { viaMcp });
+      const done = {
+        ...c, instrument: "share", side,
+        status: r.status ?? "submitted", orderId: r.id, via: r.via, mcpError: r.mcpError,
+      };
+      // Write the thesis down at order time. Without this the exit logic cannot
+      // tell which event opened the position.
+      ledger.record(done);
+      results.push(done);
     } catch (err) {
       // A rejected order is reportable, not fatal: shorting needs locate, and
       // some names are simply not shortable.
-      results.push({ ...c, side, status: "rejected", error: err.message });
+      results.push({ ...c, instrument: "share", side, status: "rejected", error: String(err.message).slice(0, 160) });
     }
   }
   return results;

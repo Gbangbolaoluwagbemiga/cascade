@@ -70,5 +70,17 @@
     "accession": "0001611547-26-000022",
     "inferred": true,
     "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "STRT": {
+    "symbol": "STRT",
+    "underlying": "STRT",
+    "instrument": "share",
+    "hub": "F",
+    "direction": -1,
+    "exposure": 0.23,
+    "entryZ": -0.06,
+    "relationshipType": "customer",
+    "headline": "Ford Reports August U.S. Sales Of 170,681 Vehicles, Down 10.3%",
+    "openedAt": "2026-09-02T16:26:28Z"
   }
 }

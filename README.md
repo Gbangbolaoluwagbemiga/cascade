@@ -318,6 +318,7 @@ number at a time you choose.
 | `src/web/public/index.html` | The UI |
 | `src/mcp/server.mjs` | MCP over stdio — 4 tools |
 | `src/notify/telegram.mjs` | Cascade feed: each firing, with citations and refusals |
+| `src/notify/commands.mjs` | Telegram command surface — query the agent, pause it, run a cascade |
 
 ### Scripts
 `build-graph` · `adjudicate-graph` · `hub-mine` · `deep-mine` · `survey` ·
@@ -432,6 +433,23 @@ Alpaca and the LLM are actually reachable — so you can always prove which code
 is live rather than assuming the deploy landed.
 
 ### Telegram
+
+A live feed **and** a command surface. Read-only by design plus two controls —
+what it deliberately does not offer is a way to place an arbitrary trade:
+`/trade` runs the real cascade with every gate applied, so a human chooses *when
+to look*, never *what to buy*.
+
+| command | |
+|---|---|
+| `/status` | equity, positions, P/L, what the agent is running |
+| `/positions` | open positions with the thesis that opened each |
+| `/graph` | graph coverage and top hubs |
+| `/hub WMT` | who depends on this company, with citations |
+| `/why SMG` | why this position exists |
+| `/refusals` | what the agent refused, and why |
+| `/run HD` | score a cascade now, no orders |
+| `/trade HD` | run it for real — every gate still applies |
+| `/pause` `/resume` | stop and start opening positions |
 
 Each cascade as it fires, with the exposure, the residual, the citation, and
 what was refused:

@@ -111,3 +111,49 @@
 {"at":"2026-09-02T10:13:44.860Z","kind":"scan","summary":"14 headlines · 5 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T10:18:44.317Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
 {"at":"2026-09-02T10:18:56.501Z","kind":"scan","summary":"14 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:24:48.310Z","kind":"scan","summary":"15 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:29:47.296Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:34:47.277Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:39:48.799Z","kind":"scan","summary":"16 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:42:04.265Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=on"}
+{"at":"2026-09-02T10:42:17.175Z","kind":"scan","summary":"16 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:48:07.881Z","kind":"scan","summary":"16 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:53:08.744Z","kind":"scan","summary":"16 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:03:30.343Z","kind":"scan","summary":"16 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:04:48.996Z","kind":"scan","summary":"16 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:09:54.992Z","kind":"scan","summary":"18 headlines · 2 new · 1 material (groq) · market closed"}
+{"at":"2026-09-02T11:10:39.833Z","kind":"hold","summary":"1 material events but market closed — will act at open"}
+{"at":"2026-09-02T11:14:49.513Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:19:49.348Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:24:49.325Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:29:49.834Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:34:49.914Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:39:51.187Z","kind":"scan","summary":"19 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:44:49.763Z","kind":"scan","summary":"19 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:49:49.407Z","kind":"scan","summary":"19 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:54:49.868Z","kind":"scan","summary":"19 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T11:59:50.693Z","kind":"scan","summary":"20 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:04:51.203Z","kind":"scan","summary":"21 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:09:49.949Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:14:50.674Z","kind":"scan","summary":"22 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:19:50.295Z","kind":"scan","summary":"22 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:24:50.252Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:29:49.871Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:34:50.550Z","kind":"scan","summary":"22 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T12:39:49.743Z","kind":"scan","summary":"22 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T14:09:36.276Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T14:45:23.609Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T15:01:19.571Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T16:02:59.946Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T16:18:41.251Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T16:25:28.683Z","kind":"scan","summary":"21 headlines · 13 new · 3 material (groq) · market open"}
+{"at":"2026-09-02T16:26:17.973Z","kind":"event","hub":"BA","headline":"Ethiopian Airlines Nearing A Deal To Buy Up To 10 Boeing 777 Freighters Including Two Of The Current-Generation 777F Model","direction":1,"url":"https://www.benzinga.com/news/26/09/61575541/ethiopian-airlines-nearing-deal-buy-10-boeing-777-freighters-including-two-current-generation-777f-m","triage":{"material":true,"direction":1,"confidence":0.95,"reason":"Boeing gains large freighter order","model":"openai/gpt-oss-20b","engine":"groq"},"summary":"BA ▲ Ethiopian Airlines Nearing A Deal To Buy Up To 10 Boeing 777 Freighters  — groq: Boeing gains large freighter order"}
+{"at":"2026-09-02T16:26:18.180Z","kind":"error","summary":"cascade BA: Alpaca 400 on /v2/stocks/bars: invalid symbol: MOG-A"}
+{"at":"2026-09-02T16:26:18.181Z","kind":"event","hub":"F","headline":"Ford Reports August U.S. Sales Of 170,681 Vehicles, Down 10.3%; EV Sales Down 79.4% To 2,197, F-Series Down 1.2% To 67,504","direction":-1,"url":"https://www.benzinga.com/news/26/09/61574402/ford-reports-august-u-s-sales-of-170681-vehicles-down-10-3-ev-sales-down-79-4-to-2197-f-series-down-1-2-to-67504","triage":{"material":true,"direction":-1,"confidence":0.9,"reason":"Sales drop signals demand decline","model":"openai/gpt-oss-20b","engine":"groq"},"summary":"F ▼ Ford Reports August U.S. Sales Of 170,681 Vehicles, Down 10.3%; EV Sales — groq: Sales drop signals demand decline"}
+{"at":"2026-09-02T16:26:25.916Z","kind":"refusal","ticker":"DCH","hub":"F","gate":"priced_in","summary":"DCH refused [priced_in] drifting 1.81σ against the thesis"}
+{"at":"2026-09-02T16:26:25.917Z","kind":"refusal","ticker":"BWA","hub":"F","gate":"priced_in","summary":"BWA refused [priced_in] drifting 1.27σ against the thesis"}
+{"at":"2026-09-02T16:26:25.918Z","kind":"refusal","ticker":"LEA","hub":"F","gate":"priced_in","summary":"LEA refused [priced_in] drifting 1.19σ against the thesis"}
+{"at":"2026-09-02T16:26:25.918Z","kind":"refusal","ticker":"ADNT","hub":"F","gate":"priced_in","summary":"ADNT refused [priced_in] drifting 1.28σ against the thesis"}
+{"at":"2026-09-02T16:26:28.787Z","kind":"order","ticker":"STRT","hub":"F","side":"sell","notional":5001.59,"shares":70,"status":"pending_new","exposure":0.23,"z":-0.05731465391480115,"accession":"0000950170-25-111218","sourceUrl":"https://www.sec.gov/Archives/edgar/data/933034/000095017025111218/strt-20250629.htm","summary":"sell STRT 70sh — 23% exposed via F, -0.06σ — pending_new"}
+{"at":"2026-09-02T16:28:04.214Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=on"}
+{"at":"2026-09-02T16:28:17.629Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market open"}
