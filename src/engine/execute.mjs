@@ -87,7 +87,7 @@ async function route(kind, args, { viaMcp }) {
       // Fall through to REST rather than lose the trade.
       const fallbackError = err.message.slice(0, 140);
       if (kind === "option") {
-        const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, clientOrderId: args.clientOrderId });
+        const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, limitPrice: args.limitPrice, clientOrderId: args.clientOrderId });
         return { via: "rest-fallback", mcpError: fallbackError, id: filled.id, status: filled.status };
       }
       const filled = await submitOrder(args.order);
@@ -95,7 +95,7 @@ async function route(kind, args, { viaMcp }) {
     }
   }
   if (kind === "option") {
-    const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, clientOrderId: args.clientOrderId });
+    const filled = await submitOptionOrder({ symbol: args.symbol, qty: args.qty, limitPrice: args.limitPrice, clientOrderId: args.clientOrderId });
     return { via: "rest", id: filled.id, status: filled.status };
   }
   const filled = await submitOrder(args.order);
@@ -158,7 +158,7 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
           if (dryRun) { results.push({ ...record, status: "dry-run", via: viaMcp ? "alpaca-mcp" : "rest" }); continue; }
           try {
             const r = await route("option", {
-              symbol: k.symbol, qty,
+              symbol: k.symbol, qty, limitPrice: k.mid,
               clientOrderId: `csc-${c.hub}-${c.ticker}-${Date.now()}`.slice(0, 48),
             }, { viaMcp });
             const done = { ...record, status: r.status ?? "submitted", orderId: r.id, via: r.via, mcpError: r.mcpError };

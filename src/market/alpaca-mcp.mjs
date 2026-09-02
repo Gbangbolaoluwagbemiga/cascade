@@ -121,15 +121,23 @@ export async function accountInfo() {
  * `legs` is the multi-leg form — and `qty` as a STRING. Passing a number or the
  * multi-leg shape makes the call hang rather than error.
  */
-export async function placeOptionOrder({ symbol, qty, side = "buy" }) {
-  return call("place_option_order", {
+export async function placeOptionOrder({ symbol, qty, side = "buy", limitPrice = null }) {
+  const args = {
     symbol,
     side,
     qty: String(qty),
-    type: "market",
     time_in_force: "day",
     position_intent: side === "buy" ? "buy_to_open" : "sell_to_open",
-  });
+  };
+  // Limit at the mid rather than crossing the spread — a market order on a wide
+  // option book is an instant double-digit loss on premium.
+  if (limitPrice > 0) {
+    args.type = "limit";
+    args.limit_price = String(Math.round(limitPrice * 100) / 100);
+  } else {
+    args.type = "market";
+  }
+  return call("place_option_order", args);
 }
 
 /** Place an equity order through Alpaca's MCP server. */

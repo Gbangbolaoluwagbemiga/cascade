@@ -26,11 +26,15 @@ const headers = () => ({
 });
 
 export const OPTION_GATES = {
-  minBid: 0.10,          // a contract with no bid cannot be exited
-  maxSpreadFraction: 0.35, // ask-bid relative to mid
-  minDaysToExpiry: 10,   // the ripple needs room to arrive
-  maxDaysToExpiry: 60,   // beyond this the premium is paying for time we don't need
-  minOpenInterest: 5,
+  // A 35% spread was catastrophic in practice: buying at the ask and marking at
+  // the mid lost 10-25% of premium the instant the order filled — roughly
+  // $2,800 across five contracts on 2 Sep. The gate now reflects what it costs
+  // to actually cross, not merely whether a quote exists.
+  minBid: 0.40,            // cheap contracts are all spread; a 2c tick on a 20c option is 10%
+  maxSpreadFraction: 0.12, // was 0.35
+  minDaysToExpiry: 10,     // the ripple needs room to arrive
+  maxDaysToExpiry: 60,     // beyond this the premium pays for time we don't need
+  minOpenInterest: 100,    // was 5 — thin interest is why spreads are wide
 };
 
 const day = (d) => new Date(d).toISOString().slice(0, 10);
@@ -146,18 +150,31 @@ export function contractsFor(notional, premium) {
 // The daemon holds until the open, but scripts can hit this directly.
 export const OPTIONS_MARKET_HOURS_ONLY = true;
 
-export async function submitOptionOrder({ symbol, qty, clientOrderId }) {
+/**
+ * Limit at the mid, never market.
+ *
+ * A market order on an option crosses the whole spread; on a wide book that is
+ * an immediate double-digit loss on premium. A mid limit either fills at a fair
+ * price or does not fill — and not filling is a perfectly good outcome.
+ */
+export async function submitOptionOrder({ symbol, qty, clientOrderId, limitPrice = null }) {
+  const body = {
+    symbol,
+    qty: String(qty),
+    side: "buy",             // long premium only: defined risk
+    time_in_force: "day",
+    client_order_id: clientOrderId,
+  };
+  if (limitPrice > 0) {
+    body.type = "limit";
+    body.limit_price = String(Math.round(limitPrice * 100) / 100);
+  } else {
+    body.type = "market";
+  }
   const res = await fetch(new URL("/v2/orders", TRADE), {
     method: "POST",
     headers: { ...headers(), "Content-Type": "application/json" },
-    body: JSON.stringify({
-      symbol,
-      qty: String(qty),
-      side: "buy",             // long premium only: defined risk
-      type: "market",
-      time_in_force: "day",
-      client_order_id: clientOrderId,
-    }),
+    body: JSON.stringify(body),
   });
   const text = await res.text();
   if (!res.ok) throw new Error(`option order ${res.status}: ${text.slice(0, 180)}`);

@@ -98,10 +98,14 @@ something a short share position never does — defined, known-in-advance
 downside. Shares remain the fallback when no contract is tradeable.
 
 Options carry their own liquidity gate, because the equity gate says nothing
-about them: deep out-of-the-money contracts routinely quote with a zero bid. On
-a live Home Depot cascade it took SMG, SWK and FBIN as puts and refused JELD,
-UFPI, GFF and UE — spreads of 88% and 137%, or no bid at all — falling back to
-shares for those.
+about them, and **crossing a wide option spread is an immediate loss, not a
+theoretical one**. A first live run with a 35% spread ceiling and market orders
+lost roughly $2,800 the instant the fills came back — 10–25% of premium on
+every contract, before the market moved at all.
+
+So the gate now reflects what it costs to cross rather than whether a quote
+exists: **bid ≥ $0.40, spread ≤ 12%, open interest ≥ 100**, and orders go in as
+**limit at the mid, never market**. Not filling is a perfectly good outcome.
 
 ### Two MCP surfaces, pointing opposite ways
 
@@ -376,6 +380,7 @@ rather than inventing a plausible supply chain.
 | `GET /api/portfolio` | equity, open positions, P/L |
 | `GET /api/news` | Benzinga headlines on graph hubs |
 | `GET /api/journal` | what the daemon did, refusals included |
+| `GET /api/orders` | order history — everything sent to the broker, filled or not |
 | `POST /api/trade?hub=HD` | run a cascade for real — the gates still decide what is bought |
 
 ---

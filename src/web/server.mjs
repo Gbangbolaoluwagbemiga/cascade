@@ -7,7 +7,7 @@ import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { structuralScreen, runCascade, GATES } from "../engine/cascade.mjs";
 import { sizePositions, execute } from "../engine/execute.mjs";
-import { credentials, account, positions, news, clock } from "../market/alpaca.mjs";
+import { credentials, account, positions, news, clock, orders } from "../market/alpaca.mjs";
 import { adjudicate } from "../engine/triage.mjs";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
@@ -95,6 +95,25 @@ const server = http.createServer(async (req, res) => {
           symbol: x.symbol, qty: Number(x.qty), side: x.side, assetClass: x.asset_class,
           entry: Number(x.avg_entry_price), value: Number(x.market_value),
           pl: Number(x.unrealized_pl), plpc: Number(x.unrealized_plpc),
+        })),
+      });
+    }
+
+    // Order history — what was actually sent to the broker, and what it did.
+    if (url.pathname === "/api/orders") {
+      if (!credentials().ok) return send(res, 200, { connected: false, orders: [] });
+      const raw = await orders({ status: "all", limit: 60 });
+      return send(res, 200, {
+        connected: true,
+        orders: raw.map((o) => ({
+          id: o.id, symbol: o.symbol, side: o.side, qty: Number(o.qty ?? 0),
+          notional: o.notional ? Number(o.notional) : null,
+          type: o.order_type, limitPrice: o.limit_price ? Number(o.limit_price) : null,
+          status: o.status, assetClass: o.asset_class,
+          submittedAt: o.submitted_at, filledAt: o.filled_at,
+          filledQty: Number(o.filled_qty ?? 0),
+          filledPrice: o.filled_avg_price ? Number(o.filled_avg_price) : null,
+          clientOrderId: o.client_order_id,
         })),
       });
     }

@@ -129,6 +129,10 @@ export async function probeFeeds(symbol = "AAPL") {
 
 export const submitOrder = (order) => call(TRADE_URL, "/v2/orders", { method: "POST", body: order });
 export const positions = () => call(TRADE_URL, "/v2/positions");
+
+/** Order history — every order sent, filled or not. */
+export const orders = ({ status = "all", limit = 60 } = {}) =>
+  call(TRADE_URL, "/v2/orders", { query: { status, limit, direction: "desc", nested: "true" } });
 export const closePosition = (symbol) => call(TRADE_URL, `/v2/positions/${symbol}`, { method: "DELETE" });
 
 /**

@@ -147,6 +147,14 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
 .logline .kind.order{color:var(--signal)} .logline .kind.refusal{color:var(--warn)}
 .logline .kind.event{color:var(--hot)} .logline .kind.error{color:var(--hot)}
 .logline .kind.degraded{color:var(--faint)} .logline .kind.exit{color:var(--signal)}
+.trade{display:flex;gap:10px;align-items:baseline;font-size:11.5px;padding:3px 0;border-top:1px solid var(--border)}
+.trade:first-child{border-top:none}
+.trade time{font-family:var(--mono);color:var(--faint);font-size:10.5px;min-width:74px}
+.trade .tk{font-family:var(--mono);min-width:170px}
+.trade .side{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;min-width:38px}
+.trade .side.buy{color:var(--signal)} .trade .side.sell{color:var(--hot)}
+.trade .fill{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.trade .st{margin-left:auto;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
 .logline .kind.control{color:var(--muted)} .logline .kind.flatten{color:var(--warn)}
 .logline .msg{color:var(--muted);overflow-wrap:anywhere}
 @media (max-width:1080px){.grid{grid-template-columns:minmax(0,1fr)}svg{min-height:360px}}
@@ -213,10 +221,14 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
 
 <footer>
   <div class="loghead">
-    <h2>Agent log — including everything it refused</h2>
+    <div class="seg" role="group" aria-label="footer view">
+      <button id="tabLog" aria-pressed="true">Agent log — including everything it refused</button>
+      <button id="tabTrades" aria-pressed="false">Trade history</button>
+    </div>
     <span class="tag" id="daemonState" style="color:var(--faint);font-size:10.5px"></span>
   </div>
   <div id="log"><p class="empty">daemon not running — <span class="num">npm run daemon</span></p></div>
+  <div id="trades" hidden></div>
 </footer>
 
 <script>
@@ -298,6 +310,36 @@ async function loadNews() {
     d.addEventListener("click", () => { if (d.dataset.hub) select(d.dataset.hub); }));
 }
 
+let footerTab = "log";
+$("tabLog").onclick = () => setFooter("log");
+$("tabTrades").onclick = () => setFooter("trades");
+function setFooter(which) {
+  footerTab = which;
+  $("tabLog").setAttribute("aria-pressed", String(which === "log"));
+  $("tabTrades").setAttribute("aria-pressed", String(which === "trades"));
+  $("log").hidden = which !== "log";
+  $("trades").hidden = which !== "trades";
+  if (which === "trades") loadTrades();
+}
+
+async function loadTrades() {
+  const r = await fetch("/api/orders").then((x) => x.json()).catch(() => null);
+  if (!r?.orders?.length) { $("trades").innerHTML = `<p class="empty">no orders yet</p>`; return; }
+  // OCC symbols are long; show the underlying and the contract shape.
+  const label = (o) => {
+    const m = o.symbol.match(/^([A-Z]+)(\d{6})([CP])(\d{8})$/);
+    return m ? `${m[1]} ${m[3] === "P" ? "put" : "call"} ${Number(m[4]) / 1000} ${m[2].slice(2, 4)}/${m[2].slice(4)}` : o.symbol;
+  };
+  $("trades").innerHTML = r.orders.map((o) => `
+    <div class="trade">
+      <time>${o.submittedAt.slice(5, 16).replace("T", " ")}</time>
+      <span class="tk">${label(o)}</span>
+      <span class="side ${o.side}">${o.side}</span>
+      <span class="fill">${o.filledQty || o.qty}${o.filledPrice ? ` @ $${o.filledPrice.toFixed(2)}` : o.limitPrice ? ` lmt $${o.limitPrice.toFixed(2)}` : ""}</span>
+      <span class="st">${o.status}</span>
+    </div>`).join("");
+}
+
 async function loadJournal() {
   const r = await fetch("/api/journal").then((x) => x.json()).catch(() => null);
   if (!r) return;
@@ -345,9 +387,11 @@ $("fire").onclick = async () => {
           <span class="meta">${pct(o.exposure)} · ${o.z?.toFixed(2)}σ · ${o.status}${o.via ? " · " + o.via : ""}</span>
         </div>`).join("") + `</div>`;
     }
+    // Do NOT re-select: that used to overwrite the orders panel before it could
+    // be read, so a trade appeared to do nothing.
     refreshPortfolio();
     loadJournal();
-    select(current);
+    setFooter("trades");
   } catch (err) {
     $("detail").innerHTML = `<p class="empty">${err.message}</p>`;
   }
