@@ -7,6 +7,7 @@
 import { submitOrder, positions as openPositions, closePosition, dailyBars, latestPrices } from "../market/alpaca.mjs";
 import { selectContract, contractsFor, submitOptionOrder } from "../market/options.mjs";
 import * as alpacaMcp from "../market/alpaca-mcp.mjs";
+import * as ledger from "./ledger.mjs";
 import { PRICED_MIN_Z } from "../market/residual.mjs";
 import { UNPRICED_MAX_Z } from "../market/residual.mjs";
 
@@ -133,7 +134,9 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
               symbol: k.symbol, qty,
               clientOrderId: `csc-${c.hub}-${c.ticker}-${Date.now()}`.slice(0, 48),
             }, { viaMcp });
-            results.push({ ...record, status: r.status ?? "submitted", orderId: r.id, via: r.via, mcpError: r.mcpError });
+            const done = { ...record, status: r.status ?? "submitted", orderId: r.id, via: r.via, mcpError: r.mcpError };
+            ledger.record(done);
+            results.push(done);
           } catch (err) {
             results.push({ ...record, status: "rejected", error: err.message.slice(0, 160) });
           }

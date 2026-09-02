@@ -17,6 +17,7 @@ import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
 import * as telegram from "./notify/telegram.mjs";
 import { exitVerdict } from "./market/residual.mjs";
+import * as ledger from "./engine/ledger.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DATA = path.join(ROOT, "data");
@@ -62,33 +63,79 @@ async function reviewExits(graph) {
   if (!held.length) return;
 
   for (const p of held) {
-    // Which cascade opened this? Find the hub this ticker depends on.
-    const edge = graph.edges.find((e) => e.from === p.symbol);
-    if (!edge) continue;
-    const direction = p.side === "short" ? -1 : 1;
+    const isOption = p.asset_class === "us_option";
+    // The underlying for an OCC symbol: leading alpha before the date block.
+    const underlying = isOption ? (p.symbol.match(/^([A-Z]+)\d{6}[CP]\d{8}$/)?.[1] ?? p.symbol) : p.symbol;
+
+    // The thesis that opened this position, not whichever edge sorts first.
+    const thesis = ledger.get(p.symbol) ?? ledger.inferFromGraph(graph, p.symbol, underlying);
+    if (!thesis) continue;
+
+    const direction = thesis.direction ?? (p.side === "short" ? -1 : 1);
 
     let scored;
     try {
-      const r = await runCascade({ graph, hub: edge.to, eventAt: new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10), direction, feed: "sip" });
-      scored = r.considered.find((c) => c.ticker === p.symbol);
+      const r = await runCascade({
+        graph, hub: thesis.hub,
+        eventAt: thesis.openedAt ?? new Date(Date.now() - 7 * 864e5).toISOString(),
+        direction, feed: "sip",
+      });
+      scored = r.considered.find((c) => c.ticker === underlying);
     } catch { continue; }
-    if (!scored?.z && scored?.z !== 0) continue;
+    if (scored?.z == null) continue;
 
     const verdict = exitVerdict(scored.z, direction);
     if (!verdict.exit) continue;
 
     journal({
-      kind: "exit", ticker: p.symbol, hub: edge.to, z: scored.z,
-      pl: Number(p.unrealized_pl), dryRun: !AUTO_TRADE,
-      summary: `${p.symbol} ${verdict.reason} — P/L $${Number(p.unrealized_pl).toFixed(2)}${AUTO_TRADE ? "" : " (dry run)"}`,
+      kind: "exit", ticker: p.symbol, underlying, hub: thesis.hub, z: scored.z,
+      pl: Number(p.unrealized_pl), instrument: isOption ? "option" : "share",
+      inferred: Boolean(thesis.inferred), dryRun: !AUTO_TRADE,
+      summary: `${p.symbol} ${verdict.reason} — P/L $${Number(p.unrealized_pl).toFixed(2)}${thesis.inferred ? " (thesis inferred)" : ""}${AUTO_TRADE ? "" : " (dry run)"}`,
     });
-    telegram.positionClosed({ ticker: p.symbol, hub: edge.to, reason: verdict.reason, pl: Number(p.unrealized_pl) }).catch(() => {});
+
+    telegram.positionClosed({ ticker: p.symbol, hub: thesis.hub, reason: verdict.reason, pl: Number(p.unrealized_pl) }).catch(() => {});
 
     if (AUTO_TRADE) {
       const { closePosition } = await import("./market/alpaca.mjs");
-      try { await closePosition(p.symbol); } catch (err) { journal({ kind: "error", summary: `close ${p.symbol} failed: ${err.message}` }); }
+      try { await closePosition(p.symbol); ledger.forget(p.symbol); }
+      catch (err) { journal({ kind: "error", summary: `close ${p.symbol} failed: ${err.message}` }); }
     }
   }
+}
+
+/**
+ * Close everything at a wall-clock deadline.
+ *
+ * A cascade thesis resolves when the residual arrives — which may be after the
+ * competition ends. Without this the run finishes holding floating positions
+ * whose value is whatever the last tick happened to be. FLATTEN_AT converts the
+ * book to a realised number before that.
+ */
+async function flattenIfDue() {
+  const at = process.env.FLATTEN_AT;
+  if (!at) return false;
+  const due = new Date(at);
+  if (Number.isNaN(due.getTime()) || Date.now() < due.getTime()) return false;
+
+  const held = await openPositions();
+  if (!held.length) return true;
+
+  journal({ kind: "flatten", summary: `deadline ${at} reached — closing ${held.length} position${held.length > 1 ? "s" : ""}` });
+  if (!AUTO_TRADE) { journal({ kind: "flatten", summary: "dry run — nothing closed" }); return true; }
+
+  const { closePosition } = await import("./market/alpaca.mjs");
+  for (const p of held) {
+    try {
+      await closePosition(p.symbol);
+      ledger.forget(p.symbol);
+      journal({ kind: "exit", ticker: p.symbol, pl: Number(p.unrealized_pl),
+        summary: `${p.symbol} closed at deadline — P/L $${Number(p.unrealized_pl).toFixed(2)}` });
+    } catch (err) {
+      journal({ kind: "error", summary: `flatten ${p.symbol} failed: ${err.message}` });
+    }
+  }
+  return true;
 }
 
 async function cycle() {
@@ -125,6 +172,8 @@ async function cycle() {
     kind: "scan",
     summary: `${items.length} headlines · ${fresh.length} new · ${candidates.length} material (${engine}) · market ${k.is_open ? "open" : "closed"}`,
   });
+
+  if (await flattenIfDue()) { writeState({ flattened: true }); return; }
 
   await reviewExits(graph);
 

@@ -99,3 +99,5 @@
 {"at":"2026-09-02T09:19:58.787Z","kind":"error","summary":"clock: fetch failed"}
 {"at":"2026-09-02T09:44:29.578Z","kind":"scan","summary":"7 headlines · 7 new · 1 material (groq) · market closed"}
 {"at":"2026-09-02T09:44:33.007Z","kind":"hold","summary":"1 material events but market closed — will act at open"}
+{"at":"2026-09-02T09:49:25.302Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T09:54:25.501Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}

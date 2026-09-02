@@ -1,0 +1,74 @@
+{
+  "FBIN": {
+    "symbol": "FBIN",
+    "underlying": "FBIN",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.11,
+    "relationshipType": "customer",
+    "accession": "0001193125-26-063960",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "GFF": {
+    "symbol": "GFF",
+    "underlying": "GFF",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.09,
+    "relationshipType": "customer",
+    "accession": "0001628280-25-053242",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "JELD": {
+    "symbol": "JELD",
+    "underlying": "JELD",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.17,
+    "relationshipType": "customer",
+    "accession": "0001674335-26-000043",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "SMG": {
+    "symbol": "SMG",
+    "underlying": "SMG",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.34,
+    "relationshipType": "customer",
+    "accession": "0000825542-25-000022",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "SWK": {
+    "symbol": "SWK",
+    "underlying": "SWK",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.15,
+    "relationshipType": "customer",
+    "accession": "0000093556-26-000009",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  },
+  "UE": {
+    "symbol": "UE",
+    "underlying": "UE",
+    "instrument": "share",
+    "hub": "HD",
+    "direction": -1,
+    "exposure": 0.055999999999999994,
+    "relationshipType": "customer",
+    "accession": "0001611547-26-000022",
+    "inferred": true,
+    "openedAt": "2026-09-01T14:47:00Z"
+  }
+}

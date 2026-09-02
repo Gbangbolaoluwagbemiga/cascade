@@ -22,6 +22,7 @@
     "mine:hub": "node scripts/hub-mine.mjs",
     "survey": "node scripts/survey.mjs",
     "start:all": "RUN_DAEMON=true node src/web/server.mjs",
-    "telegram:test": "node scripts/telegram-test.mjs"
+    "telegram:test": "node scripts/telegram-test.mjs",
+    "flatten": "node scripts/flatten.mjs"
   }
 }
