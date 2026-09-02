@@ -189,3 +189,22 @@
 {"at":"2026-09-02T20:10:20.399Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T20:10:28.065Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
 {"at":"2026-09-02T20:10:39.988Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T20:13:17.645Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
+{"at":"2026-09-02T20:13:29.915Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T20:49:35.668Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T20:49:35.673Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T21:05:06.712Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T21:05:06.715Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T21:08:06.527Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T21:08:06.533Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T21:09:01.828Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:09:02.022Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:09:02.314Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:11:18.336Z","kind":"scan","summary":"15 headlines · 4 new · 1 material (groq) · market closed"}
+{"at":"2026-09-02T21:14:16.922Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:14:24.104Z","kind":"hold","summary":"1 material events but market closed — will act at open"}
+{"at":"2026-09-02T21:17:16.132Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:19:55.685Z","kind":"exit","ticker":"PRGO","underlying":"PRGO","hub":"WMT","z":-2.853171130206139,"pl":29.96,"instrument":"share","inferred":false,"dryRun":false,"summary":"PRGO thesis arrived at 2.85σ — P/L $29.96"}
+{"at":"2026-09-02T21:20:16.005Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T21:21:28.315Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
+{"at":"2026-09-02T21:21:41.515Z","kind":"scan","summary":"15 headlines · 0 new · 0 material (groq) · market closed"}

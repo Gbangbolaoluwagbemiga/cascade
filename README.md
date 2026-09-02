@@ -340,6 +340,7 @@ number at a time you choose.
 | `src/engine/execute.mjs` | Sizing by exposure × confidence; whole-share shorts |
 | `src/engine/triage.mjs` | Stage-one routing: the LLM, or the deterministic classifier |
 | `src/engine/ledger.mjs` | Records which thesis opened which position, so exits score the right event |
+| `src/engine/blotter.mjs` | FIFO round-trip matching — what each closed trade actually made |
 | `src/events/edgar8k.mjs` | Second event source: the filers' own 8-Ks, by numbered item |
 | `src/llm/client.mjs` | Provider-agnostic LLM (Groq or xAI), both stages, usage tracking |
 | `src/env.mjs` | Shared `.env` loader used by every entry point |
@@ -386,6 +387,18 @@ rather than inventing a plausible supply chain.
 
 ---
 
+## The interface
+
+Two views. **Cascade** is the live graph: hubs by inbound dependents, the
+propagation, the reasoning chain for any node, the refusal log, and the agent's
+own activity. **Portfolio** is the account: equity, realised versus unrealised,
+win rate, every open position with the thesis and citation that opened it, and
+every closed trade with what it actually made.
+
+Realised and unrealised are shown separately on purpose. An early version
+displayed only the open figure, so a \$4,480 realised loss sat invisible behind
+a \$90 headline.
+
 ## API
 
 | Endpoint | Returns |
@@ -398,6 +411,7 @@ rather than inventing a plausible supply chain.
 | `GET /api/news` | Benzinga headlines on graph hubs |
 | `GET /api/journal` | what the daemon did, refusals included |
 | `GET /api/orders` | order history — everything sent to the broker, filled or not |
+| `GET /api/blotter` | round-trip accounting: closed trades with realised P/L, open positions with their thesis |
 | `POST /api/trade?hub=HD` | run a cascade for real — the gates still decide what is bought |
 
 ---

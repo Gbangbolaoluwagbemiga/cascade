@@ -40,6 +40,33 @@ header{display:flex;align-items:center;gap:20px;padding:0 24px;height:58px;
 .brand{display:flex;align-items:baseline;gap:12px}
 .brand h1{font-size:17px;font-weight:700;letter-spacing:-.035em}
 .brand .tag{color:var(--faint);font-size:11.5px;letter-spacing:.01em}
+.nav{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-left:20px}
+.nav button{background:var(--surface);color:var(--muted);border:none;padding:6px 15px;
+  font-family:var(--ui);font-size:12px;cursor:pointer;transition:background .18s var(--ease),color .18s var(--ease)}
+.nav button[aria-pressed="true"]{background:var(--text);color:var(--ground)}
+
+/* ── portfolio page ─────────────────────────────────────── */
+.page{flex:1;overflow-y:auto;padding:26px 30px;background:var(--ground);min-height:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:26px}
+.tile{background:var(--surface);padding:15px 17px}
+.tile .lab{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--faint);margin-bottom:6px}
+.tile .val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:20px;
+  font-weight:500;letter-spacing:-.02em}
+.tile .sub{font-size:11px;color:var(--faint);margin-top:3px;font-family:var(--mono)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:30px}
+thead th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--faint);font-weight:600;padding:0 12px 9px;border-bottom:1px solid var(--border);white-space:nowrap}
+thead th.r,tbody td.r{text-align:right}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:hover{background:var(--surface)}
+td.mono,th.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tag-short{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--hot)}
+.tag-long{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--signal)}
+.cited{font-size:10.5px;color:var(--faint);font-family:var(--mono)}
+.sechead{display:flex;align-items:baseline;gap:12px;margin:0 0 14px}
+.sechead h2{margin:0}
+.sechead .n{font-family:var(--mono);color:var(--faint);font-size:11px}
 .stats{margin-left:auto;display:flex;gap:22px;align-items:center;font-size:11.5px;color:var(--faint)}
 .stat b{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;
   font-size:13px;font-weight:500;color:var(--text);letter-spacing:-.01em}
@@ -167,6 +194,10 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
     <h1>Cascade</h1>
     <span class="tag">trades the ripple, not the splash</span>
   </div>
+  <nav class="nav" role="group" aria-label="view">
+    <button id="navCascade" aria-pressed="true">Cascade</button>
+    <button id="navPortfolio" aria-pressed="false">Portfolio</button>
+  </nav>
   <div class="stats" id="stats"><span class="pill"><i class="dot off"></i>connecting</span></div>
 </header>
 
@@ -217,6 +248,23 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
       <div id="news"><p class="empty">loading…</p></div>
     </div>
   </div>
+</div>
+
+<div class="page" id="portfolio" hidden>
+  <div class="tiles" id="ptiles"></div>
+
+  <div class="sechead"><h2>Open positions</h2><span class="n" id="openN"></span></div>
+  <table id="openTable"><thead><tr>
+    <th>Position</th><th>Side</th><th class="r">Qty</th><th class="r">Entry</th>
+    <th class="r">Now</th><th class="r">Value</th><th class="r">P/L</th>
+    <th>Thesis</th><th>Cited</th>
+  </tr></thead><tbody></tbody></table>
+
+  <div class="sechead"><h2>Closed trades</h2><span class="n" id="closedN"></span></div>
+  <table id="closedTable"><thead><tr>
+    <th>Position</th><th>Side</th><th class="r">Qty</th><th class="r">Entry</th>
+    <th class="r">Exit</th><th class="r">P/L</th><th class="r">%</th><th>Closed</th>
+  </tr></thead><tbody></tbody></table>
 </div>
 
 <footer>
@@ -312,6 +360,64 @@ async function loadNews() {
     : `<p class="empty">no headlines</p>`;
   document.querySelectorAll(".news").forEach((d) =>
     d.addEventListener("click", () => { if (d.dataset.hub) select(d.dataset.hub); }));
+}
+
+$("navCascade").onclick = () => setView("cascade");
+$("navPortfolio").onclick = () => setView("portfolio");
+function setView(v) {
+  const isPortfolio = v === "portfolio";
+  $("navCascade").setAttribute("aria-pressed", String(!isPortfolio));
+  $("navPortfolio").setAttribute("aria-pressed", String(isPortfolio));
+  document.querySelector(".grid").hidden = isPortfolio;
+  document.querySelector("footer").hidden = isPortfolio;
+  $("portfolio").hidden = !isPortfolio;
+  if (isPortfolio) loadPortfolio();
+}
+
+const signed = (x) => (x >= 0 ? "+" : "") + x.toFixed(2);
+
+async function loadPortfolio() {
+  const b = await fetch("/api/blotter").then((r) => r.json()).catch(() => null);
+  if (!b?.connected) { $("ptiles").innerHTML = `<div class="tile"><div class="lab">not connected</div></div>`; return; }
+
+  const total = b.totals.realised + b.totals.unrealised;
+  const winRate = b.totals.closedCount ? Math.round((100 * b.totals.wins) / b.totals.closedCount) : 0;
+  $("ptiles").innerHTML = [
+    ["equity", money(b.equity), `from ${money(b.startEquity)}`],
+    ["total P/L", signed(total), `${((total / b.startEquity) * 100).toFixed(2)}% of starting equity`, total],
+    ["realised", signed(b.totals.realised), `${b.totals.closedCount} closed trades`, b.totals.realised],
+    ["open", signed(b.totals.unrealised), `${b.totals.openCount} positions`, b.totals.unrealised],
+    ["win rate", `${winRate}%`, `${b.totals.wins}W · ${b.totals.losses}L`],
+  ].map(([lab, val, sub, sign]) => `<div class="tile">
+      <div class="lab">${lab}</div>
+      <div class="val ${sign === undefined ? "" : sign >= 0 ? "pos" : "neg"}">${val}</div>
+      <div class="sub">${sub}</div>
+    </div>`).join("");
+
+  $("openN").textContent = `${b.open.length} · ${money(b.open.reduce((s, o) => s + o.value, 0))} deployed`;
+  $("openTable").querySelector("tbody").innerHTML = b.open.map((o) => `<tr>
+    <td class="mono">${o.label}</td>
+    <td><span class="tag-${o.direction === "short" ? "short" : "long"}">${o.direction}</span></td>
+    <td class="mono r">${o.qty}</td>
+    <td class="mono r">$${o.entryPrice.toFixed(2)}</td>
+    <td class="mono r">$${o.currentPrice.toFixed(2)}</td>
+    <td class="mono r">${money(o.value)}</td>
+    <td class="mono r ${o.pl >= 0 ? "pos" : "neg"}">${signed(o.pl)}</td>
+    <td>${o.hub ? `via <b>${o.hub}</b>${o.exposure ? ` · ${(o.exposure * 100).toFixed(0)}% of revenue` : ""}` : "—"}</td>
+    <td class="cited">${o.accession ?? "—"}</td>
+  </tr>`).join("") || `<tr><td colspan="9" class="empty">none</td></tr>`;
+
+  $("closedN").textContent = `${b.closed.length}`;
+  $("closedTable").querySelector("tbody").innerHTML = b.closed.map((c) => `<tr>
+    <td class="mono">${c.label}</td>
+    <td><span class="tag-${c.direction === "short" ? "short" : "long"}">${c.direction}</span></td>
+    <td class="mono r">${c.qty}</td>
+    <td class="mono r">$${c.entryPrice.toFixed(2)}</td>
+    <td class="mono r">$${c.exitPrice.toFixed(2)}</td>
+    <td class="mono r ${c.pl >= 0 ? "pos" : "neg"}">${signed(c.pl)}</td>
+    <td class="mono r ${c.pl >= 0 ? "pos" : "neg"}">${c.plPct}%</td>
+    <td class="cited">${c.closedAt.slice(5, 16).replace("T", " ")}</td>
+  </tr>`).join("") || `<tr><td colspan="8" class="empty">nothing closed yet</td></tr>`;
 }
 
 let footerTab = "log";

@@ -113,21 +113,6 @@
     "expiry": null,
     "openedAt": "2026-09-02T19:43:18.642Z"
   },
-  "PRGO": {
-    "symbol": "PRGO",
-    "underlying": "PRGO",
-    "instrument": "share",
-    "hub": "WMT",
-    "direction": -1,
-    "exposure": 0.129,
-    "entryZ": -0.821554618916131,
-    "relationshipType": "customer",
-    "headline": null,
-    "accession": "0001585364-26-000009",
-    "strike": null,
-    "expiry": null,
-    "openedAt": "2026-09-02T19:43:20.039Z"
-  },
   "CALM": {
     "symbol": "CALM",
     "underlying": "CALM",
@@ -217,5 +202,50 @@
     "strike": null,
     "expiry": null,
     "openedAt": "2026-09-02T19:59:36.459Z"
+  },
+  "DCH": {
+    "symbol": "DCH",
+    "underlying": "DCH",
+    "instrument": "share",
+    "hub": "F",
+    "direction": -1,
+    "exposure": 0.15,
+    "entryZ": 0.8785367043411391,
+    "relationshipType": "customer",
+    "headline": null,
+    "accession": "0001062231-26-000020",
+    "strike": null,
+    "expiry": null,
+    "openedAt": "2026-09-02T20:11:38.096Z"
+  },
+  "BWA": {
+    "symbol": "BWA",
+    "underlying": "BWA",
+    "instrument": "share",
+    "hub": "F",
+    "direction": -1,
+    "exposure": 0.12,
+    "entryZ": 0.6230381612655019,
+    "relationshipType": "customer",
+    "headline": null,
+    "accession": "0000908255-26-000011",
+    "strike": null,
+    "expiry": null,
+    "openedAt": "2026-09-02T20:11:39.298Z"
+  },
+  "ADNT": {
+    "symbol": "ADNT",
+    "underlying": "ADNT",
+    "instrument": "share",
+    "hub": "F",
+    "direction": -1,
+    "exposure": 0.11,
+    "entryZ": -0.1536574706949099,
+    "relationshipType": "customer",
+    "headline": null,
+    "accession": "0001670541-25-000152",
+    "strike": null,
+    "expiry": null,
+    "openedAt": "2026-09-02T20:11:40.006Z"
   }
 }

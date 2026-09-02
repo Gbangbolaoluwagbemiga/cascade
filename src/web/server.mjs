@@ -111,6 +111,19 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Order history — what was actually sent to the broker, and what it did.
+    // Round-trip accounting: what each closed trade actually made.
+    if (url.pathname === "/api/blotter") {
+      if (!credentials().ok) return send(res, 200, { connected: false, closed: [], open: [], totals: {} });
+      const { blotter } = await import("../engine/blotter.mjs");
+      const b = await blotter();
+      const a = await account();
+      return send(res, 200, {
+        connected: true, ...b,
+        equity: Number(a.equity),
+        startEquity: Number(process.env.START_EQUITY || 100000),
+      });
+    }
+
     if (url.pathname === "/api/orders") {
       if (!credentials().ok) return send(res, 200, { connected: false, orders: [] });
       const raw = await orders({ status: "all", limit: 60 });
