@@ -31,7 +31,7 @@ global.requestAnimationFrame = () => {};
 
 let api;
 check("page script parses and every referenced function exists", () => {
-  api = new Function(script + "; return { detail, optionRow, colour, radiusFor, renderRefusals, pct };")();
+  api = new Function(script + "; return { detail, optionRow, colour, radiusFor, pct };")();
 });
 if (!api) process.exit(1);
 
@@ -73,7 +73,9 @@ check("radiusFor() puts higher exposure closer to the epicentre", () => {
   if (!(api.radiusFor(0.35) < api.radiusFor(0.05))) throw new Error("radius is not inverted with exposure");
 });
 
-check("renderRefusals() handles an empty list", () => api.renderRefusals([]));
+check("pct() formats a share", () => {
+  if (api.pct(0.234) !== "23.4%") throw new Error(`got ${api.pct(0.234)}`);
+});
 
 console.log(`\n${failed ? failed + " FAILED" : "all passed"}`);
 process.exit(failed ? 1 : 0);

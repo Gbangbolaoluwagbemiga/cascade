@@ -183,7 +183,7 @@ TRAVELS   SMG←HD      "Home Depot cuts guidance on weak housing demand"
 npm install
 curl -LsSf https://astral.sh/uv/install.sh | sh   # uvx, for Alpaca's MCP server
 cp .env.example .env                              # then fill in the keys below
-npm test                                          # 24 checks, no keys needed
+npm test                                          # 32 checks, no keys needed
 npm start                                         # web UI on http://localhost:8787
 AUTO_TRADE=true RUN_DAEMON=true npm start         # UI + agent, trading live
 ```
@@ -323,7 +323,7 @@ number at a time you choose.
 ### Scripts
 `build-graph` · `adjudicate-graph` · `hub-mine` · `deep-mine` · `survey` ·
 `analyse-hubs` · `cascade` · `trade` · `validate-extractor` ·
-`test-guards` · `test-residual` · `test-cascade` · `build-ambiguous-keys`
+`test-guards` · `test-residual` · `test-cascade` · `test-ui` · `build-ambiguous-keys`
 
 ---
 

@@ -15,7 +15,7 @@
     "daemon": "node src/daemon.mjs",
     "mcp": "node src/mcp/server.mjs",
     "build:graph": "node scripts/build-graph.mjs",
-    "test": "node scripts/test-guards.mjs && node scripts/test-residual.mjs && node scripts/test-cascade.mjs",
+    "test": "node scripts/test-guards.mjs && node scripts/test-residual.mjs && node scripts/test-cascade.mjs && node scripts/test-ui.mjs",
     "cascade": "node scripts/cascade.mjs",
     "trade": "node scripts/trade.mjs",
     "adjudicate": "node scripts/adjudicate-graph.mjs",
