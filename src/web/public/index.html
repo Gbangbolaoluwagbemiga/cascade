@@ -133,6 +133,8 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
   min-width:64px;color:var(--faint)}
 .logline .kind.order{color:var(--signal)} .logline .kind.refusal{color:var(--warn)}
 .logline .kind.event{color:var(--hot)} .logline .kind.error{color:var(--hot)}
+.logline .kind.degraded{color:var(--faint)} .logline .kind.exit{color:var(--signal)}
+.logline .kind.control{color:var(--muted)} .logline .kind.flatten{color:var(--warn)}
 .logline .msg{color:var(--muted);overflow-wrap:anywhere}
 @media (max-width:1080px){.grid{grid-template-columns:minmax(0,1fr)}svg{min-height:360px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -393,6 +395,25 @@ function draw(hub, nodes) {
   core.append(hl, hs);
   svg.appendChild(core);
   requestAnimationFrame(() => { core.style.opacity = 1; });
+}
+
+// The agent expresses a cascade as options where a contract is tradeable: the
+// residual gap sets the strike, the ripple horizon sets the expiry. When no
+// contract passes the options liquidity gate we say so and fall back to shares.
+function optionRow(c) {
+  if (!c.option) return "";
+  if (c.option.unavailable) {
+    return `<div class="kv"><span>options</span><span style="color:var(--warn)">${c.option.gate}</span></div>
+      <div class="cite" style="border-left-color:var(--warn)">${c.option.reason}<br>
+      <span style="color:var(--faint)">falls back to shares</span></div>`;
+  }
+  const o = c.option;
+  return `
+    <div class="kv"><span>instrument</span><span>${o.type === "put" ? "long put" : "long call"}</span></div>
+    <div class="kv"><span>contract</span><span>${o.symbol}</span></div>
+    <div class="kv"><span>strike / expiry</span><span>${o.strike} · ${o.expiry} (${o.daysOut}d)</span></div>
+    <div class="kv"><span>premium</span><span>$${o.mid.toFixed(2)} · spread ${(o.spreadFraction * 100).toFixed(0)}%</span></div>
+    <div class="kv"><span>thesis expects</span><span>${(o.expectedMovePct * 100).toFixed(1)}% further</span></div>`;
 }
 
 function detail(c, hub) {

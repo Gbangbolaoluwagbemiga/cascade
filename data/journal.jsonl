@@ -157,3 +157,18 @@
 {"at":"2026-09-02T16:26:28.787Z","kind":"order","ticker":"STRT","hub":"F","side":"sell","notional":5001.59,"shares":70,"status":"pending_new","exposure":0.23,"z":-0.05731465391480115,"accession":"0000950170-25-111218","sourceUrl":"https://www.sec.gov/Archives/edgar/data/933034/000095017025111218/strt-20250629.htm","summary":"sell STRT 70sh — 23% exposed via F, -0.06σ — pending_new"}
 {"at":"2026-09-02T16:28:04.214Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=on"}
 {"at":"2026-09-02T16:28:17.629Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T16:30:33.136Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=on"}
+{"at":"2026-09-02T16:30:45.557Z","kind":"scan","summary":"21 headlines · 0 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T16:48:19.759Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T18:22:53.605Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T18:30:00.534Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T18:39:41.266Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T18:57:19.939Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T19:05:06.565Z","kind":"error","summary":"clock: fetch failed"}
+{"at":"2026-09-02T19:10:22.117Z","kind":"scan","summary":"18 headlines · 7 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T19:15:19.712Z","kind":"scan","summary":"19 headlines · 1 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T19:20:17.671Z","kind":"scan","summary":"19 headlines · 0 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T19:20:43.966Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
+{"at":"2026-09-02T19:20:55.950Z","kind":"scan","summary":"19 headlines · 0 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T19:25:14.495Z","kind":"scan","summary":"18 headlines · 0 new · 0 material (groq) · market open"}
+{"at":"2026-09-02T19:28:14.581Z","kind":"scan","summary":"17 headlines · 0 new · 0 material (groq) · market open"}

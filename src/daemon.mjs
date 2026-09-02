@@ -179,13 +179,29 @@ async function cycle() {
   const hubs = graph.nodes.filter((n) => n.inDegree > 0).map((n) => n.ticker);
   const seen = new Set(load(SEEN, []));
 
-  let k;
-  try { k = await clock(); } catch (err) { journal({ kind: "error", summary: `clock: ${err.message}` }); return; }
+  // A transient network blip must not cost a whole cycle. Retry once, then fall
+  // back to a time-of-day estimate rather than skipping the scan entirely —
+  // aborting here meant four consecutive missed scans on one flaky evening.
+  let k = null;
+  for (let attempt = 0; attempt < 2 && !k; attempt++) {
+    try { k = await clock(); }
+    catch { if (attempt === 0) await new Promise((r) => setTimeout(r, 2000)); }
+  }
+  if (!k) {
+    const now = new Date();
+    const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+    const minutes = et.getHours() * 60 + et.getMinutes();
+    const weekday = et.getDay() >= 1 && et.getDay() <= 5;
+    k = { is_open: weekday && minutes >= 570 && minutes < 960, estimated: true };
+    journal({ kind: "degraded", summary: `clock unreachable — assuming market ${k.is_open ? "open" : "closed"} from the clock` });
+  }
 
   let items = [];
   try {
     items = await news(hubs, { start: new Date(Date.now() - 6 * 3600 * 1000).toISOString(), limit: 50 });
-  } catch (err) { journal({ kind: "error", summary: `news: ${err.message}` }); return; }
+  } catch (err) {
+    journal({ kind: "degraded", summary: `news feed unavailable (${String(err.message).slice(0, 40)}) — continuing on 8-K only` });
+  }
 
   const fresh = items.filter((n) => !seen.has(n.id));
   const candidates = [];
