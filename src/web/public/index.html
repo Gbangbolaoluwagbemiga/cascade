@@ -64,6 +64,10 @@ td.mono,th.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .tag-short{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--hot)}
 .tag-long{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--signal)}
 .cited{font-size:10.5px;color:var(--faint);font-family:var(--mono)}
+.note{border:1px solid var(--border);border-left:2px solid var(--muted);border-radius:8px;
+  background:var(--surface);padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--muted)}
+.note.warn{border-left-color:var(--warn)}
+.pending{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn)}
 .sechead{display:flex;align-items:baseline;gap:12px;margin:0 0 14px}
 .sechead h2{margin:0}
 .sechead .n{font-family:var(--mono);color:var(--faint);font-size:11px}
@@ -257,6 +261,7 @@ footer{border-top:1px solid var(--border);background:var(--surface);padding:10px
     <h2>Open positions</h2><span class="n" id="openN"></span>
     <button id="closeAll" class="fire" style="margin-left:auto">Close all positions</button>
   </div>
+  <div id="closeNote"></div>
   <table id="openTable"><thead><tr>
     <th>Position</th><th>Side</th><th class="r">Qty</th><th class="r">Entry</th>
     <th class="r">Now</th><th class="r">Value</th><th class="r">P/L</th>
@@ -402,7 +407,7 @@ async function loadPortfolio() {
     <td class="mono r">$${o.currentPrice.toFixed(2)}</td>
     <td class="mono r">${money(o.value)}</td>
     <td class="mono r ${o.pl >= 0 ? "pos" : "neg"}">${signed(o.pl)}</td>
-    <td>${o.hub ? `via <b>${o.hub}</b>${o.exposure ? ` · ${(o.exposure * 100).toFixed(0)}% of revenue` : ""}` : "—"}</td>
+    <td>${o.hub ? `via <b>${o.hub}</b>${o.exposure ? ` · ${(o.exposure * 100).toFixed(0)}% of revenue` : ""}${o.inferred ? ` <span class="pending">inferred</span>` : ""}` : "—"}</td>
     <td class="cited">${o.accession ?? "—"}</td>
     <td class="r"><button class="fire close-one" data-sym="${o.symbol}">Close</button></td>
   </tr>`).join("") || `<tr><td colspan="10" class="empty">none</td></tr>`;
@@ -418,7 +423,8 @@ async function loadPortfolio() {
       }
       btn.disabled = true; btn.textContent = "closing…";
       const r = await fetch(`/api/close?symbol=${btn.dataset.sym}`, { method: "POST" }).then((x) => x.json());
-      btn.textContent = r.error ? "failed" : "closed";
+      if (r.failed?.length) { btn.textContent = "failed"; btn.title = r.failed[0].error; }
+      else btn.textContent = r.marketOpen ? "closed" : "queued";
       await loadPortfolio();
       refreshPortfolio();
     };
@@ -452,10 +458,18 @@ $("closeAll").onclick = async () => {
   btn.disabled = true; btn.textContent = "closing…";
   const r = await fetch("/api/close?scope=all", { method: "POST" }).then((x) => x.json());
   btn.disabled = false;
-  btn.textContent = `closed ${r.closed?.length ?? 0}`;
+  const n = r.submitted?.length ?? 0;
+  btn.textContent = n ? (r.marketOpen ? `closed ${n}` : `queued ${n}`) : `failed ${r.failed?.length ?? 0}`;
+  // A silent failure is worse than a loud one — say what the broker said.
+  $("closeNote").innerHTML = r.note
+    ? `<div class="note">${r.note}</div>`
+    : r.failed?.length
+      ? `<div class="note warn">${r.failed.length} could not close:<br>` +
+        r.failed.slice(0, 4).map((f) => `<span class="num">${f.symbol}</span> — ${f.error}`).join("<br>") + `</div>`
+      : "";
   await loadPortfolio();
   refreshPortfolio();
-  setTimeout(() => { btn.textContent = "Close all positions"; }, 4000);
+  setTimeout(() => { btn.textContent = "Close all positions"; }, 5000);
 };
 
 async function loadJournal() {

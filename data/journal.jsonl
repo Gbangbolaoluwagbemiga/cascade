@@ -230,3 +230,8 @@
 {"at":"2026-09-02T22:15:53.274Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T22:16:11.926Z","kind":"exit","ticker":"KHC","underlying":"KHC","hub":"WMT","z":2.071606133580558,"pl":-1.38,"instrument":"share","inferred":true,"dryRun":false,"summary":"KHC thesis broken, -2.07σ against — P/L $-1.38 (thesis inferred)"}
 {"at":"2026-09-02T22:16:12.146Z","kind":"error","summary":"close KHC failed: Alpaca 403 on /v2/positions/KHC: insufficient qty available for order (requested: 138, available: 0)"}
+{"at":"2026-09-02T22:18:52.981Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:18:57.955Z","kind":"exit","ticker":"KHC","underlying":"KHC","hub":"WMT","z":2.071606133580558,"pl":-1.38,"instrument":"share","inferred":true,"dryRun":false,"summary":"KHC thesis broken, -2.07σ against — P/L $-1.38 (thesis inferred)"}
+{"at":"2026-09-02T22:18:58.670Z","kind":"error","summary":"close KHC failed: Alpaca 403 on /v2/positions/KHC: insufficient qty available for order (requested: 138, available: 0)"}
+{"at":"2026-09-02T22:20:02.464Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
+{"at":"2026-09-02T22:20:14.596Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}

@@ -99,6 +99,9 @@ export async function blotter() {
       entryZ: thesis?.entryZ ?? null,
       accession: thesis?.accession ?? null,
       openedAt: thesis?.openedAt ?? null,
+      // A thesis reconstructed after the fact is weaker evidence than one
+      // recorded at order time, and the interface should say so.
+      inferred: Boolean(thesis?.inferred),
     };
   });
 

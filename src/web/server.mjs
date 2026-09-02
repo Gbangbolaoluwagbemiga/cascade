@@ -182,26 +182,37 @@ const server = http.createServer(async (req, res) => {
       const symbol = url.searchParams.get("symbol");
       const scope = url.searchParams.get("scope"); // "all" | "options"
       const { closePosition } = await import("../market/alpaca.mjs");
-      const ledger = await import("../engine/ledger.mjs");
 
-      if (symbol) {
-        try {
-          await closePosition(symbol);
-          ledger.forget(symbol);
-          return send(res, 200, { closed: [symbol] });
-        } catch (err) {
-          return send(res, 400, { error: err.message.slice(0, 200) });
-        }
-      }
+      // A close SUBMITS an order. Outside market hours it queues, and the
+      // position stays open until it fills — so the thesis must NOT be
+      // forgotten here. Erasing it on submission wiped the reasoning behind
+      // thirteen still-open positions.
+      const attempt = async (sym) => {
+        try { await closePosition(sym); return { symbol: sym, ok: true }; }
+        catch (err) { return { symbol: sym, ok: false, error: err.message.slice(0, 180) }; }
+      };
 
-      const held = await positions();
-      const target = scope === "options" ? held.filter((p) => p.asset_class === "us_option") : held;
-      const closed = [], failed = [];
-      for (const p of target) {
-        try { await closePosition(p.symbol); ledger.forget(p.symbol); closed.push(p.symbol); }
-        catch (err) { failed.push({ symbol: p.symbol, error: err.message.slice(0, 120) }); }
-      }
-      return send(res, 200, { closed, failed });
+      const k = await clock().catch(() => ({ is_open: false }));
+      const targets = symbol
+        ? [symbol]
+        : (await positions())
+            .filter((p) => (scope === "options" ? p.asset_class === "us_option" : true))
+            .map((p) => p.symbol);
+
+      if (!targets.length) return send(res, 200, { submitted: [], failed: [], marketOpen: k.is_open, note: "no open positions" });
+
+      const results = await Promise.all(targets.map(attempt));
+      const submitted = results.filter((r) => r.ok).map((r) => r.symbol);
+      const failed = results.filter((r) => !r.ok);
+
+      return send(res, 200, {
+        submitted, failed, marketOpen: k.is_open,
+        note: !k.is_open && submitted.length
+          ? `${submitted.length} close order${submitted.length > 1 ? "s" : ""} queued — the market is shut, they fill at the open`
+          : failed.length && !submitted.length
+            ? "nothing closed — see the reasons below"
+            : null,
+      });
     }
 
     // Run a cascade for real. The gates still decide what is bought — this only
