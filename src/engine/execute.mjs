@@ -21,6 +21,14 @@ export const SIZING = {
   portfolioRisk: 0.25,   // never deploy more than a quarter of equity per cascade
   maxPerPosition: 0.05,  // and never more than 5% in one name
   minNotional: 200,      // below this the fill is not worth the slippage
+
+  // Ceiling across the WHOLE book, not one cascade.
+  //
+  // Each cascade was sized without knowing what earlier ones had already
+  // committed, so four of them stacked to 47% of equity — sixteen positions,
+  // every one short, all moving together. The per-cascade and per-name caps
+  // never saw each other. This one does.
+  portfolioCap: Number(process.env.PORTFOLIO_CAP || 0.60),
 };
 
 /**
@@ -33,13 +41,22 @@ export function confidence(candidate) {
   return Math.max(0, Math.min(1, room));
 }
 
-export function sizePositions(candidates, equity) {
+/**
+ * @param deployed capital already committed across the existing book. Passing
+ *   it is what stops cascades stacking blindly on one another.
+ */
+export function sizePositions(candidates, equity, { deployed = 0 } = {}) {
   const scored = candidates.map((c) => ({ ...c, confidence: confidence(c) }));
   const weightOf = (c) => c.exposure * c.confidence;
   const total = scored.reduce((a, c) => a + weightOf(c), 0);
   if (!(total > 0)) return [];
 
-  const budget = equity * SIZING.portfolioRisk;
+  // Headroom left under the portfolio ceiling, after what is already open.
+  const ceiling = equity * SIZING.portfolioCap;
+  const headroom = Math.max(0, ceiling - deployed);
+  if (headroom < SIZING.minNotional) return [];
+
+  const budget = Math.min(equity * SIZING.portfolioRisk, headroom);
   return scored
     .map((c) => {
       const share = weightOf(c) / total;
@@ -47,6 +64,32 @@ export function sizePositions(candidates, equity) {
       return { ...c, weight: share, notional: Math.round(notional * 100) / 100 };
     })
     .filter((c) => c.notional >= SIZING.minNotional);
+}
+
+/** Capital committed across the open book, as an absolute figure. */
+export async function deployedCapital() {
+  try {
+    const held = await openPositions();
+    return held.reduce((sum, p) => sum + Math.abs(Number(p.market_value)), 0);
+  } catch { return 0; }
+}
+
+/**
+ * Headroom check with a legible reason, so a refusal reads like every other
+ * gate rather than an empty result.
+ */
+export async function portfolioHeadroom(equity) {
+  const deployed = await deployedCapital();
+  const ceiling = equity * SIZING.portfolioCap;
+  const headroom = ceiling - deployed;
+  return {
+    deployed, ceiling, headroom,
+    pct: deployed / equity,
+    ok: headroom >= SIZING.minNotional,
+    reason: headroom >= SIZING.minNotional
+      ? null
+      : `portfolio is ${(100 * deployed / equity).toFixed(0)}% deployed against a ${(SIZING.portfolioCap * 100).toFixed(0)}% ceiling — no headroom for a new cascade`,
+  };
 }
 
 /**

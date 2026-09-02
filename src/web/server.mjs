@@ -6,7 +6,7 @@ import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { structuralScreen, runCascade, GATES } from "../engine/cascade.mjs";
-import { sizePositions, execute } from "../engine/execute.mjs";
+import { sizePositions, execute, portfolioHeadroom } from "../engine/execute.mjs";
 import { credentials, account, positions, news, clock, orders } from "../market/alpaca.mjs";
 import { adjudicate } from "../engine/triage.mjs";
 
@@ -185,7 +185,16 @@ const server = http.createServer(async (req, res) => {
       }
 
       const a = await account();
-      const sized = sizePositions(result.positions.map((p) => ({ ...p, direction })), Number(a.equity));
+      const room = await portfolioHeadroom(Number(a.equity));
+      if (!room.ok) {
+        return send(res, 200, { hub, direction, orders: [], refusals: result.refusals,
+          note: room.reason });
+      }
+      const sized = sizePositions(
+        result.positions.map((p) => ({ ...p, direction })),
+        Number(a.equity),
+        { deployed: room.deployed },
+      );
       const orders = await execute(sized, { direction, dryRun: false });
 
       return send(res, 200, {

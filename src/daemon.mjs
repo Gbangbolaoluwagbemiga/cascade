@@ -12,7 +12,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { news, account, positions as openPositions, clock } from "./market/alpaca.mjs";
 import { runCascade } from "./engine/cascade.mjs";
-import { sizePositions, execute, OPTION_EXITS } from "./engine/execute.mjs";
+import { sizePositions, execute, OPTION_EXITS, portfolioHeadroom, deployedCapital } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
 import * as telegram from "./notify/telegram.mjs";
@@ -302,7 +302,16 @@ async function cycle() {
     }
 
     const acct = await account();
-    const sized = sizePositions(survivors.map((p) => ({ ...p, direction: c.direction })), Number(acct.equity));
+    const room = await portfolioHeadroom(Number(acct.equity));
+    if (!room.ok) {
+      journal({ kind: "refusal", hub: c.hub, gate: "portfolio_cap", summary: `${c.hub} cascade refused [portfolio_cap] ${room.reason}` });
+      continue;
+    }
+    const sized = sizePositions(
+      survivors.map((p) => ({ ...p, direction: c.direction })),
+      Number(acct.equity),
+      { deployed: room.deployed },
+    );
     const orders = await execute(sized, { direction: c.direction, dryRun: !AUTO_TRADE });
 
     // Fire-and-forget: a notification failure must never affect a trade that

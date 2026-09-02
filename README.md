@@ -131,7 +131,8 @@ it refused and why:
 | `liquidity` | median daily volume < $2M | **"unmoved" must not mean "untraded"** |
 | `priced_in` | \|z\| ≥ 1σ | the market already has it |
 | `shock_type` | this shock doesn't travel this edge | a real dependency, wrong channel |
-| `option_liquidity` | no bid, or a spread wider than 35% | an untradeable contract bleeds on entry |
+| `option_liquidity` | no bid, spread > 12%, OI < 100 | crossing a wide option book is an instant loss |
+| `portfolio_cap` | the book is already 60% of equity | cascades sized separately stack into one-way risk |
 
 The liquidity gate is the one that matters most. Without it, "materially exposed
 and hasn't moved" systematically selects illiquid names — the fatal demo bug. In
@@ -264,6 +265,21 @@ Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
 cadence, `MAX_CASCADES` per cycle, `EXECUTION_VIA=rest` to bypass Alpaca's MCP
 server, and `FLATTEN_AT=<ISO time>` to close the whole book at a wall-clock
 deadline.
+
+### Sizing and exposure
+
+| cap | |
+|---|---|
+| per name | 5% of equity |
+| per cascade | 25% of equity |
+| **whole book** | **60% of equity** |
+
+The third one exists because the first two never saw each other. Each cascade
+was sized without knowing what earlier ones had committed, so four of them
+stacked to 47% of equity — sixteen positions, every one short, all moving
+together. `portfolio_cap` refuses a new cascade once the book is at its ceiling,
+and sizes the last one down to whatever headroom remains rather than blowing
+through it. Set with `PORTFOLIO_CAP`.
 
 ### Trading by hand
 
