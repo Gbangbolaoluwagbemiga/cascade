@@ -1,0 +1,51 @@
+
+=== HUB-FIRST RESULTS ===
+
+Hub                 ticker    mentions  checked  in-degree
+Lowe's              —               18       15          0
+Kroger              KR              39       38          1
+Dollar General      DG              11        9          0
+Best Buy            BBY             44       39          0
+Deere               DE              26       25          1
+Caterpillar         CAT             43       41          0
+Boeing              BA              84       75          2
+Lockheed Martin     LMT             57       53          2
+Nvidia              NVDA            71       70          1
+Intel               INTC            81       70          0
+Tesla               TSLA            52       49          0
+CVS                 CVS             70       63          1
+Microsoft           MSFT           313      286          1
+General Motors      GM              87       79          6
+
+--- Kroger (KR) — 1 named dependents ---
+  COKE    12.0% of revenue   FY 2025-12-31   as "The Kroger Company"
+
+--- Deere (DE) — 1 named dependents ---
+  TWI     10.0% of revenue   FY 2025-12-31   as "Deere Company"
+
+--- Boeing (BA) — 2 named dependents ---
+  ATRO    10.4% of revenue   FY 2025-12-31   as "Boeing"
+  MOG-A   10.0% of revenue   FY 2025-09-27   as "Boeing"
+
+--- Lockheed Martin (LMT) — 2 named dependents ---
+  AIRI    32.3% of revenue   FY 2025-12-31   as "Lockheed Martin"
+  MRCY    11.0% of revenue   FY 2026-07-03   as "Lockheed Martin Corporation"
+
+--- Nvidia (NVDA) — 1 named dependents ---
+  FN      16.3% of revenue   FY 2026-06-26   as "Nvidia Corporation"
+
+--- CVS (CVS) — 1 named dependents ---
+  CAH     28.0% of revenue   FY 2026-06-30   as "CVS Health Corporation"
+
+--- Microsoft (MSFT) — 1 named dependents ---
+  AAOI    28.8% of revenue   FY 2025-12-31   as "Microsoft"
+
+--- General Motors (GM) — 6 named dependents ---
+  DCH     44.0% of revenue   FY 2025-12-31   as "General Motors"
+  ULH     25.0% of revenue   FY 2025-12-31   as "General Motors"
+  LEA     21.7% of revenue   FY 2025-12-31   as "General Motors"
+  PHIN    18.0% of revenue   FY 2025-12-31   as "General Motors"
+  PAMT    14.0% of revenue   FY 2025-12-31   as "General Motors Company"
+  GNTX    10.0% of revenue   FY 2025-12-31   as "General Motors Company"
+
+written -> data/hubs.json

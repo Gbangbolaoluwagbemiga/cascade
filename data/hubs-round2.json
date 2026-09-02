@@ -1,0 +1,242 @@
+[
+  {
+    "hub": "Lowe's",
+    "ticker": null,
+    "positionable": false,
+    "mentions": 18,
+    "checked": 15,
+    "dependents": []
+  },
+  {
+    "hub": "Kroger",
+    "ticker": "KR",
+    "positionable": true,
+    "mentions": 39,
+    "checked": 38,
+    "dependents": [
+      {
+        "from": "COKE",
+        "share": 0.12,
+        "asNamed": "The Kroger Company",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001628280-26-009057",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/317540/000162828026009057/coke-20251231.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Dollar General",
+    "ticker": "DG",
+    "positionable": true,
+    "mentions": 11,
+    "checked": 9,
+    "dependents": []
+  },
+  {
+    "hub": "Best Buy",
+    "ticker": "BBY",
+    "positionable": true,
+    "mentions": 44,
+    "checked": 39,
+    "dependents": []
+  },
+  {
+    "hub": "Deere",
+    "ticker": "DE",
+    "positionable": true,
+    "mentions": 26,
+    "checked": 25,
+    "dependents": [
+      {
+        "from": "TWI",
+        "share": 0.1,
+        "asNamed": "Deere Company",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000899751-26-000007",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/899751/000089975126000007/twi-20251231.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Caterpillar",
+    "ticker": "CAT",
+    "positionable": true,
+    "mentions": 43,
+    "checked": 41,
+    "dependents": []
+  },
+  {
+    "hub": "Boeing",
+    "ticker": "BA",
+    "positionable": true,
+    "mentions": 84,
+    "checked": 75,
+    "dependents": [
+      {
+        "from": "ATRO",
+        "share": 0.10400000000000001,
+        "asNamed": "Boeing",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000008063-26-000021",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/8063/000000806326000021/atro-20251231.htm"
+      },
+      {
+        "from": "MOG-A",
+        "share": 0.1,
+        "asNamed": "Boeing",
+        "fiscalPeriodEnd": "2025-09-27",
+        "accession": "0001628280-25-054103",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/67887/000162828025054103/mog-20250927.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Lockheed Martin",
+    "ticker": "LMT",
+    "positionable": true,
+    "mentions": 57,
+    "checked": 53,
+    "dependents": [
+      {
+        "from": "AIRI",
+        "share": 0.32299999999999995,
+        "asNamed": "Lockheed Martin",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001213900-26-035731",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1009891/000121390026035731/ea0282298-10k_airindustries.htm"
+      },
+      {
+        "from": "MRCY",
+        "share": 0.11,
+        "asNamed": "Lockheed Martin Corporation",
+        "fiscalPeriodEnd": "2026-07-03",
+        "accession": "0001049521-26-000045",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1049521/000104952126000045/mrcy-20260703.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Nvidia",
+    "ticker": "NVDA",
+    "positionable": true,
+    "mentions": 71,
+    "checked": 70,
+    "dependents": [
+      {
+        "from": "FN",
+        "share": 0.163,
+        "asNamed": "Nvidia Corporation",
+        "fiscalPeriodEnd": "2026-06-26",
+        "accession": "0001408710-26-000028",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1408710/000140871026000028/fn-20260626.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Intel",
+    "ticker": "INTC",
+    "positionable": true,
+    "mentions": 81,
+    "checked": 70,
+    "dependents": []
+  },
+  {
+    "hub": "Tesla",
+    "ticker": "TSLA",
+    "positionable": true,
+    "mentions": 52,
+    "checked": 49,
+    "dependents": []
+  },
+  {
+    "hub": "CVS",
+    "ticker": "CVS",
+    "positionable": true,
+    "mentions": 70,
+    "checked": 63,
+    "dependents": [
+      {
+        "from": "CAH",
+        "share": 0.28,
+        "asNamed": "CVS Health Corporation",
+        "fiscalPeriodEnd": "2026-06-30",
+        "accession": "0000721371-26-000038",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/721371/000072137126000038/cah-20260630.htm"
+      }
+    ]
+  },
+  {
+    "hub": "Microsoft",
+    "ticker": "MSFT",
+    "positionable": true,
+    "mentions": 313,
+    "checked": 286,
+    "dependents": [
+      {
+        "from": "AAOI",
+        "share": 0.28800000000000003,
+        "asNamed": "Microsoft",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001437749-26-005875",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1158114/000143774926005875/aaoi20251231_10k.htm"
+      }
+    ]
+  },
+  {
+    "hub": "General Motors",
+    "ticker": "GM",
+    "positionable": true,
+    "mentions": 87,
+    "checked": 79,
+    "dependents": [
+      {
+        "from": "DCH",
+        "share": 0.44,
+        "asNamed": "General Motors",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001062231-26-000020",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1062231/000106223126000020/dch-20251231.htm"
+      },
+      {
+        "from": "ULH",
+        "share": 0.25,
+        "asNamed": "General Motors",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001193125-26-108365",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1308208/000119312526108365/ulh-20251231.htm"
+      },
+      {
+        "from": "LEA",
+        "share": 0.217,
+        "asNamed": "General Motors",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000842162-26-000011",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/842162/000084216226000011/lear-20251231.htm"
+      },
+      {
+        "from": "PHIN",
+        "share": 0.18,
+        "asNamed": "General Motors",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001968915-26-000023",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1968915/000196891526000023/phin-20251231.htm"
+      },
+      {
+        "from": "PAMT",
+        "share": 0.14,
+        "asNamed": "General Motors Company",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0001437749-26-007960",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/798287/000143774926007960/ptsi20251231_10k.htm"
+      },
+      {
+        "from": "GNTX",
+        "share": 0.1,
+        "asNamed": "General Motors Company",
+        "fiscalPeriodEnd": "2025-12-31",
+        "accession": "0000355811-26-000010",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/355811/000035581126000010/gntx-20251231.htm"
+      }
+    ]
+  }
+]

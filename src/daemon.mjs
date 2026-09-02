@@ -12,12 +12,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { news, account, positions as openPositions, clock } from "./market/alpaca.mjs";
 import { runCascade } from "./engine/cascade.mjs";
-import { sizePositions, execute } from "./engine/execute.mjs";
+import { sizePositions, execute, OPTION_EXITS } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
 import * as telegram from "./notify/telegram.mjs";
 import { exitVerdict } from "./market/residual.mjs";
 import * as ledger from "./engine/ledger.mjs";
+import { watch as watch8K } from "./events/edgar8k.mjs";
+import { tickerMap } from "./mining/sec.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DATA = path.join(ROOT, "data");
@@ -64,6 +66,35 @@ async function reviewExits(graph) {
 
   for (const p of held) {
     const isOption = p.asset_class === "us_option";
+
+    // Options decay. The residual test alone can hold a long put until it is
+    // worthless, or give back a large gain waiting for a 2σ move that never
+    // comes. Bank winners, cap losers, and never ride into the expiry cliff.
+    if (isOption) {
+      const plpc = Number(p.unrealized_plpc);
+      const thesisRecord = ledger.get(p.symbol);
+      const daysLeft = thesisRecord?.expiry
+        ? Math.round((new Date(thesisRecord.expiry) - Date.now()) / 864e5)
+        : null;
+
+      let optionExit = null;
+      if (plpc >= OPTION_EXITS.takeProfit) optionExit = `took profit at ${(plpc * 100).toFixed(0)}%`;
+      else if (plpc <= OPTION_EXITS.stopLoss) optionExit = `stopped out at ${(plpc * 100).toFixed(0)}%`;
+      else if (daysLeft != null && daysLeft <= OPTION_EXITS.minDaysLeft) optionExit = `${daysLeft}d to expiry — closing before the cliff`;
+
+      if (optionExit) {
+        journal({ kind: "exit", ticker: p.symbol, instrument: "option",
+          pl: Number(p.unrealized_pl), plpc,
+          summary: `${p.symbol} ${optionExit} — P/L $${Number(p.unrealized_pl).toFixed(2)}${AUTO_TRADE ? "" : " (dry run)"}` });
+        if (AUTO_TRADE) {
+          const { closePosition } = await import("./market/alpaca.mjs");
+          try { await closePosition(p.symbol); ledger.forget(p.symbol); } catch (err) {
+            journal({ kind: "error", summary: `close ${p.symbol} failed: ${err.message}` });
+          }
+        }
+        continue;
+      }
+    }
     // The underlying for an OCC symbol: leading alpha before the date block.
     const underlying = isOption ? (p.symbol.match(/^([A-Z]+)\d{6}[CP]\d{8}$/)?.[1] ?? p.symbol) : p.symbol;
 
@@ -165,6 +196,26 @@ async function cycle() {
     if (!t.material) continue;
     candidates.push({ ...n, hub, direction: t.direction ?? -1, triage: t });
   }
+  // Second source: the filers' own 8-Ks. A headline is somebody's judgement
+  // that something mattered; an 8-K is the company's own, with a numbered item
+  // saying what kind of event it was.
+  try {
+    const map = await tickerMap();
+    const hubList = hubs.map((t) => ({ ticker: t, cik: map.get(t)?.cik }));
+    const { events: filings } = await watch8K(hubList, { sinceHours: 36, seen });
+    for (const f of filings) {
+      seen.add(f.id);
+      candidates.push({
+        ...f, symbols: [f.hub],
+        triage: { material: true, direction: f.direction, engine: "edgar-8k",
+          reason: `Item ${f.item} — ${f.label}`, confidence: 0.9 },
+      });
+    }
+    if (filings.length) journal({ kind: "scan", summary: `${filings.length} material 8-K${filings.length > 1 ? "s" : ""} on graph hubs` });
+  } catch (err) {
+    journal({ kind: "error", summary: `8-K watch: ${err.message.slice(0, 90)}` });
+  }
+
   save(SEEN, [...seen].slice(-4000));
 
   const engine = candidates[0]?.triage?.engine ?? triageEngine;

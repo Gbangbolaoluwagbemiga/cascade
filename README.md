@@ -306,6 +306,7 @@ number at a time you choose.
 | `src/engine/execute.mjs` | Sizing by exposure × confidence; whole-share shorts |
 | `src/engine/triage.mjs` | Stage-one routing: the LLM, or the deterministic classifier |
 | `src/engine/ledger.mjs` | Records which thesis opened which position, so exits score the right event |
+| `src/events/edgar8k.mjs` | Second event source: the filers' own 8-Ks, by numbered item |
 | `src/llm/client.mjs` | Provider-agnostic LLM (Groq or xAI), both stages, usage tracking |
 | `src/env.mjs` | Shared `.env` loader used by every entry point |
 

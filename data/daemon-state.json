@@ -1,7 +1,7 @@
 {
-  "bootedAt": "2026-09-02T09:55:28.434Z",
-  "uptimeSeconds": 386,
-  "cycles": 2,
+  "bootedAt": "2026-09-02T10:08:53.345Z",
+  "uptimeSeconds": 52,
+  "cycles": 1,
   "pollMs": 300000,
   "autoTrade": true,
   "llm": {
@@ -15,9 +15,9 @@
     },
     "available": 14
   },
-  "lastCycleAt": "2026-09-02T10:01:54.487Z",
+  "lastCycleAt": "2026-09-02T10:09:45.082Z",
   "lastScan": {
-    "headlines": 9,
+    "headlines": 10,
     "material": 0
   }
 }

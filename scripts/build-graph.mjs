@@ -11,6 +11,17 @@ import { latestAnnualReport } from "../src/mining/sec.mjs";
 
 const read = (f) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : null);
 
+// Adjudication is expensive and rate-limited; a rebuild must not discard it.
+// Prior relationship types are carried forward for edges that already existed,
+// so only genuinely new edges need the model.
+const prior = new Map();
+{
+  const existing = read("data/graph.json");
+  for (const e of existing?.edges ?? []) {
+    if (e.typeSource === "llm") prior.set(`${e.from}->${e.to}`, e);
+  }
+}
+
 const edges = new Map(); // `${from}->${to}` -> edge
 const addEdge = (e) => {
   const key = `${e.from}->${e.to}`;
@@ -79,6 +90,19 @@ async function node(ticker) {
   };
   nodes.set(ticker, n);
   return n;
+}
+
+// Restore prior adjudication before annotating.
+for (const [key, e] of edges) {
+  const was = prior.get(key);
+  if (!was) continue;
+  Object.assign(e, {
+    relationshipType: was.relationshipType,
+    typeSource: was.typeSource,
+    typeModel: was.typeModel,
+    typeConfidence: was.typeConfidence,
+    typeReason: was.typeReason,
+  });
 }
 
 for (const e of edges.values()) {

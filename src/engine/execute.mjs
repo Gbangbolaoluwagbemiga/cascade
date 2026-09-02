@@ -11,6 +11,12 @@ import * as ledger from "./ledger.mjs";
 import { PRICED_MIN_Z } from "../market/residual.mjs";
 import { UNPRICED_MAX_Z } from "../market/residual.mjs";
 
+export const OPTION_EXITS = {
+  takeProfit: 0.60,   // +60% on premium: bank it rather than wait for 2σ
+  stopLoss: -0.50,    // -50%: the thesis is not arriving fast enough
+  minDaysLeft: 5,     // close before the expiry cliff dominates the price
+};
+
 export const SIZING = {
   portfolioRisk: 0.25,   // never deploy more than a quarter of equity per cascade
   maxPerPosition: 0.05,  // and never more than 5% in one name

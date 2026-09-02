@@ -104,3 +104,6 @@
 {"at":"2026-09-02T09:55:29.355Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
 {"at":"2026-09-02T09:55:30.610Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T10:01:13.503Z","kind":"scan","summary":"9 headlines · 2 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:06:12.754Z","kind":"scan","summary":"10 headlines · 1 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:08:54.129Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
+{"at":"2026-09-02T10:09:03.665Z","kind":"scan","summary":"10 headlines · 0 new · 0 material (groq) · market closed"}

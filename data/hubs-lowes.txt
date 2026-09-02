@@ -1,0 +1,11 @@
+
+=== HUB-FIRST RESULTS ===
+
+Hub                 ticker    mentions  checked  in-degree
+Lowe's              LOW             18       15          2
+
+--- Lowe's (LOW) — 2 named dependents ---
+  SWK     12.0% of revenue   FY 2026-01-03   as "Lowes"
+  FBIN    11.0% of revenue   FY 2025-12-27   as "Lowes"
+
+written -> data/hubs.json

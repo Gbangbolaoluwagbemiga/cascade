@@ -41,7 +41,12 @@ const STOPWORDS = new Set([
 export function normalizeName(raw) {
   const cleaned = String(raw)
     .toLowerCase()
-    .replace(/[.,;:()'"‘’“”]/g, " ")
+    // Apostrophes are DELETED, not spaced: "Lowe's" must normalise to "lowes"
+    // to match the SEC title "LOWES COMPANIES INC". Replacing them with a space
+    // produced "lowe s", which matched nothing — Lowe's, Macy's and McDonald's
+    // were all unresolvable.
+    .replace(/['‘’]/g, "")
+    .replace(/[.,;:()"“”]/g, " ")
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9\s-]/g, " ")
     .replace(/\s+/g, " ")

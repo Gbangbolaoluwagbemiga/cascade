@@ -128,8 +128,13 @@ Cascade calls *inward* to trade.
   hops out. Events under 3 days old are scored on **hourly** bars, because a
   same-day event has no daily bar after it and the agent must react within the
   horizon it claims.
-- **News** — the Benzinga feed is the event source. The daemon polls headlines on
-  graph hubs, triages them, and cascades the survivors.
+- **News** — the Benzinga feed is one of two event sources. The daemon polls
+  headlines on graph hubs, triages them with a cheap model, and cascades the
+  survivors. The second source is the **EDGAR 8-K watcher**: a headline is
+  somebody's judgement that something mattered, an 8-K is the company's own,
+  with a numbered item saying what kind of event it was. Item 1.02 —
+  termination of a material definitive agreement — is a disclosed relationship
+  *ending*, so the graph edge and the event arrive in the same document.
 - **Execution** — paper orders, sized and submitted, with short sales converted to
   whole shares (Alpaca rejects fractional quantities on a short).
 

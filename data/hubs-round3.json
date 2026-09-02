@@ -1,0 +1,27 @@
+[
+  {
+    "hub": "Lowe's",
+    "ticker": "LOW",
+    "positionable": true,
+    "mentions": 18,
+    "checked": 15,
+    "dependents": [
+      {
+        "from": "SWK",
+        "share": 0.12,
+        "asNamed": "Lowes",
+        "fiscalPeriodEnd": "2026-01-03",
+        "accession": "0000093556-26-000009",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/93556/000009355626000009/swk-20260103.htm"
+      },
+      {
+        "from": "FBIN",
+        "share": 0.11,
+        "asNamed": "Lowes",
+        "fiscalPeriodEnd": "2025-12-27",
+        "accession": "0001193125-26-063960",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1519751/000119312526063960/fbin-20251227.htm"
+      }
+    ]
+  }
+]
