@@ -250,12 +250,30 @@ npm run survey         # sector naming-rate survey
 npm run cascade -- HD 2026-08-25 down "headline"          # score one event
 npm run trade   -- HD 2026-08-25 down "headline" --live   # and submit orders
 npm run telegram:test                                     # verify the feed
+npm run flatten                                           # dry run: what would close
+npm run flatten -- --live                                 # close everything now
 ```
 
 Daemon environment: `AUTO_TRADE=true` to submit orders (default dry run),
 `RUN_DAEMON=true` to host the agent inside the web process, `POLL_MS` for
 cadence, `MAX_CASCADES` per cycle, `EXECUTION_VIA=rest` to bypass Alpaca's MCP
-server.
+server, and `FLATTEN_AT=<ISO time>` to close the whole book at a wall-clock
+deadline.
+
+### Exits
+
+A position closes when the residual it was opened on finally arrives (±2σ) — the
+thesis is spent — or when it breaks and moves against the thesis instead.
+
+Which thesis opened which position is **written down at order time**, not
+reconstructed afterwards. Several dependents sit under more than one hub (JAKK
+under both Walmart and Amazon, PBH under both), so searching the graph for a
+matching edge at exit time can score a position against a completely different
+event from the one that opened it.
+
+`FLATTEN_AT` exists because a cascade resolves when the market notices, which may
+be after any deadline you care about. It converts a floating book into a realised
+number at a time you choose.
 
 ---
 
@@ -286,7 +304,8 @@ server.
 |---|---|
 | `src/engine/cascade.mjs` | Propagation, the five gates, the refusal log |
 | `src/engine/execute.mjs` | Sizing by exposure × confidence; whole-share shorts |
-| `src/engine/triage.mjs` | Stage-one routing: Grok, or the deterministic classifier |
+| `src/engine/triage.mjs` | Stage-one routing: the LLM, or the deterministic classifier |
+| `src/engine/ledger.mjs` | Records which thesis opened which position, so exits score the right event |
 | `src/llm/client.mjs` | Provider-agnostic LLM (Groq or xAI), both stages, usage tracking |
 | `src/env.mjs` | Shared `.env` loader used by every entry point |
 

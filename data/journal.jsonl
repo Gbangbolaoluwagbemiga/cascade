@@ -101,3 +101,6 @@
 {"at":"2026-09-02T09:44:33.007Z","kind":"hold","summary":"1 material events but market closed — will act at open"}
 {"at":"2026-09-02T09:49:25.302Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
 {"at":"2026-09-02T09:54:25.501Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T09:55:29.355Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=300s · telegram=off"}
+{"at":"2026-09-02T09:55:30.610Z","kind":"scan","summary":"7 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T10:01:13.503Z","kind":"scan","summary":"9 headlines · 2 new · 0 material (groq) · market closed"}
