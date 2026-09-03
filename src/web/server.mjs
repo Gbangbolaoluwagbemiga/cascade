@@ -16,11 +16,29 @@ const PORT = Number(process.env.PORT || 8787);
 const BOOTED_AT = new Date();
 
 // Build marker from day one: a health endpoint that proves which code is live.
-let COMMIT = "unversioned";
-try {
-  COMMIT = execSync("git rev-parse --short HEAD", { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] })
-    .toString().trim();
-} catch { /* not a repo yet */ }
+//
+// Railway builds from a tarball with no .git directory, so `git rev-parse`
+// returns nothing there and the marker read "unversioned" — useless for the one
+// job it has. Platform-injected SHAs are checked first, git only as a local
+// fallback.
+const COMMIT = (
+  process.env.RAILWAY_GIT_COMMIT_SHA ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  process.env.SOURCE_COMMIT ||
+  process.env.GIT_COMMIT ||
+  (() => {
+    try {
+      return execSync("git rev-parse HEAD", { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+    } catch { return ""; }
+  })()
+).slice(0, 7) || "unversioned";
+
+const DEPLOY = {
+  env: process.env.RAILWAY_ENVIRONMENT_NAME ?? null,
+  service: process.env.RAILWAY_SERVICE_NAME ?? null,
+  region: process.env.RAILWAY_REPLICA_REGION ?? null,
+  branch: process.env.RAILWAY_GIT_BRANCH ?? null,
+};
 
 const loadGraph = () => JSON.parse(fs.readFileSync(path.join(ROOT, "data/graph.json"), "utf8"));
 
@@ -56,6 +74,7 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, {
         status: "ok",
         commit: COMMIT,
+        deploy: DEPLOY,
         llm,
         alpacaMcp: mcp,
         bootedAt: BOOTED_AT.toISOString(),
