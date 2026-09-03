@@ -34,6 +34,9 @@ const MAX_CASCADES_PER_CYCLE = Number(process.env.MAX_CASCADES || 2);
 
 const bootedAt = new Date();
 let cycles = 0;
+// Positions we have already announced an exit for. Cleared when the position
+// is genuinely gone, so a re-entry can notify again.
+const announcedExits = new Set();
 let adj = { powered: false, reason: "not started" };
 let paused = false;
 let triageEngine = "heuristic";
@@ -66,7 +69,24 @@ async function reviewExits(graph) {
   const held = await openPositions();
   if (!held.length) return;
 
+  // A close SUBMITS an order. Outside market hours it queues and the position
+  // stays open, so the next cycle re-detects the same exit and notifies again —
+  // 79 identical alerts for four positions before this guard existed. Skip any
+  // symbol that already has an order working.
+  let pending = new Set();
+  try {
+    const { orders } = await import("./market/alpaca.mjs");
+    const open = await orders({ status: "open", limit: 100 });
+    pending = new Set(open.map((o) => o.symbol));
+  } catch { /* if orders cannot be read, fall through rather than block exits */ }
+
+  // Forget announcements for positions that have actually closed, so a fresh
+  // entry in the same name can announce again.
+  const stillHeld = new Set(held.map((p) => p.symbol));
+  for (const sym of announcedExits) if (!stillHeld.has(sym)) announcedExits.delete(sym);
+
   for (const p of held) {
+    if (pending.has(p.symbol)) continue; // close already working
     const isOption = p.asset_class === "us_option";
 
     // Options decay. The residual test alone can hold a long put until it is
@@ -85,6 +105,8 @@ async function reviewExits(graph) {
       else if (daysLeft != null && daysLeft <= OPTION_EXITS.minDaysLeft) optionExit = `${daysLeft}d to expiry — closing before the cliff`;
 
       if (optionExit) {
+        if (announcedExits.has(p.symbol)) continue;
+        announcedExits.add(p.symbol);
         journal({ kind: "exit", ticker: p.symbol, instrument: "option",
           pl: Number(p.unrealized_pl), plpc,
           summary: `${p.symbol} ${optionExit} — P/L $${Number(p.unrealized_pl).toFixed(2)}${AUTO_TRADE ? "" : " (dry run)"}` });
@@ -119,6 +141,8 @@ async function reviewExits(graph) {
 
     const verdict = exitVerdict(scored.z, direction);
     if (!verdict.exit) continue;
+    if (announcedExits.has(p.symbol)) continue;
+    announcedExits.add(p.symbol);
 
     journal({
       kind: "exit", ticker: p.symbol, underlying, hub: thesis.hub, z: scored.z,
