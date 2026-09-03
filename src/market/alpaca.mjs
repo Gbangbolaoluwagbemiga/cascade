@@ -74,15 +74,28 @@ export function clampEndForFeed(end, feed) {
   return new Date(Math.min(asked, latest)).toISOString();
 }
 
+/**
+ * SEC and Alpaca write class shares differently: the SEC ticker file has MOG-A
+ * and BRK-B, Alpaca wants MOG.A and BRK.B. An unmapped symbol returns 400 and,
+ * because bars are fetched in one batch, takes down every cascade that touches
+ * it — a single Moog edge aborted the whole Boeing cascade.
+ */
+export const toAlpacaSymbol = (s) => String(s).replace(/-([A-Z])$/, ".$1");
+export const fromAlpacaSymbol = (s) => String(s).replace(/\.([A-Z])$/, "-$1");
+
 export async function dailyBars(symbols, { start, end, feed = "sip", limit = 10000, timeframe = "1Day" } = {}) {
   const out = new Map();
   let pageToken = null;
   end = clampEndForFeed(end, feed);
 
+  // Translate on the way out, translate back on the way in, so callers keep
+  // using the SEC spelling the graph is built from.
+  const wire = symbols.map(toAlpacaSymbol);
+
   do {
     const page = await call(DATA_URL, "/v2/stocks/bars", {
       query: {
-        symbols: symbols.join(","),
+        symbols: wire.join(","),
         timeframe,
         start,
         end,
@@ -93,8 +106,9 @@ export async function dailyBars(symbols, { start, end, feed = "sip", limit = 100
       },
     });
     for (const [sym, bars] of Object.entries(page.bars || {})) {
-      if (!out.has(sym)) out.set(sym, []);
-      out.get(sym).push(...bars);
+      const key = fromAlpacaSymbol(sym);
+      if (!out.has(key)) out.set(key, []);
+      out.get(key).push(...bars);
     }
     pageToken = page.next_page_token || null;
   } while (pageToken);

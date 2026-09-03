@@ -25,9 +25,27 @@ const median = (xs) => {
 /** Bars for every symbol a cascade needs, in one request. */
 export async function loadMarketData(symbols, { start, end, feed = "sip", timeframe = "1Day" } = {}) {
   const unique = [...new Set(symbols)].filter(Boolean);
-  const bars = await dailyBars(unique, { start, end, feed, timeframe });
-  const missing = unique.filter((s) => !(bars.get(s)?.length > 0));
-  return { bars, missing };
+
+  // Bars come back in one batch for speed. If any symbol in the batch is
+  // rejected the whole request 400s, so fall back to fetching individually and
+  // simply omit whatever cannot be had — a dependent with no data is refused by
+  // the market_data gate, which is a legible outcome. Aborting the cascade is
+  // not.
+  try {
+    const bars = await dailyBars(unique, { start, end, feed, timeframe });
+    return { bars, missing: unique.filter((s) => !(bars.get(s)?.length > 0)) };
+  } catch (err) {
+    const bars = new Map();
+    const missing = [];
+    for (const sym of unique) {
+      try {
+        const one = await dailyBars([sym], { start, end, feed, timeframe });
+        const series = one.get(sym);
+        if (series?.length) bars.set(sym, series); else missing.push(sym);
+      } catch { missing.push(sym); }
+    }
+    return { bars, missing, batchError: String(err.message).slice(0, 140) };
+  }
 }
 
 /** Index of the first bar at or after a timestamp. */
