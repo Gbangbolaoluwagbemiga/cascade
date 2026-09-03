@@ -1,0 +1,26 @@
+# Railway build.
+#
+# Nixpacks detects Node and installs only Node. Alpaca's official MCP server is
+# a Python package launched with uvx, so without this the container has no uvx,
+# execution silently falls back to REST, and "orders route through Alpaca's MCP
+# server" quietly stops being true in production.
+#
+# uv is installed from the Nix package set rather than the curl installer so the
+# build stays hermetic and does not depend on astral.sh being reachable.
+
+[phases.setup]
+nixPkgs = ["nodejs_22", "uv", "python312"]
+
+[phases.install]
+cmds = [
+  "npm ci --omit=dev || npm install --omit=dev",
+  # Warm the MCP server into uv's cache at build time. Doing it here means the
+  # first trade of the day is not waiting ~60s for a cold package resolve.
+  "uvx --help >/dev/null 2>&1 || true",
+]
+
+[phases.build]
+cmds = ["node scripts/test-guards.mjs && node scripts/test-residual.mjs && node scripts/test-cascade.mjs && node scripts/test-ui.mjs"]
+
+[start]
+cmd = "node src/web/server.mjs"

@@ -331,7 +331,8 @@ async function refreshPortfolio(health) {
     <span class="stat">edges<b>${h.graph?.edges ?? 0}</b></span>
     <span class="pill"><i class="dot ${p.connected ? "live" : "off"}"></i>${p.connected ? (p.marketOpen ? "market open" : "market closed") : "no keys"}</span>
     <span class="stat">build<b>${h.commit}</b></span>
-    <span class="stat">reasoning<b class="${h.llm?.powered ? "" : "warnv"}">${h.llm?.powered ? h.llm.adjudicatorModel : "heuristic"}</b></span>`;
+    <span class="stat">reasoning<b class="${h.llm?.powered ? "" : "warnv"}">${h.llm?.powered ? h.llm.adjudicatorModel : "heuristic"}</b></span>
+    <span class="stat">execution<b class="${h.alpacaMcp?.ok ? "" : "warnv"}" title="${h.alpacaMcp?.reason ?? ""}">${h.alpacaMcp?.ok ? "alpaca-mcp" : "rest"}</b></span>`;
 
   // OCC symbols are 15+ characters; show the underlying plus the contract shape.
   const label = (x) => {

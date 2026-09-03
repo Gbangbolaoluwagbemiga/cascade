@@ -476,6 +476,17 @@ railway init
 railway up
 ```
 
+`nixpacks.toml` installs **uv and Python alongside Node**, because Alpaca's
+official MCP server is a Python package launched with `uvx`. Without it the
+container has Node only, execution silently falls back to REST, and "orders
+route through Alpaca's MCP server" quietly stops being true in production.
+The build also runs the full test suite, so a broken commit fails the deploy
+rather than shipping.
+
+`/healthz` reports which route is live — `alpacaMcp.ok` is `true` when the
+launcher is present and `route: "rest-fallback"` when it is not. The header
+shows the same thing, so a fallback is visible rather than silent.
+
 **There is no separate frontend.** The UI is static HTML served by the same
 process that runs the API and the agent — one deploy, one set of variables, one
 health endpoint. `railway.json` sets the start command and a `/healthz` check.

@@ -29,6 +29,23 @@ export function available() {
   return Boolean(process.env.ALPACA_API_KEY_ID && process.env.ALPACA_API_SECRET_KEY);
 }
 
+/**
+ * Is the launcher for Alpaca's MCP server actually present?
+ *
+ * Nixpacks installs Node and nothing else unless told otherwise, so a container
+ * without uv silently routes every order through REST. Falling back is correct;
+ * doing it without saying so is not.
+ */
+export async function launcherPresent() {
+  const { spawnSync } = await import("node:child_process");
+  const home = process.env.HOME || "";
+  const r = spawnSync("uvx", ["--version"], {
+    env: { ...process.env, PATH: `${home}/.local/bin:${process.env.PATH}` },
+    timeout: 8000,
+  });
+  return { ok: r.status === 0, version: String(r.stdout ?? "").trim() || null };
+}
+
 function handleLine(line) {
   if (!line.trim()) return;
   let msg;

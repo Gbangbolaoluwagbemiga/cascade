@@ -42,12 +42,22 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === "/healthz") {
       let graph = null;
       try { const g = loadGraph(); graph = { edges: g.edgeCount, nodes: g.nodeCount, builtAt: g.builtAt }; } catch { /* absent */ }
+      let mcp = { ok: false, reason: "not checked" };
+      try {
+        const { launcherPresent } = await import("../market/alpaca-mcp.mjs");
+        const l = await launcherPresent();
+        mcp = l.ok
+          ? { ok: true, launcher: `uvx ${l.version}`, route: "alpaca-mcp" }
+          : { ok: false, route: "rest-fallback", reason: "uvx not on PATH — orders route through REST" };
+      } catch (err) { mcp = { ok: false, route: "rest-fallback", reason: err.message.slice(0, 120) }; }
+
       let llm = { powered: false, reason: "not checked" };
       try { llm = await adjudicate(); } catch (err) { llm = { powered: false, reason: err.message }; }
       return send(res, 200, {
         status: "ok",
         commit: COMMIT,
         llm,
+        alpacaMcp: mcp,
         bootedAt: BOOTED_AT.toISOString(),
         uptimeSeconds: Math.round((Date.now() - BOOTED_AT) / 1000),
         graph,
