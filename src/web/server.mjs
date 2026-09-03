@@ -269,6 +269,13 @@ const server = http.createServer(async (req, res) => {
           note: "nothing passed the gates" });
       }
 
+      // Manual runs are journalled like the daemon's, or the agent log shows
+      // an account that changed for no recorded reason.
+      const headline = url.searchParams.get("headline");
+      const { appendJournal } = await import("../engine/journal.mjs");
+      appendJournal({ kind: "event", hub, direction, headline,
+        summary: `${hub} ${direction < 0 ? "▼" : "▲"} manual run${headline ? " — " + headline.slice(0, 60) : " (no headline given)"}` });
+
       const a = await account();
       const room = await portfolioHeadroom(Number(a.equity));
       if (!room.ok) {
@@ -281,6 +288,17 @@ const server = http.createServer(async (req, res) => {
         { deployed: room.deployed },
       );
       const orders = await execute(sized, { direction, dryRun: false });
+
+      for (const o of orders) {
+        appendJournal({ kind: "order", ticker: o.ticker, hub, side: o.side,
+          instrument: o.instrument, status: o.status, exposure: o.exposure, z: o.z,
+          accession: o.accession, manual: true,
+          summary: `${o.side} ${o.ticker} ${o.shares ? o.shares + "sh" : "$" + o.notional} — ${(o.exposure * 100).toFixed(0)}% via ${hub}, ${o.z?.toFixed(2)}σ — ${o.status} (manual)` });
+      }
+      for (const r of result.refusals) {
+        appendJournal({ kind: "refusal", ticker: r.ticker, hub, gate: r.gate, manual: true,
+          summary: `${r.ticker} refused [${r.gate}] ${r.reason}` });
+      }
 
       return send(res, 200, {
         hub, direction, equity: Number(a.equity),
