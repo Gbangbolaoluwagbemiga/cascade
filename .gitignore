@@ -3,3 +3,14 @@ node_modules/
 .env.local
 data/cache/
 *.log
+
+# Runtime state — per-instance, never shared.
+# Committing these made a deployed instance display another machine's journal
+# and daemon uptime as if they were its own.
+data/journal.jsonl
+data/theses.json
+data/seen-news.json
+data/daemon-state.json
+data/*.log
+data/last-*.json
+data/survey*.jsonl

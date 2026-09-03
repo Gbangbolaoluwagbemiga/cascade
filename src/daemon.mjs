@@ -369,7 +369,10 @@ export async function startDaemon({ quiet = false } = {}) {
   // Telegram command surface. Read-only plus pause/resume and /trade, which
   // runs the real cascade with every gate applied — a human chooses when to
   // look, never what to buy.
-  if (telegram.configured()) {
+  // Two daemons polling getUpdates fight over the same update offset, and each
+  // command gets answered once by whichever grabbed it first. Only one instance
+  // should own the command surface.
+  if (telegram.configured() && process.env.TELEGRAM_COMMANDS !== "false") {
     const started = startCommandLoop({
       graph: load(path.join(DATA, "graph.json"), { edges: [], nodes: [], edgeCount: 0, nodeCount: 0 }),
       llm: adjudicator,

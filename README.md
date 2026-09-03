@@ -507,6 +507,7 @@ Set these in the Railway dashboard:
 | `MAX_CASCADES` | `2` | cascades acted on per cycle |
 | `FLATTEN_AT` | — | ISO time to close the whole book |
 | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | optional | the feed and command surface |
+| `TELEGRAM_COMMANDS` | optional | `false` to push notifications without answering commands — only one instance should poll |
 | `EXECUTION_VIA` | optional | `rest` bypasses Alpaca's MCP server |
 | `ALPACA_BASE_URL` / `ALPACA_DATA_URL` | defaulted | change only to leave paper trading |
 
@@ -517,6 +518,11 @@ left unset, the best available model is resolved from the provider's live
 **Verify the deploy landed** by reading `/healthz`, which reports the commit
 SHA, uptime, edge count, gate configuration, and whether Alpaca and the LLM are
 actually reachable — rather than assuming any of it.
+
+Runtime state — `journal.jsonl`, `theses.json`, `seen-news.json`,
+`daemon-state.json` — is **not** committed. It is per-instance, and shipping it
+made a deployed instance display another machine's journal and daemon uptime as
+if they were its own. `data/graph.json` *is* committed: it is the product.
 
 **Deploy exactly one service.** The agent, the API and the UI share a filesystem
 — the journal, the thesis ledger and the filing cache all live in `data/`. Two
