@@ -270,9 +270,15 @@ deadline.
 
 | cap | |
 |---|---|
-| per name | 5% of equity |
+| per share position | 5% of equity |
+| **per option position** | **1.5% of equity** |
 | per cascade | 25% of equity |
-| **whole book** | **60% of equity** |
+| whole book | 60% of equity |
+
+Options are sized far smaller than shares because the risk is not comparable. A
+5% share position with a −6% stop risks about 0.3% of equity; a 5% *options*
+position risks the entire premium, because the contract can expire worthless.
+Sizing them identically put $4,218 of premium into a single KHC call.
 
 The third one exists because the first two never saw each other. Each cascade
 was sized without knowing what earlier ones had committed, so four of them

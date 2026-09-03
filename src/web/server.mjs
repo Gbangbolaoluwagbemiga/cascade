@@ -287,7 +287,7 @@ const server = http.createServer(async (req, res) => {
         Number(a.equity),
         { deployed: room.deployed },
       );
-      const orders = await execute(sized, { direction, dryRun: false });
+      const orders = await execute(sized, { direction, dryRun: false, equity: Number(a.equity) });
 
       for (const o of orders) {
         appendJournal({ kind: "order", ticker: o.ticker, hub, side: o.side,

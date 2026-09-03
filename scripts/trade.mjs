@@ -49,7 +49,7 @@ for (const s of sized) {
   );
 }
 
-const orders = await execute(sized, { direction, dryRun: !live });
+const orders = await execute(sized, { direction, dryRun: !live, equity });
 console.log(`\n--- ORDERS (${live ? "LIVE — submitted to Alpaca paper" : "dry run"}) ---`);
 for (const o of orders) {
   if (o.instrument === "option") {

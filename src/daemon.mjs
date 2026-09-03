@@ -374,7 +374,7 @@ async function cycle() {
       Number(acct.equity),
       { deployed: room.deployed },
     );
-    const orders = await execute(sized, { direction: c.direction, dryRun: !AUTO_TRADE });
+    const orders = await execute(sized, { direction: c.direction, dryRun: !AUTO_TRADE, equity: Number(acct.equity) });
 
     // Fire-and-forget: a notification failure must never affect a trade that
     // has already happened.

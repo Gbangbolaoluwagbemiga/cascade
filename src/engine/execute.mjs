@@ -29,6 +29,12 @@ export const OPTION_EXITS = {
 export const SIZING = {
   portfolioRisk: 0.25,   // never deploy more than a quarter of equity per cascade
   maxPerPosition: 0.05,  // and never more than 5% in one name
+
+  // Options are sized far smaller than shares, because the risk is not
+  // comparable. A 5% share position with a -6% stop risks ~0.3% of equity; a 5%
+  // options position risks the entire premium — the contract can expire
+  // worthless. Sizing them identically put $4,218 of premium into one KHC call.
+  maxPerOptionPosition: 0.015,
   minNotional: 200,      // below this the fill is not worth the slippage
 
   // Ceiling across the WHOLE book, not one cascade.
@@ -154,7 +160,7 @@ async function route(kind, args, { viaMcp }) {
   return { via: "rest", id: filled.id, status: filled.status };
 }
 
-export async function execute(sized, { direction = -1, dryRun = true, preferOptions = true, viaMcp = process.env.EXECUTION_VIA !== "rest" } = {}) {
+export async function execute(sized, { direction = -1, dryRun = true, preferOptions = true, equity = 100000, viaMcp = process.env.EXECUTION_VIA !== "rest" } = {}) {
   const side = direction < 0 ? "sell" : "buy";
   const results = [];
 
@@ -199,12 +205,15 @@ export async function execute(sized, { direction = -1, dryRun = true, preferOpti
 
       if (pick.ok) {
         const k = pick.contract;
-        const qty = contractsFor(c.notional, k.mid);
+        // Cap the premium at risk, independent of what the share sizing said.
+        const optionBudget = Math.min(c.notional, equity * SIZING.maxPerOptionPosition);
+        const qty = contractsFor(optionBudget, k.mid);
         if (qty >= 1) {
           const record = {
             ...c, instrument: "option", side: "buy",
             contract: k.symbol, strike: k.strike, expiry: k.expiry, daysToExpiry: k.daysOut,
             premium: k.mid, contracts: qty, notional: Number((qty * k.mid * 100).toFixed(2)),
+            sharesNotional: c.notional,
             expectedMovePct: move, spot,
           };
           if (dryRun) { results.push({ ...record, status: "dry-run", via: viaMcp ? "alpaca-mcp" : "rest" }); continue; }
