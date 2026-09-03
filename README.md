@@ -518,6 +518,13 @@ left unset, the best available model is resolved from the provider's live
 SHA, uptime, edge count, gate configuration, and whether Alpaca and the LLM are
 actually reachable — rather than assuming any of it.
 
+**Deploy exactly one service.** The agent, the API and the UI share a filesystem
+— the journal, the thesis ledger and the filing cache all live in `data/`. Two
+services would trade the same paper account twice and keep divergent ledgers.
+`railway.json` is the single source of truth for the start command; there is
+deliberately no Procfile, because Railway reads one as a request for a service
+per line.
+
 `/healthz` carries the commit SHA, uptime, edge count, gate config and whether
 Alpaca and the LLM are actually reachable — so you can always prove which code
 is live rather than assuming the deploy landed.
