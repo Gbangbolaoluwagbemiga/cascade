@@ -476,14 +476,36 @@ railway init
 railway up
 ```
 
-`railway.json` sets `RUN_DAEMON=true node src/web/server.mjs` and a `/healthz`
-check. Then set the variables in the Railway dashboard:
+**There is no separate frontend.** The UI is static HTML served by the same
+process that runs the API and the agent — one deploy, one set of variables, one
+health endpoint. `railway.json` sets the start command and a `/healthz` check.
 
-```
-ALPACA_API_KEY_ID · ALPACA_API_SECRET_KEY · GROQ_API_KEY · SEC_CONTACT
-AUTO_TRADE=true            # omit to keep the deployed agent in dry run
-TELEGRAM_BOT_TOKEN · TELEGRAM_CHAT_ID   # optional
-```
+Set these in the Railway dashboard:
+
+| variable | | |
+|---|---|---|
+| `ALPACA_API_KEY_ID` | **required** | paper account, top-left selector → API Keys |
+| `ALPACA_API_SECRET_KEY` | **required** | shown once on generation |
+| `SEC_CONTACT` | **required** | EDGAR refuses requests without a contact address |
+| `GROQ_API_KEY` *or* `XAI_API_KEY` | **required** | without it triage falls back to a classifier and says so |
+| `RUN_DAEMON` | `true` | run the agent inside the web process |
+| `AUTO_TRADE` | `false` | `true` to submit real paper orders |
+| `PORTFOLIO_CAP` | `0.60` | ceiling on capital deployed across the book |
+| `START_EQUITY` | `100000` | baseline for the realised/unrealised split |
+| `POLL_MS` | `180000` | scan cadence |
+| `MAX_CASCADES` | `2` | cascades acted on per cycle |
+| `FLATTEN_AT` | — | ISO time to close the whole book |
+| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | optional | the feed and command surface |
+| `EXECUTION_VIA` | optional | `rest` bypasses Alpaca's MCP server |
+| `ALPACA_BASE_URL` / `ALPACA_DATA_URL` | defaulted | change only to leave paper trading |
+
+`PORT` is set by Railway. `TRIAGE_MODEL` and `ADJUDICATOR_MODEL` are optional —
+left unset, the best available model is resolved from the provider's live
+`/models` list.
+
+**Verify the deploy landed** by reading `/healthz`, which reports the commit
+SHA, uptime, edge count, gate configuration, and whether Alpaca and the LLM are
+actually reachable — rather than assuming any of it.
 
 `/healthz` carries the commit SHA, uptime, edge count, gate config and whether
 Alpaca and the LLM are actually reachable — so you can always prove which code

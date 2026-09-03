@@ -235,3 +235,45 @@
 {"at":"2026-09-02T22:18:58.670Z","kind":"error","summary":"close KHC failed: Alpaca 403 on /v2/positions/KHC: insufficient qty available for order (requested: 138, available: 0)"}
 {"at":"2026-09-02T22:20:02.464Z","kind":"boot","summary":"daemon up · triage=groq · autoTrade=true · poll=180s · telegram=on"}
 {"at":"2026-09-02T22:20:14.596Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:26:10.230Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:29:10.306Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:32:10.172Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:35:10.766Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:38:10.041Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:41:10.474Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:44:10.299Z","kind":"scan","summary":"12 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T22:47:10.127Z","kind":"scan","summary":"11 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:00:06.444Z","kind":"scan","summary":"11 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:15:42.185Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T23:15:42.201Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T23:17:37.923Z","kind":"scan","summary":"11 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:17:37.928Z","kind":"error","summary":"fetch failed"}
+{"at":"2026-09-02T23:18:21.824Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:18:21.829Z","kind":"error","summary":"fetch failed"}
+{"at":"2026-09-02T23:18:42.086Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T23:18:42.092Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T23:21:20.979Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:21:20.983Z","kind":"error","summary":"fetch failed"}
+{"at":"2026-09-02T23:21:42.093Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T23:21:42.098Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T23:24:20.964Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:24:20.968Z","kind":"error","summary":"fetch failed"}
+{"at":"2026-09-02T23:24:42.093Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T23:24:42.097Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T23:27:48.760Z","kind":"degraded","summary":"clock unreachable — assuming market closed from the clock"}
+{"at":"2026-09-02T23:27:48.777Z","kind":"degraded","summary":"news feed unavailable (fetch failed) — continuing on 8-K only"}
+{"at":"2026-09-02T23:28:55.470Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:28:59.937Z","kind":"scan","summary":"0 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:30:57.236Z","kind":"scan","summary":"9 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:34:09.427Z","kind":"scan","summary":"9 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:36:57.688Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:39:58.810Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:42:57.329Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:45:57.314Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:48:57.847Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:51:57.513Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:54:57.620Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-02T23:57:57.408Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-03T00:00:56.955Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-03T00:03:58.226Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
+{"at":"2026-09-03T00:06:57.110Z","kind":"scan","summary":"6 headlines · 0 new · 0 material (groq) · market closed"}
