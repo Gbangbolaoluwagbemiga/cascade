@@ -11,6 +11,15 @@ import * as ledger from "./ledger.mjs";
 import { PRICED_MIN_Z } from "../market/residual.mjs";
 import { UNPRICED_MAX_Z } from "../market/residual.mjs";
 
+// Equities had no percentage stop at all — a share position could run a long
+// way against the thesis and nothing would cut it, because the only equity exit
+// was the residual reaching ±2σ. The residual is the *primary* signal; these are
+// the backstop for when it takes too long to say so.
+export const EQUITY_EXITS = {
+  takeProfit: 0.08,   // +8% on the position: bank it rather than wait for 2σ
+  stopLoss: -0.06,    // -6%: the thesis is costing more than it is worth
+};
+
 export const OPTION_EXITS = {
   takeProfit: 0.60,   // +60% on premium: bank it rather than wait for 2σ
   stopLoss: -0.50,    // -50%: the thesis is not arriving fast enough

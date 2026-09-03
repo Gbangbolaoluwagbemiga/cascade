@@ -303,6 +303,16 @@ an agent you can start but cannot stop is not a product.
 A position closes when the residual it was opened on finally arrives (±2σ) — the
 thesis is spent — or when it breaks and moves against the thesis instead.
 
+| instrument | primary exit | backstop |
+|---|---|---|
+| shares | residual ±2σ, daily bars | **+8% / −6%** |
+| options | residual ±2σ, daily bars | **+60% / −50%**, and close 5 days before expiry |
+
+Equities previously had no percentage backstop at all: the only exit was the
+residual, judged on daily bars, which can take a day to speak while a position
+runs. The residual remains the primary signal — these only catch the cases where
+it is too slow to say so.
+
 **Exits are judged on daily bars, always.** Entry scores a fresh event on hourly
 bars because a same-day event has no daily bar after it, but reusing that scale
 for exits is wrong: hourly residual sigma runs 0.3–1.1% against 1.0–6.0% daily,

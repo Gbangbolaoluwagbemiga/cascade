@@ -12,7 +12,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { news, account, positions as openPositions, clock } from "./market/alpaca.mjs";
 import { runCascade } from "./engine/cascade.mjs";
-import { sizePositions, execute, OPTION_EXITS, portfolioHeadroom, deployedCapital } from "./engine/execute.mjs";
+import { sizePositions, execute, OPTION_EXITS, EQUITY_EXITS, portfolioHeadroom, deployedCapital } from "./engine/execute.mjs";
 import { triageEvent, adjudicate } from "./engine/triage.mjs";
 import { shockTravels } from "./llm/client.mjs";
 import * as telegram from "./notify/telegram.mjs";
@@ -121,6 +121,31 @@ async function reviewExits(graph) {
     }
     // The underlying for an OCC symbol: leading alpha before the date block.
     const underlying = isOption ? (p.symbol.match(/^([A-Z]+)\d{6}[CP]\d{8}$/)?.[1] ?? p.symbol) : p.symbol;
+
+    // Percentage backstop for shares. The residual is the primary signal, but
+    // it is judged on daily bars and can take a day to speak; meanwhile a
+    // position can run. Bank a clear winner, cut a clear loser.
+    if (!isOption) {
+      const plpc = Number(p.unrealized_plpc);
+      let hardExit = null;
+      if (plpc >= EQUITY_EXITS.takeProfit) hardExit = `took profit at ${(plpc * 100).toFixed(1)}%`;
+      else if (plpc <= EQUITY_EXITS.stopLoss) hardExit = `stopped out at ${(plpc * 100).toFixed(1)}%`;
+
+      if (hardExit && !announcedExits.has(p.symbol)) {
+        announcedExits.add(p.symbol);
+        journal({ kind: "exit", ticker: p.symbol, instrument: "share",
+          pl: Number(p.unrealized_pl), plpc,
+          summary: `${p.symbol} ${hardExit} — P/L $${Number(p.unrealized_pl).toFixed(2)}${AUTO_TRADE ? "" : " (dry run)"}` });
+        telegram.positionClosed({ ticker: p.symbol, hub: ledger.get(p.symbol)?.hub ?? "—", reason: hardExit, pl: Number(p.unrealized_pl) }).catch(() => {});
+        if (AUTO_TRADE) {
+          const { closePosition } = await import("./market/alpaca.mjs");
+          try { await closePosition(p.symbol); ledger.forget(p.symbol); } catch (err) {
+            journal({ kind: "error", summary: `close ${p.symbol} failed: ${err.message}` });
+          }
+        }
+        continue;
+      }
+    }
 
     // The thesis that opened this position, not whichever edge sorts first.
     const thesis = ledger.get(p.symbol) ?? ledger.inferFromGraph(graph, p.symbol, underlying);
