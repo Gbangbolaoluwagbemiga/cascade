@@ -303,6 +303,16 @@ an agent you can start but cannot stop is not a product.
 A position closes when the residual it was opened on finally arrives (±2σ) — the
 thesis is spent — or when it breaks and moves against the thesis instead.
 
+**Exits are judged on daily bars, always.** Entry scores a fresh event on hourly
+bars because a same-day event has no daily bar after it, but reusing that scale
+for exits is wrong: hourly residual sigma runs 0.3–1.1% against 1.0–6.0% daily,
+so an ordinary intraday wobble reads as 3σ and the position is cut. Entering
+under 1σ and exiting over 2σ on the same hourly yardstick round-trips a thesis
+on about 1% of noise — which is what happened on 3 September, where 17 of 21
+closed trades exited as "thesis broken" on moves the daily scale reads as
+nothing. If there is no daily bar since the event yet, there is nothing to
+judge, and the position is held.
+
 Which thesis opened which position is **written down at order time**, not
 reconstructed afterwards. Several dependents sit under more than one hub (JAKK
 under both Walmart and Amazon, PBH under both), so searching the graph for a

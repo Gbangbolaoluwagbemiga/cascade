@@ -128,15 +128,28 @@ async function reviewExits(graph) {
 
     const direction = thesis.direction ?? (p.side === "short" ? -1 : 1);
 
+    // Exits are judged on DAILY bars, always.
+    //
+    // Entry scores fresh events on hourly bars because a same-day event has no
+    // daily bar after it. Reusing that scale for exits is wrong: hourly
+    // residual sigma runs 0.5-1%, so an ordinary 2% intraday wobble reads as
+    // 3.5σ and the position is cut. Entering under 1σ and exiting over 2σ on
+    // the same hourly yardstick round-trips a thesis on ~1% of noise.
+    //
+    // The thesis says the ripple takes hours to DAYS. If there is not yet a
+    // daily bar after the event, there is nothing to judge — hold.
     let scored;
     try {
       const r = await runCascade({
         graph, hub: thesis.hub,
         eventAt: thesis.openedAt ?? new Date(Date.now() - 7 * 864e5).toISOString(),
-        direction, feed: "sip",
+        direction, feed: "sip", timeframe: "1Day",
       });
       scored = r.considered.find((c) => c.ticker === underlying);
     } catch { continue; }
+
+    // No daily bar since the event yet: too early to have an opinion.
+    if (scored?.gate === "market_data") continue;
     if (scored?.z == null) continue;
 
     const verdict = exitVerdict(scored.z, direction);
