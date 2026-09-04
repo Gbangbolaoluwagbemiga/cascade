@@ -35,14 +35,22 @@ export async function loadMarketData(symbols, { start, end, feed = "sip", timefr
     const bars = await dailyBars(unique, { start, end, feed, timeframe });
     return { bars, missing: unique.filter((s) => !(bars.get(s)?.length > 0)) };
   } catch (err) {
+    // Per-symbol fallback, run CONCURRENTLY. Sequentially this was the worst
+    // path in the system: one network flake on the batch demoted a cascade to
+    // sixteen serial requests, each able to spend ten seconds in connect
+    // timeout alone. That is what turned a two-second Walmart cascade into
+    // thirty-eight seconds of "propagating…".
     const bars = new Map();
     const missing = [];
-    for (const sym of unique) {
+    const results = await Promise.all(unique.map(async (sym) => {
       try {
         const one = await dailyBars([sym], { start, end, feed, timeframe });
         const series = one.get(sym);
-        if (series?.length) bars.set(sym, series); else missing.push(sym);
-      } catch { missing.push(sym); }
+        return series?.length ? { sym, series } : { sym, series: null };
+      } catch { return { sym, series: null }; }
+    }));
+    for (const { sym, series } of results) {
+      if (series) bars.set(sym, series); else missing.push(sym);
     }
     return { bars, missing, batchError: String(err.message).slice(0, 140) };
   }
@@ -211,22 +219,24 @@ export async function runCascade({ graph, hub, eventAt, direction = -1, feed = "
 
   // Attach the contract the agent would actually buy, so the UI shows the real
   // instrument rather than implying a share trade.
+  //
+  // Fetched in PARALLEL. Sequentially this was a chain request plus a quotes
+  // request per candidate — twenty round trips for a Walmart cascade, which
+  // took 19 seconds and made the interface look broken.
   if (withOptions) {
     const { selectContract } = await import("../market/options.mjs");
     const { expectedMove } = await import("./execute.mjs");
-    for (const c of considered.filter((x) => x.tradeable)) {
+    const tradeable = considered.filter((x) => x.tradeable);
+
+    await Promise.all(tradeable.map(async (c) => {
       try {
-        const pick = await selectContract({
-          underlying: c.ticker, spot: c.spot, direction,
-          expectedMove: expectedMove({ ...c, direction }),
-        });
-        c.option = pick.ok
-          ? { ...pick.contract, expectedMovePct: expectedMove({ ...c, direction }) }
-          : { unavailable: true, gate: pick.gate, reason: pick.reason };
+        const move = expectedMove({ ...c, direction });
+        const pick = await selectContract({ underlying: c.ticker, spot: c.spot, direction, expectedMove: move });
+        c.option = pick.ok ? { ...pick.contract, expectedMovePct: move } : { unavailable: true, gate: pick.gate, reason: pick.reason };
       } catch (err) {
-        c.option = { unavailable: true, gate: "option_data", reason: err.message.slice(0, 120) };
+        c.option = { unavailable: true, gate: "option_data", reason: String(err.message).slice(0, 120) };
       }
-    }
+    }));
   }
 
   return {

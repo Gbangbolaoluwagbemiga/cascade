@@ -197,7 +197,7 @@ const server = http.createServer(async (req, res) => {
           considered: structuralScreen(graph, hub),
         });
       }
-      const result = await runCascade({ graph, hub, eventAt, direction, withOptions: true });
+      const result = await runCascade({ graph, hub, eventAt, direction, withOptions: url.searchParams.get("options") !== "0" });
       return send(res, 200, { ...result, live: true });
     }
 
@@ -331,10 +331,35 @@ if (process.env.RUN_DAEMON === "true") {
   startDaemon({ quiet: false }).catch((err) => console.error("daemon failed to start:", err.message));
 }
 
+// Warm the market-data cache for the hubs the interface opens on.
+//
+// The first cascade after a boot pays for every dependent's daily bars at once
+// — 19 to 29 seconds — and the stage sits on "propagating…" for all of it,
+// which reads as a hang rather than as work. Every later call is under two
+// seconds because the bars are cached. So we pay that cost at startup, before
+// anyone has clicked, instead of in front of an audience.
+async function prewarm() {
+  try {
+    const graph = loadGraph();
+    if (!credentials().ok) return;
+    const hubs = graph.nodes.filter((n) => n.inDegree > 0).slice(0, 3).map((n) => n.ticker);
+    const eventAt = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    for (const hub of hubs) {
+      const t = Date.now();
+      await runCascade({ graph, hub, eventAt, direction: -1, withOptions: false });
+      console.log(`  prewarmed      ${hub} in ${((Date.now() - t) / 1000).toFixed(1)}s`);
+    }
+  } catch (err) {
+    // Never fatal: a cold cache is slow, not broken.
+    console.error("prewarm skipped:", err.message);
+  }
+}
+
 server.listen(PORT, () => {
   console.log(`Cascade running  http://localhost:${PORT}`);
   console.log(`  health         http://localhost:${PORT}/healthz`);
   console.log(`  commit         ${COMMIT}`);
   console.log(`  alpaca keys    ${credentials().ok ? "present" : "MISSING — structural gates only"}`);
   console.log(`  daemon         ${process.env.RUN_DAEMON === "true" ? "running in this process" : "separate (npm run daemon)"}`);
+  prewarm();
 });

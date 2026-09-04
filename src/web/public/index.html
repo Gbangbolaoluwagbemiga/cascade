@@ -290,7 +290,7 @@ const el = (t, a = {}) => { const e = document.createElementNS(NS, t); for (cons
 const pct = (x) => (x * 100).toFixed(1) + "%";
 const money = (x) => (x < 0 ? "-" : "") + "$" + Math.abs(x).toLocaleString(undefined, { maximumFractionDigits: 0 });
 
-let HUBS = [], current = null, direction = "down", lastResult = null;
+let HUBS = [], current = null, direction = "down", lastResult = null, selectedNode = null;
 
 async function boot() {
   const [h, hubs] = await Promise.all([
@@ -540,19 +540,30 @@ function syncDir() {
 
 async function select(ticker) {
   current = ticker;
+  selectedNode = null;
   document.querySelectorAll(".hub").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.t === ticker)));
   const hub = HUBS.find((h) => h.ticker === ticker);
 
   $("stageTitle").textContent = `${ticker} ${direction === "down" ? "▼" : "▲"}`;
   $("stageSub").textContent = "propagating…";
 
+  // Draw the graph from the fast path first, then enrich with option detail.
+  // A single slow request left the stage blank on "propagating…".
+  const quick = await fetch(`/api/cascade?hub=${ticker}&direction=${direction}&options=0`).then((x) => x.json());
+  if (current !== ticker) return;
+  paint(ticker, quick, hub);
+
   const r = await fetch(`/api/cascade?hub=${ticker}&direction=${direction}`).then((x) => x.json());
+  if (current !== ticker) return;
+  paint(ticker, r, hub);
+}
+
+function paint(ticker, r, hub) {
   lastResult = r;
-  const live = r.live;
   const tradeable = r.considered.filter((c) => c.tradeable).length;
 
   $("stageTitle").textContent = `${ticker} ${direction === "down" ? "▼" : "▲"}  ${hub?.company ?? ""}`;
-  $("stageSub").textContent = live
+  $("stageSub").textContent = r.live
     ? `${r.considered.length} exposed · ${tradeable} unpriced · ${r.considered.length - tradeable} refused`
     : r.reason;
 
@@ -564,7 +575,11 @@ async function select(ticker) {
         <div class="why">${c.reason}</div></div>`).join("")
     : `<p class="empty">nothing refused</p>`;
 
-  const best = r.considered.find((c) => c.tradeable) ?? r.considered[0];
+  // Keep whatever the presenter clicked. The option-enrichment pass repaints
+  // seconds after the first render, and without this it would yank the panel
+  // back to the default node mid-sentence.
+  const keep = selectedNode && r.considered.find((c) => c.ticker === selectedNode);
+  const best = keep ?? r.considered.find((c) => c.tradeable) ?? r.considered[0];
   if (best) detail(best, ticker);
 }
 
@@ -613,7 +628,7 @@ function draw(hub, nodes) {
     const sh = el("text", { x, y: y + 25, class: "nshare", "text-anchor": "middle" });
     sh.textContent = c.z != null ? `${pct(c.exposure)} · ${c.z >= 0 ? "+" : ""}${c.z.toFixed(2)}σ` : pct(c.exposure);
     g.append(lab, sh);
-    g.addEventListener("click", () => detail(c, hub));
+    g.addEventListener("click", () => { selectedNode = c.ticker; detail(c, hub); });
     svg.appendChild(g);
     requestAnimationFrame(() => { g.style.opacity = 1; });
   });

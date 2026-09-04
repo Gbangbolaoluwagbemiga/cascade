@@ -83,6 +83,29 @@ export function clampEndForFeed(end, feed) {
 export const toAlpacaSymbol = (s) => String(s).replace(/-([A-Z])$/, ".$1");
 export const fromAlpacaSymbol = (s) => String(s).replace(/\.([A-Z])$/, "-$1");
 
+// Bar cache.
+//
+// Daily bars for a session that has already closed do not change, and the same
+// dependents are re-scored on every UI click, every daemon cycle and every exit
+// check. Without this each of those paid full network cost — and paid it again
+// on the retry path when Alpaca's connection flaked. Keyed by the exact query,
+// so a different window or timeframe never reads a stale series.
+const BAR_CACHE = new Map();
+const BAR_TTL_MS = 5 * 60 * 1000;
+
+function barCacheGet(key) {
+  const hit = BAR_CACHE.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.at > BAR_TTL_MS) { BAR_CACHE.delete(key); return null; }
+  return hit.value;
+}
+
+function barCacheSet(key, value) {
+  // Bounded so a long-running daemon cannot grow it without limit.
+  if (BAR_CACHE.size > 400) BAR_CACHE.clear();
+  BAR_CACHE.set(key, { at: Date.now(), value });
+}
+
 export async function dailyBars(symbols, { start, end, feed = "sip", limit = 10000, timeframe = "1Day" } = {}) {
   const out = new Map();
   let pageToken = null;
@@ -91,6 +114,10 @@ export async function dailyBars(symbols, { start, end, feed = "sip", limit = 100
   // Translate on the way out, translate back on the way in, so callers keep
   // using the SEC spelling the graph is built from.
   const wire = symbols.map(toAlpacaSymbol);
+
+  const cacheKey = JSON.stringify([[...wire].sort(), timeframe, start, end, feed, limit]);
+  const cached = barCacheGet(cacheKey);
+  if (cached) return new Map(cached);
 
   do {
     const page = await call(DATA_URL, "/v2/stocks/bars", {
@@ -114,6 +141,9 @@ export async function dailyBars(symbols, { start, end, feed = "sip", limit = 100
   } while (pageToken);
 
   for (const bars of out.values()) bars.sort((a, b) => (a.t < b.t ? -1 : 1));
+  // Copy on the way in and on the way out, so a caller mutating its result
+  // cannot corrupt what the next caller reads.
+  barCacheSet(cacheKey, new Map(out));
   return out;
 }
 

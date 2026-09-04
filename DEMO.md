@@ -52,7 +52,8 @@ equity · total P/L · realised · open · positions · edges
 - [ ] Market **open** (14:30–21:00 WAT) so prices are live
 - [ ] Phone in frame if Telegram is on — a notification landing mid-take is
       strong proof it runs by itself
-- [ ] Cascade view selected, **WMT** clicked so the graph is already drawn
+- [ ] Cascade view selected, **WMT** already highlighted in the left list (it is
+      the default) so the graph is drawn before you start recording
 
 ---
 
@@ -74,17 +75,25 @@ equity · total P/L · realised · open · positions · edges
 
 ## 0:20 — 0:55 · One real relationship
 
-**Do:** click **SMG** in the graph. The right panel fills.
+**Do:** click **BGS** in the graph — the green node up and to the right of the
+centre. The right panel fills.
+
+> If BGS is not green today, click any green node and narrate that one instead;
+> the wording below works for all of them, only the two numbers change. Every
+> green node has a filing behind it.
 
 **Say:**
 
-> "Scotts Miracle-Gro earns thirty-four percent of its revenue from Home Depot.
+> "B&G Foods earns thirty-one percent of its revenue from Walmart.
 >
-> I did not ask an AI for that. Scotts wrote it in their own annual report to
-> the SEC, and this is the document number."
+> I did not ask an AI for that. B&G wrote it in their own annual report to the
+> SEC, and this is the document number."
 
-**Do:** **click the accession number.** Let the real SEC filing open for one
-second. Then come back.
+**Do:** in the right panel, at the bottom of the grey box that reads
+**Filer's own words: "Wal Mart"**, **click the underlined number**
+(`0001104659-26-022961`). That is the accession number — the SEC's ID for that
+one filing. The real 10-K opens on sec.gov. Let it sit for one second, then come
+back.
 
 > "Every relationship in this graph works like that — seventy-eight of them,
 > each one traceable to a filing. If it isn't in a filing, Cascade won't trade
@@ -98,8 +107,10 @@ thing in your three minutes.
 
 ## 0:55 — 1:35 · Watch it think
 
-**Do:** click a headline in **Events on hubs**, or click a hub and press
-**Run this cascade**.
+**Do:** press **Run this cascade** — the button at the top right of the graph.
+(There is also an **Events on hubs** list of live headlines, but it sits at the
+bottom of the right-hand column and you would have to scroll to reach it. Don't
+scroll on camera; the button does the same thing.)
 
 **Say:**
 
